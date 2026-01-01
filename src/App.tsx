@@ -1,5 +1,7 @@
 import { Layout } from './components/Layout';
 import { Header } from './components/Header';
+import { Controls } from './components/Controls';
+import { Workspace } from './components/Workspace';
 import './App.css';
 
 function App() {
@@ -7,7 +9,8 @@ function App() {
     <Layout>
       <Header />
       <main>
-        {/* Contenuto futuro */}
+        <Controls />
+        <Workspace />
       </main>
     </Layout>
   );
