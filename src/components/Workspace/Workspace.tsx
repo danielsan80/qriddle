@@ -1,9 +1,9 @@
 import { Panel } from '../Panel';
-import './Workspace.css';
+import styles from './Workspace.module.css';
 
 export function Workspace() {
   return (
-    <div className="workspace">
+    <div className={styles.workspace}>
       <Panel
         title="QR Code Originale (Griglia A)"
         stats={[

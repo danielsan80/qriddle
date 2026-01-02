@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import './Panel.css';
+import styles from './Panel.module.css';
 
 interface StatsItem {
   label: string;
@@ -14,15 +14,15 @@ interface PanelProps {
 
 export function Panel({ title, stats, children }: PanelProps) {
   return (
-    <div className="panel">
+    <div className={styles.panel}>
       <h2>{title}</h2>
-      <div className="canvas-container">
+      <div className={styles.canvasContainer}>
         {children}
       </div>
-      <div className="stats">
+      <div className={styles.stats}>
         {stats.map((item, index) => (
-          <div key={index} className="stats-item">
-            <span className="stats-label">{item.label}:</span>{' '}
+          <div key={index} className={styles.statsItem}>
+            <span className={styles.statsLabel}>{item.label}:</span>{' '}
             <span>{item.value}</span>
           </div>
         ))}

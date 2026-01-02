@@ -5,15 +5,15 @@
   box-shadow: 0 20px 60px var(--shadow);
   border: 2px solid var(--ink);
   position: relative;
-}
 
-.container::before {
-  content: '';
-  position: absolute;
-  top: -8px;
-  left: -8px;
-  right: -8px;
-  bottom: -8px;
-  background: var(--ink);
-  z-index: -1;
+  &::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    background: var(--ink);
+    z-index: -1;
+  }
 }

@@ -1,9 +1,9 @@
-import './Controls.css';
+import styles from './Controls.module.css';
 
 export function Controls() {
   return (
-    <div className="controls">
-      <div className="input-group">
+    <div className={styles.controls}>
+      <div className={styles.inputGroup}>
         <label htmlFor="qrText">Testo o URL per QR Code</label>
         <input
           type="text"

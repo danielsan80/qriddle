@@ -1,10 +1,10 @@
-import './Header.css';
+import styles from './Header.module.css';
 
 export function Header() {
   return (
-    <header>
+    <header className={styles.header}>
       <h1>QR Puzzle Generator</h1>
-      <div className="subtitle">Generatore di Enigmi QR Code</div>
+      <div className={styles.subtitle}>Generatore di Enigmi QR Code</div>
     </header>
   );
 }

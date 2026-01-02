@@ -1,0 +1,20 @@
+.header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 2rem 3rem;
+  border-bottom: 4px solid var(--accent);
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+}

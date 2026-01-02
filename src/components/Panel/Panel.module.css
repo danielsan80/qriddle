@@ -1,0 +1,53 @@
+.panel {
+  background: white;
+  border: 2px solid var(--ink);
+  padding: 2rem;
+  animation: fadeIn 0.4s ease-out;
+
+  &:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--grid);
+  }
+
+  .canvasContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    background: var(--paper);
+    border: 2px dashed var(--grid);
+    padding: 1rem;
+
+    canvas {
+      border: 2px solid var(--ink);
+      box-shadow: 4px 4px 0 var(--grid);
+      image-rendering: pixelated;
+    }
+  }
+
+  .stats {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: var(--paper);
+    border-left: 4px solid var(--accent);
+    font-size: 0.9rem;
+  }
+
+  .statsItem {
+    margin: 0.5rem 0;
+  }
+
+  .statsLabel {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+}
