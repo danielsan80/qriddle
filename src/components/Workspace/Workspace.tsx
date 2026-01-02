@@ -1,7 +1,12 @@
+import type { RefObject } from 'react';
 import { Panel } from '../Panel';
 import styles from './Workspace.module.css';
 
-export function Workspace() {
+interface WorkspaceProps {
+  qrCanvasRef: RefObject<HTMLCanvasElement | null>;
+}
+
+export function Workspace({ qrCanvasRef }: WorkspaceProps) {
   return (
     <div className={styles.workspace}>
       <Panel
@@ -11,7 +16,7 @@ export function Workspace() {
           { label: 'Moduli Neri', value: '-' },
         ]}
       >
-        <canvas id="qrCanvas"></canvas>
+        <canvas ref={qrCanvasRef}></canvas>
       </Panel>
 
       <Panel
