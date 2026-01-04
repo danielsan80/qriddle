@@ -2,7 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { createHighResGrid, generateMazeBorders, findAreas, generateMaze, Grid } from './maze'
 
 describe('createHighResGrid', () => {
-  it('raddoppia la dimensione della griglia', () => {
+
+  it('doubles the size of the grid', () => {
     const input: Grid = [
       [0, 1],
       [1, 0],
@@ -10,31 +11,17 @@ describe('createHighResGrid', () => {
 
     const result = createHighResGrid(input)
 
-    expect(result.length).toBe(4)
-    expect(result[0].length).toBe(4)
-  })
-
-  it('espande correttamente i valori', () => {
-    const input: Grid = [
-      [0, 1],
-      [1, 0],
-    ]
-
-    const result = createHighResGrid(input)
-
-    expect(result[0][0]).toBe(0)
-    expect(result[0][1]).toBe(0)
-    expect(result[0][2]).toBe(1)
-    expect(result[0][3]).toBe(1)
-    expect(result[1][0]).toBe(0)
-    expect(result[1][1]).toBe(0)
-    expect(result[2][2]).toBe(0)
-    expect(result[2][3]).toBe(0)
+    expect(result).toEqual([
+        [0,0,1,1],
+        [0,0,1,1],
+        [1,1,0,0],
+        [1,1,0,0],
+    ]);
   })
 })
 
 describe('generateMazeBorders', () => {
-  it('genera bordi esterni sulla riga inferiore', () => {
+  it('generates borders on the edge of the grid', () => {
     const grid: Grid = [
       [0, 0],
       [0, 0],
@@ -42,23 +29,19 @@ describe('generateMazeBorders', () => {
 
     const borders = generateMazeBorders(grid)
 
-    expect(borders.horizontal[1][0]).toBe(true)
-    expect(borders.horizontal[1][1]).toBe(true)
+    expect(borders).toEqual({
+      horizontal: [
+          [false,false],
+          [true,true],
+      ],
+      vertical: [
+        [false,true],
+        [false,true],
+      ],
+    });
   })
 
-  it('genera bordi esterni sulla colonna destra', () => {
-    const grid: Grid = [
-      [0, 0],
-      [0, 0],
-    ]
-
-    const borders = generateMazeBorders(grid)
-
-    expect(borders.vertical[0][1]).toBe(true)
-    expect(borders.vertical[1][1]).toBe(true)
-  })
-
-  it('genera bordi tra celle di colore diverso', () => {
+  it('generates borders between differente color cells', () => {
     const grid: Grid = [
       [0, 1],
       [0, 1],
@@ -66,13 +49,21 @@ describe('generateMazeBorders', () => {
 
     const borders = generateMazeBorders(grid)
 
-    expect(borders.vertical[0][0]).toBe(true)
-    expect(borders.vertical[1][0]).toBe(true)
+    expect(borders).toEqual({
+      horizontal: [
+        [false,false],
+        [true,true],
+      ],
+      vertical: [
+        [true,true],
+        [true,true],
+      ],
+    });
   })
 })
 
 describe('findAreas', () => {
-  it('trova aree separate dai bordi', () => {
+  it('finds areas divided from borders', () => {
     const grid: Grid = [
       [0, 1],
       [0, 1],
@@ -81,28 +72,21 @@ describe('findAreas', () => {
 
     const areas = findAreas(grid, borders)
 
-    expect(areas.length).toBeGreaterThanOrEqual(2)
-  })
-
-  it('identifica correttamente il colore delle aree', () => {
-    const grid: Grid = [
-      [0, 1],
-      [0, 1],
-    ]
-    const borders = generateMazeBorders(grid)
-
-    const areas = findAreas(grid, borders)
-
-    const blackAreas = areas.filter((a) => a.isBlack)
-    const whiteAreas = areas.filter((a) => !a.isBlack)
-
-    expect(blackAreas.length).toBeGreaterThan(0)
-    expect(whiteAreas.length).toBeGreaterThan(0)
+    expect(areas).toEqual([
+      {
+        cells: [[0,0],[1,0]],
+        isBlack: false
+      },
+      {
+        cells: [[0,1],[1,1]],
+        isBlack: true
+      },
+    ])
   })
 })
 
 describe('generateMaze', () => {
-  it('genera un maze completo da una matrice QR', () => {
+  it('generates a complete maze from a QR code', () => {
     const qrMatrix: Grid = [
       [1, 1, 0],
       [1, 0, 0],
@@ -117,7 +101,7 @@ describe('generateMaze', () => {
     expect(result.areas.length).toBeGreaterThan(0)
   })
 
-  it('mantiene la connettività delle aree', () => {
+  it('keeps the connection between the areas', () => {
     const qrMatrix: Grid = [
       [0, 0],
       [0, 0],
