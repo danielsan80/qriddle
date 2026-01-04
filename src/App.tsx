@@ -2,17 +2,45 @@ import { useRef, useState } from 'react';
 import { Layout } from './components/Layout';
 import { Header } from './components/Header';
 import { Controls } from './components/Controls';
-import { Workspace } from './components/Workspace';
-import { renderQRToCanvas } from './lib/qr';
+import { Workspace, type QRStats, type PuzzleStats } from './components/Workspace';
+import { renderQRToCanvas, getQRMatrix } from './lib/qr';
+import { generateMaze } from './lib/maze';
+import { renderPuzzle } from './lib/puzzle';
 import './App.css';
 
 function App() {
   const [qrText, setQrText] = useState('https://example.com');
+  const [qrStats, setQrStats] = useState<QRStats>();
+  const [puzzleStats, setPuzzleStats] = useState<PuzzleStats>();
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
+  const puzzleCanvasRef = useRef<HTMLCanvasElement>(null);
 
   const handleGenerate = async () => {
-    if (!qrText || !qrCanvasRef.current) return;
+    if (!qrText || !qrCanvasRef.current || !puzzleCanvasRef.current) return;
+
+    // Render QR e ottieni matrice
     await renderQRToCanvas(qrCanvasRef.current, qrText);
+    const { matrix, size, blackCount } = getQRMatrix(qrText);
+
+    setQrStats({
+      size: `${size} × ${size}`,
+      blackModules: String(blackCount),
+    });
+
+    // Genera e renderizza puzzle
+    const { grid, borders, areas } = generateMaze(matrix);
+    renderPuzzle(puzzleCanvasRef.current, grid, borders, areas);
+
+    const blackAreas = areas.filter((a) => a.isBlack).length;
+    const totalCells = areas.reduce((sum, a) => sum + a.cells.length, 0);
+    const minSize = Math.min(...areas.map((a) => a.cells.length));
+    const maxSize = Math.max(...areas.map((a) => a.cells.length));
+
+    setPuzzleStats({
+      totalAreas: String(areas.length),
+      blackAreas: String(blackAreas),
+      avgAreaSize: `${(totalCells / areas.length).toFixed(1)} (min: ${minSize}, max: ${maxSize})`,
+    });
   };
 
   return (
@@ -24,7 +52,12 @@ function App() {
           onQrTextChange={setQrText}
           onGenerate={handleGenerate}
         />
-        <Workspace qrCanvasRef={qrCanvasRef} />
+        <Workspace
+          qrCanvasRef={qrCanvasRef}
+          puzzleCanvasRef={puzzleCanvasRef}
+          qrStats={qrStats}
+          puzzleStats={puzzleStats}
+        />
       </main>
     </Layout>
   );
