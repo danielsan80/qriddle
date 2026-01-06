@@ -21,7 +21,7 @@ describe('createHighResGrid', () => {
 })
 
 describe('generateMazeBorders', () => {
-  it('generates borders on the edge of the grid', () => {
+  it('generates no internal borders for uniform grid', () => {
     const grid: Grid = [
       [0, 0],
       [0, 0],
@@ -30,18 +30,12 @@ describe('generateMazeBorders', () => {
     const borders = generateMazeBorders(grid)
 
     expect(borders).toEqual({
-      horizontal: [
-          [false,false],
-          [true,true],
-      ],
-      vertical: [
-        [false,true],
-        [false,true],
-      ],
+      horizontal: [[false, false]],
+      vertical: [[false], [false]],
     });
   })
 
-  it('generates borders between differente color cells', () => {
+  it('generates borders between different color cells', () => {
     const grid: Grid = [
       [0, 1],
       [0, 1],
@@ -50,14 +44,8 @@ describe('generateMazeBorders', () => {
     const borders = generateMazeBorders(grid)
 
     expect(borders).toEqual({
-      horizontal: [
-        [false,false],
-        [true,true],
-      ],
-      vertical: [
-        [true,true],
-        [true,true],
-      ],
+      horizontal: [[false, false]],
+      vertical: [[true], [true]],
     });
   })
 })

@@ -221,26 +221,21 @@ function addSerpentineWalls(
 }
 
 /**
- * Genera i bordi del labirinto dalla griglia
+ * It generates the borders of the maze for the given grid
+ * horizontal: (rows-1) x cols - borders between adjacent rows
+ * vertical: rows x (cols-1) - borders between  adjacent cols
+ * the external borders are implicit (always exist)
  */
 export function generateMazeBorders(grid: Grid, random: RandomFn = Math.random): Borders {
   const rows = grid.length;
   const cols = grid[0].length;
 
-  const horizontal: boolean[][] = Array(rows)
+  const horizontal: boolean[][] = Array(rows - 1)
     .fill(null)
     .map(() => Array(cols).fill(false));
   const vertical: boolean[][] = Array(rows)
     .fill(null)
-    .map(() => Array(cols).fill(false));
-
-  // Bordi esterni
-  for (let col = 0; col < cols; col++) {
-    horizontal[rows - 1][col] = true;
-  }
-  for (let row = 0; row < rows; row++) {
-    vertical[row][cols - 1] = true;
-  }
+    .map(() => Array(cols - 1).fill(false));
 
   // FASE 1: Divide per colore (nero vs bianco)
   for (let row = 0; row < rows; row++) {
@@ -340,9 +335,9 @@ export function findAreas(grid: Grid, borders: Borders): Area[] {
         hasBorder: boolean;
       }[] = [
         { nr: row - 1, nc: col, hasBorder: row > 0 && borders.horizontal[row - 1][col] },
-        { nr: row + 1, nc: col, hasBorder: borders.horizontal[row][col] },
+        { nr: row + 1, nc: col, hasBorder: row < rows - 1 && borders.horizontal[row][col] },
         { nr: row, nc: col - 1, hasBorder: col > 0 && borders.vertical[row][col - 1] },
-        { nr: row, nc: col + 1, hasBorder: borders.vertical[row][col] },
+        { nr: row, nc: col + 1, hasBorder: col < cols - 1 && borders.vertical[row][col] },
       ];
 
       for (const { nr, nc, hasBorder } of neighbors) {
