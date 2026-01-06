@@ -121,9 +121,9 @@ describe('generateMaze', () => {
       [0, 0, 1, 0],
     ]
 
-    const result1 = generateMaze(qrMatrix, 12345)
-    const result2 = generateMaze(qrMatrix, 12345)
-    const result3 = generateMaze(qrMatrix, 99999)
+    const result1 = generateMaze(qrMatrix, 'soy seed')
+    const result2 = generateMaze(qrMatrix, 'soy seed')
+    const result3 = generateMaze(qrMatrix, 'stink seed')
 
     expect(result1.borders).toEqual(result2.borders)
     expect(result1.areas).toEqual(result2.areas)

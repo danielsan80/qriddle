@@ -387,11 +387,19 @@ export function findAreas(grid: Grid, borders: Borders): Area[] {
   return areas;
 }
 
+function hashString(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash + str.charCodeAt(i)) | 0;
+  }
+  return hash;
+}
+
 /**
  * Genera il labirinto completo da un QR matrix
  */
-export function generateMaze(qrMatrix: Grid, seed?: number): MazeResult {
-  const random = seed !== undefined ? mulberry32(seed) : Math.random;
+export function generateMaze(qrMatrix: Grid, seed?: string): MazeResult {
+  const random = seed !== undefined ? mulberry32(hashString(seed)) : Math.random;
   const grid = createHighResGrid(qrMatrix);
   const borders = generateMazeBorders(grid, random);
   const areas = findAreas(grid, borders);
