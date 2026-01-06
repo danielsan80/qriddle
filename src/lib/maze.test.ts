@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { createHighResGrid, generateMazeBorders, findAreas, generateMaze, Grid } from './maze'
+import { createHighResGrid, generateMazeBorders, findAreas, generateMaze, type Grid } from './maze'
 
 describe('createHighResGrid', () => {
 
