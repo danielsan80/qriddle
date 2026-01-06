@@ -32,15 +32,15 @@ export function renderPuzzle(
   canvas.width = cols * cellSize;
   canvas.height = rows * cellSize;
 
-  // Sfondo
+  // Background
   ctx.fillStyle = opts.backgroundColor!;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Bordi
+  // Borders
   ctx.strokeStyle = opts.borderColor!;
   ctx.lineWidth = 2;
 
-  // Bordi orizzontali
+  // Horizontal borders
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       if (borders.horizontal[row][col]) {
@@ -52,7 +52,7 @@ export function renderPuzzle(
     }
   }
 
-  // Bordi verticali
+  // Vertical borders
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       if (borders.vertical[row][col]) {
@@ -64,17 +64,17 @@ export function renderPuzzle(
     }
   }
 
-  // Dot nelle aree nere - posizionato nella cella più lontana dal centro
+  // Dot in black areas - positioned in the cell furthest from center
   ctx.fillStyle = opts.dotColor!;
   for (const area of areas) {
     if (area.isBlack && area.cells.length > 0) {
-      // Centro geometrico dell'area
+      // Geometric center of the area
       const sumRow = area.cells.reduce((sum, [r]) => sum + r, 0);
       const sumCol = area.cells.reduce((sum, [, c]) => sum + c, 0);
       const centerRow = sumRow / area.cells.length;
       const centerCol = sumCol / area.cells.length;
 
-      // Trova la cella più lontana dal centro
+      // Find the cell furthest from center
       let furthestCell = area.cells[0];
       let maxDist = 0;
       for (const [r, c] of area.cells) {

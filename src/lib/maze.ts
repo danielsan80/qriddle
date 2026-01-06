@@ -19,7 +19,7 @@ export interface MazeResult {
 }
 
 /**
- * Genera la griglia ad alta risoluzione (2x) dal QR matrix
+ * Generates a high resolution grid (2x) from the QR matrix
  */
 export function createHighResGrid(qrMatrix: Grid): Grid {
   const size = qrMatrix.length;
@@ -39,7 +39,7 @@ export function createHighResGrid(qrMatrix: Grid): Grid {
 }
 
 /**
- * Chiave normalizzata per un edge tra due celle adiacenti
+ * Normalized key for an edge between two adjacent cells
  */
 function getEdgeKey(r1: number, c1: number, r2: number, c2: number): string {
   const cells: [number, number][] = [
@@ -51,7 +51,7 @@ function getEdgeKey(r1: number, c1: number, r2: number, c2: number): string {
 }
 
 /**
- * Controlla se c'è un blocco 2x2 senza muri interni vicino all'edge dato
+ * Checks if there's a 2x2 block without internal walls near the given edge
  */
 function has2x2BlockNearEdge(
   r1: number,
@@ -67,7 +67,7 @@ function has2x2BlockNearEdge(
   const blocks: [number, number][][] = [];
 
   if (r2 === r1 + 1 && c2 === c1) {
-    // Edge verticale - controlla sinistra e destra
+    // Vertical edge - check left and right
     if (c1 < cols - 1) {
       blocks.push([
         [r1, c1],
@@ -85,7 +85,7 @@ function has2x2BlockNearEdge(
       ]);
     }
   } else if (c2 === c1 + 1 && r2 === r1) {
-    // Edge orizzontale - controlla sopra e sotto
+    // Horizontal edge - check above and below
     if (r1 < rows - 1) {
       blocks.push([
         [r1, c1],
@@ -125,7 +125,7 @@ function has2x2BlockNearEdge(
 }
 
 /**
- * Aggiunge muri interni per creare percorsi serpentini senza blocchi 2x2
+ * Adds internal walls to create serpentine paths without 2x2 blocks
  */
 function addSerpentineWalls(
   cells: [number, number][],
@@ -139,7 +139,7 @@ function addSerpentineWalls(
 
   const cellSet = new Set(cells.map(([r, c]) => `${r},${c}`));
 
-  // Costruisce lista di adiacenza
+  // Build adjacency list
   const adjList = new Map<string, [number, number][]>();
   for (const [row, col] of cells) {
     const key = `${row},${col}`;
@@ -153,7 +153,7 @@ function addSerpentineWalls(
     adjList.set(key, neighbors);
   }
 
-  // Crea spanning tree (DFS) - questi edge NON avranno muri
+  // Create spanning tree (DFS) - these edges will NOT have walls
   const treeEdges = new Set<string>();
   const visitedDFS = new Set<string>();
   const startCell = cells[Math.floor(random() * cells.length)];
@@ -184,7 +184,7 @@ function addSerpentineWalls(
     }
   }
 
-  // Raccoglie tutti gli edge non nel tree
+  // Collect all edges not in the tree
   const allEdges: { row: number; col: number; nr: number; nc: number }[] = [];
   for (const [row, col] of cells) {
     const neighbors = adjList.get(`${row},${col}`) || [];
@@ -198,7 +198,7 @@ function addSerpentineWalls(
     }
   }
 
-  // Aggiunge muri al 70% degli edge non-tree, evitando blocchi 2x2
+  // Add walls to 70% of non-tree edges, avoiding 2x2 blocks
   const shuffledEdges = allEdges.sort(() => random() - 0.5);
 
   for (const { row, col, nr, nc } of shuffledEdges) {
@@ -237,7 +237,7 @@ export function generateMazeBorders(grid: Grid, random: RandomFn = Math.random):
     .fill(null)
     .map(() => Array(cols - 1).fill(false));
 
-  // FASE 1: Divide per colore (nero vs bianco)
+  // PHASE 1: Divide by color (black vs white)
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       const current = grid[row][col];
@@ -252,7 +252,7 @@ export function generateMazeBorders(grid: Grid, random: RandomFn = Math.random):
     }
   }
 
-  // FASE 2: Aggiunge muri interni per percorsi serpentini
+  // PHASE 2: Add internal walls for serpentine paths
   const visited: boolean[][] = Array(rows)
     .fill(null)
     .map(() => Array(cols).fill(false));
@@ -307,7 +307,7 @@ export function generateMazeBorders(grid: Grid, random: RandomFn = Math.random):
 }
 
 /**
- * Trova tutte le aree delimitate dai bordi
+ * Finds all areas delimited by borders
  */
 export function findAreas(grid: Grid, borders: Borders): Area[] {
   const rows = grid.length;
@@ -370,7 +370,7 @@ export function findAreas(grid: Grid, borders: Borders): Area[] {
 }
 
 /**
- * Genera il labirinto completo da un QR matrix
+ * Generates the complete maze from a QR matrix
  */
 export function generateMaze(qrMatrix: Grid, seed?: string): MazeResult {
   const random = seed !== undefined ? mulberry32(hashString(seed)) : Math.random;

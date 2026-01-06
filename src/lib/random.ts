@@ -1,7 +1,7 @@
 export type RandomFn = () => number
 
 /**
- * Mulberry32 PRNG - genera numeri pseudo-casuali da un seed
+ * Mulberry32 PRNG - generates pseudo-random numbers from a seed
  */
 export function mulberry32(seed: number): RandomFn {
   return () => {
@@ -14,7 +14,7 @@ export function mulberry32(seed: number): RandomFn {
 }
 
 /**
- * Converte una stringa in un hash numerico
+ * Converts a string to a numeric hash
  */
 export function hashString(str: string): number {
   let hash = 0
