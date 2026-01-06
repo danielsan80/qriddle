@@ -112,4 +112,23 @@ describe('generateMaze', () => {
     const totalCells = result.areas.reduce((sum, area) => sum + area.cells.length, 0)
     expect(totalCells).toBe(16)
   })
+
+  it('generates the same maze with the same seed, and different ones with different ones', () => {
+    const qrMatrix: Grid = [
+      [0, 0, 0, 0],
+      [0, 1, 1, 0],
+      [0, 0, 1, 0],
+      [0, 0, 1, 0],
+    ]
+
+    const result1 = generateMaze(qrMatrix, 12345)
+    const result2 = generateMaze(qrMatrix, 12345)
+    const result3 = generateMaze(qrMatrix, 99999)
+
+    expect(result1.borders).toEqual(result2.borders)
+    expect(result1.areas).toEqual(result2.areas)
+
+    expect(result1.borders).not.toEqual(result3.borders)
+    expect(result1.areas).not.toEqual(result3.areas)
+  })
 })

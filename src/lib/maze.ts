@@ -16,6 +16,21 @@ export interface MazeResult {
   areas: Area[];
 }
 
+type RandomFn = () => number;
+
+/**
+ * Mulberry32 PRNG - genera numeri pseudo-casuali da un seed
+ */
+function mulberry32(seed: number): RandomFn {
+  return () => {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 /**
  * Genera la griglia ad alta risoluzione (2x) dal QR matrix
  */
@@ -130,7 +145,8 @@ function addSerpentineWalls(
   horizontal: boolean[][],
   vertical: boolean[][],
   rows: number,
-  cols: number
+  cols: number,
+  random: RandomFn
 ): void {
   if (cells.length <= 4) return;
 
@@ -153,7 +169,7 @@ function addSerpentineWalls(
   // Crea spanning tree (DFS) - questi edge NON avranno muri
   const treeEdges = new Set<string>();
   const visitedDFS = new Set<string>();
-  const startCell = cells[Math.floor(Math.random() * cells.length)];
+  const startCell = cells[Math.floor(random() * cells.length)];
   const stack: [number, number][] = [startCell];
   visitedDFS.add(`${startCell[0]},${startCell[1]}`);
 
@@ -162,7 +178,7 @@ function addSerpentineWalls(
     const key = `${row},${col}`;
     const neighbors = adjList.get(key) || [];
 
-    const shuffled = [...neighbors].sort(() => Math.random() - 0.5);
+    const shuffled = [...neighbors].sort(() => random() - 0.5);
 
     let found = false;
     for (const [nr, nc] of shuffled) {
@@ -196,10 +212,10 @@ function addSerpentineWalls(
   }
 
   // Aggiunge muri al 70% degli edge non-tree, evitando blocchi 2x2
-  const shuffledEdges = allEdges.sort(() => Math.random() - 0.5);
+  const shuffledEdges = allEdges.sort(() => random() - 0.5);
 
   for (const { row, col, nr, nc } of shuffledEdges) {
-    if (Math.random() < 0.7) {
+    if (random() < 0.7) {
       if (nr === row + 1 && nc === col) {
         horizontal[row][col] = true;
       } else if (nc === col + 1 && nr === row) {
@@ -220,7 +236,7 @@ function addSerpentineWalls(
 /**
  * Genera i bordi del labirinto dalla griglia
  */
-export function generateMazeBorders(grid: Grid): Borders {
+export function generateMazeBorders(grid: Grid, random: RandomFn = Math.random): Borders {
   const rows = grid.length;
   const cols = grid[0].length;
 
@@ -299,7 +315,7 @@ export function generateMazeBorders(grid: Grid): Borders {
       if (!visited[row][col]) {
         const macroArea = findMacroArea(row, col);
         if (macroArea.length > 4) {
-          addSerpentineWalls(macroArea, horizontal, vertical, rows, cols);
+          addSerpentineWalls(macroArea, horizontal, vertical, rows, cols, random);
         }
       }
     }
@@ -374,9 +390,10 @@ export function findAreas(grid: Grid, borders: Borders): Area[] {
 /**
  * Genera il labirinto completo da un QR matrix
  */
-export function generateMaze(qrMatrix: Grid): MazeResult {
+export function generateMaze(qrMatrix: Grid, seed?: number): MazeResult {
+  const random = seed !== undefined ? mulberry32(seed) : Math.random;
   const grid = createHighResGrid(qrMatrix);
-  const borders = generateMazeBorders(grid);
+  const borders = generateMazeBorders(grid, random);
   const areas = findAreas(grid, borders);
 
   return { grid, borders, areas };
