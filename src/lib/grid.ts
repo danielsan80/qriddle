@@ -1,4 +1,4 @@
-import type { Coord } from './coord';
+import { Coord } from './coord';
 
 export type Color = 'black' | 'white';
 export type Matrix = number[][];
@@ -16,9 +16,9 @@ export class Grid {
     this.size = matrix.length;
     this.cells = matrix.map((row, i) =>
       row.map((value, j) => ({
-        coord: { row: i, col: j },
-        color: value === 1 ? 'black' : 'white' as Color,
-      }))
+        coord: new Coord(i, j),
+        color: value === 1 ? 'black' : ('white' as Color),
+      })),
     );
   }
 
@@ -45,7 +45,7 @@ export class Grid {
 
   asMatrix(): Matrix {
     return this.cells.map((row) =>
-      row.map((cell) => (cell.color === 'black' ? 1 : 0))
+      row.map((cell) => (cell.color === 'black' ? 1 : 0)),
     );
   }
 
@@ -56,7 +56,10 @@ export class Grid {
     for (let row = 0; row < doubledSize; row++) {
       matrix[row] = [];
       for (let col = 0; col < doubledSize; col++) {
-        const orig = this.get({ row: Math.floor(row / 2), col: Math.floor(col / 2) });
+        const orig = this.get({
+          row: Math.floor(row / 2),
+          col: Math.floor(col / 2),
+        });
         matrix[row][col] = orig.color === 'black' ? 1 : 0;
       }
     }

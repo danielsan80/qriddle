@@ -16,9 +16,7 @@ export function Panel({ title, stats, children }: PanelProps) {
   return (
     <div className={styles.panel}>
       <h2>{title}</h2>
-      <div className={styles.canvasContainer}>
-        {children}
-      </div>
+      <div className={styles.canvasContainer}>{children}</div>
       <div className={styles.stats}>
         {stats.map((item, index) => (
           <div key={index} className={styles.statsItem}>

@@ -17,8 +17,8 @@
       letter-spacing: 0.05em;
     }
 
-    input[type="text"],
-    input[type="number"],
+    input[type='text'],
+    input[type='number'],
     select {
       width: 100%;
       padding: 0.75rem;

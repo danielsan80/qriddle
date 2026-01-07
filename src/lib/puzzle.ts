@@ -20,7 +20,7 @@ export function renderPuzzle(
   grid: Matrix,
   borders: Borders,
   areas: Area[],
-  options: PuzzleRenderOptions = {}
+  options: PuzzleRenderOptions = {},
 ): void {
   const opts = { ...defaultOptions, ...options };
   const ctx = canvas.getContext('2d');

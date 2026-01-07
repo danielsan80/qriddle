@@ -2,7 +2,11 @@ import { useRef, useState } from 'react';
 import { Layout } from './components/Layout';
 import { Header } from './components/Header';
 import { Controls } from './components/Controls';
-import { Workspace, type QRStats, type PuzzleStats } from './components/Workspace';
+import {
+  Workspace,
+  type QRStats,
+  type PuzzleStats,
+} from './components/Workspace';
 import { renderQRToCanvas, getQRMatrix } from './lib/qr';
 import { generateMaze } from './lib/maze';
 import { renderPuzzle } from './lib/puzzle';

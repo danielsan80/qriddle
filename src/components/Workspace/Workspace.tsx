@@ -43,7 +43,10 @@ export function Workspace({
         stats={[
           { label: 'Aree Totali', value: puzzleStats?.totalAreas ?? '-' },
           { label: 'Aree Nere', value: puzzleStats?.blackAreas ?? '-' },
-          { label: 'Dimensione Media Area', value: puzzleStats?.avgAreaSize ?? '-' },
+          {
+            label: 'Dimensione Media Area',
+            value: puzzleStats?.avgAreaSize ?? '-',
+          },
         ]}
       >
         <canvas ref={puzzleCanvasRef}></canvas>

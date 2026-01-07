@@ -6,7 +6,11 @@ interface ControlsProps {
   onGenerate: () => void;
 }
 
-export function Controls({ qrText, onQrTextChange, onGenerate }: ControlsProps) {
+export function Controls({
+  qrText,
+  onQrTextChange,
+  onGenerate,
+}: ControlsProps) {
   return (
     <div className={styles.controls}>
       <div className={styles.inputGroup}>

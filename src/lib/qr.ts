@@ -22,7 +22,7 @@ const defaultOptions: QROptions = {
 export async function renderQRToCanvas(
   canvas: HTMLCanvasElement,
   text: string,
-  options: QROptions = {}
+  options: QROptions = {},
 ): Promise<void> {
   const opts = { ...defaultOptions, ...options };
 
@@ -39,7 +39,7 @@ export async function renderQRToCanvas(
 
 export function getQRMatrix(
   text: string,
-  options: QROptions = {}
+  options: QROptions = {},
 ): QRMatrixResult {
   const opts = { ...defaultOptions, ...options };
   const qr = QRCode.create(text, {

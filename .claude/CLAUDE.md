@@ -22,6 +22,7 @@ File sorgente da cui stiamo portando il codice in React:
 **Color** — `'black' | 'white'` (enum)
 
 **Edge** — bordo di una cella
+
 - `isExternal: boolean` — bordo esterno della griglia
 - `hasWall: boolean` — presenza del muro
 
@@ -30,10 +31,12 @@ File sorgente da cui stiamo portando il codice in React:
 ### Input Context
 
 **Cell** (VO)
+
 - `coord: Coord`
 - `color: Color`
 
 **Grid** — contenitore di Cell
+
 - `size: number` — dimensione (griglia quadrata)
 - `get(coord: Coord): Cell`
 - `has(coord: Coord): boolean` — verifica bounds
@@ -42,6 +45,7 @@ File sorgente da cui stiamo portando il codice in React:
 ### Output Context (Maze)
 
 **MazeCell** (Entity)
+
 - `coord: Coord`
 - `color: Color`
 - `edges: Edges` — bordi della cella
@@ -50,6 +54,7 @@ File sorgente da cui stiamo portando il codice in React:
 - `marked: boolean` — puntino di partenza per il flood fill (solo celle nere)
 
 **Maze** — contenitore di MazeCell
+
 - `size: number`
 - `get(coord: Coord): MazeCell`
 - `has(coord: Coord): boolean`

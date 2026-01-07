@@ -41,7 +41,7 @@ function has2x2BlockNearEdge(
   vertical: boolean[][],
   rows: number,
   cols: number,
-  cellSet: Set<string>
+  cellSet: Set<string>,
 ): boolean {
   const blocks: [number, number][][] = [];
 
@@ -112,7 +112,7 @@ function addSerpentineWalls(
   vertical: boolean[][],
   rows: number,
   cols: number,
-  random: RandomFn
+  random: RandomFn,
 ): void {
   if (cells.length <= 4) return;
 
@@ -124,10 +124,14 @@ function addSerpentineWalls(
     const key = `${row},${col}`;
     const neighbors: [number, number][] = [];
 
-    if (row > 0 && cellSet.has(`${row - 1},${col}`)) neighbors.push([row - 1, col]);
-    if (row < rows - 1 && cellSet.has(`${row + 1},${col}`)) neighbors.push([row + 1, col]);
-    if (col > 0 && cellSet.has(`${row},${col - 1}`)) neighbors.push([row, col - 1]);
-    if (col < cols - 1 && cellSet.has(`${row},${col + 1}`)) neighbors.push([row, col + 1]);
+    if (row > 0 && cellSet.has(`${row - 1},${col}`))
+      neighbors.push([row - 1, col]);
+    if (row < rows - 1 && cellSet.has(`${row + 1},${col}`))
+      neighbors.push([row + 1, col]);
+    if (col > 0 && cellSet.has(`${row},${col - 1}`))
+      neighbors.push([row, col - 1]);
+    if (col < cols - 1 && cellSet.has(`${row},${col + 1}`))
+      neighbors.push([row, col + 1]);
 
     adjList.set(key, neighbors);
   }
@@ -188,7 +192,19 @@ function addSerpentineWalls(
         vertical[row][col] = true;
       }
 
-      if (has2x2BlockNearEdge(row, col, nr, nc, horizontal, vertical, rows, cols, cellSet)) {
+      if (
+        has2x2BlockNearEdge(
+          row,
+          col,
+          nr,
+          nc,
+          horizontal,
+          vertical,
+          rows,
+          cols,
+          cellSet,
+        )
+      ) {
         if (nr === row + 1 && nc === col) {
           horizontal[row][col] = false;
         } else if (nc === col + 1 && nr === row) {
@@ -205,7 +221,10 @@ function addSerpentineWalls(
  * vertical: rows x (cols-1) - borders between  adjacent cols
  * the external borders are implicit (always exist)
  */
-export function generateMazeBorders(grid: Matrix, random: RandomFn = Math.random): Borders {
+export function generateMazeBorders(
+  grid: Matrix,
+  random: RandomFn = Math.random,
+): Borders {
   const rows = grid.length;
   const cols = grid[0].length;
 
@@ -236,7 +255,10 @@ export function generateMazeBorders(grid: Matrix, random: RandomFn = Math.random
     .fill(null)
     .map(() => Array(cols).fill(false));
 
-  function findMacroArea(startRow: number, startCol: number): [number, number][] {
+  function findMacroArea(
+    startRow: number,
+    startCol: number,
+  ): [number, number][] {
     const color = grid[startRow][startCol];
     const cells: [number, number][] = [];
     const queue: [number, number][] = [[startRow, startCol]];
@@ -276,7 +298,14 @@ export function generateMazeBorders(grid: Matrix, random: RandomFn = Math.random
       if (!visited[row][col]) {
         const macroArea = findMacroArea(row, col);
         if (macroArea.length > 4) {
-          addSerpentineWalls(macroArea, horizontal, vertical, rows, cols, random);
+          addSerpentineWalls(
+            macroArea,
+            horizontal,
+            vertical,
+            rows,
+            cols,
+            random,
+          );
         }
       }
     }
@@ -313,10 +342,26 @@ export function findAreas(grid: Matrix, borders: Borders): Area[] {
         nc: number;
         hasBorder: boolean;
       }[] = [
-        { nr: row - 1, nc: col, hasBorder: row > 0 && borders.horizontal[row - 1][col] },
-        { nr: row + 1, nc: col, hasBorder: row < rows - 1 && borders.horizontal[row][col] },
-        { nr: row, nc: col - 1, hasBorder: col > 0 && borders.vertical[row][col - 1] },
-        { nr: row, nc: col + 1, hasBorder: col < cols - 1 && borders.vertical[row][col] },
+        {
+          nr: row - 1,
+          nc: col,
+          hasBorder: row > 0 && borders.horizontal[row - 1][col],
+        },
+        {
+          nr: row + 1,
+          nc: col,
+          hasBorder: row < rows - 1 && borders.horizontal[row][col],
+        },
+        {
+          nr: row,
+          nc: col - 1,
+          hasBorder: col > 0 && borders.vertical[row][col - 1],
+        },
+        {
+          nr: row,
+          nc: col + 1,
+          hasBorder: col < cols - 1 && borders.vertical[row][col],
+        },
       ];
 
       for (const { nr, nc, hasBorder } of neighbors) {
@@ -352,7 +397,8 @@ export function findAreas(grid: Matrix, borders: Borders): Area[] {
  * Generates the complete maze from a QR matrix
  */
 export function generateMaze(matrix: Matrix, seed?: string): MazeResult {
-  const random = seed !== undefined ? mulberry32(hashString(seed)) : Math.random;
+  const random =
+    seed !== undefined ? mulberry32(hashString(seed)) : Math.random;
   const grid = new Grid(matrix).x2();
   const mazeMatrix = grid.asMatrix();
   const borders = generateMazeBorders(mazeMatrix, random);

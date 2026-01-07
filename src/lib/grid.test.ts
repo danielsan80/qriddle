@@ -42,7 +42,7 @@ describe('Grid', () => {
   describe('forEach', () => {
     it('iterates all cells in row-major order', () => {
       const coords: string[] = [];
-      grid.forEach((cell) => coords.push(`${cell.coord.row},${cell.coord.col}`));
+      grid.forEach((cell) => coords.push(cell.coord.toString()));
       expect(coords).toEqual(['0,0', '0,1', '1,0', '1,1']);
     });
   });
