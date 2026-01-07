@@ -1,4 +1,4 @@
-import type { Grid } from './grid';
+import type { Matrix } from './grid';
 import type { Borders, Area } from './maze';
 
 export interface PuzzleRenderOptions {
@@ -17,7 +17,7 @@ const defaultOptions: PuzzleRenderOptions = {
 
 export function renderPuzzle(
   canvas: HTMLCanvasElement,
-  grid: Grid,
+  grid: Matrix,
   borders: Borders,
   areas: Area[],
   options: PuzzleRenderOptions = {}

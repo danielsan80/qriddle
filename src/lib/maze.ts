@@ -1,5 +1,5 @@
 import { type RandomFn, mulberry32, hashString } from './random';
-import { type Grid, createHighResGrid } from './grid';
+import { Grid, type Matrix } from './grid';
 
 export interface Borders {
   horizontal: boolean[][];
@@ -12,7 +12,7 @@ export interface Area {
 }
 
 export interface MazeResult {
-  grid: Grid;
+  grid: Matrix;
   borders: Borders;
   areas: Area[];
 }
@@ -205,7 +205,7 @@ function addSerpentineWalls(
  * vertical: rows x (cols-1) - borders between  adjacent cols
  * the external borders are implicit (always exist)
  */
-export function generateMazeBorders(grid: Grid, random: RandomFn = Math.random): Borders {
+export function generateMazeBorders(grid: Matrix, random: RandomFn = Math.random): Borders {
   const rows = grid.length;
   const cols = grid[0].length;
 
@@ -288,7 +288,7 @@ export function generateMazeBorders(grid: Grid, random: RandomFn = Math.random):
 /**
  * Finds all areas delimited by borders
  */
-export function findAreas(grid: Grid, borders: Borders): Area[] {
+export function findAreas(grid: Matrix, borders: Borders): Area[] {
   const rows = grid.length;
   const cols = grid[0].length;
   const visited: boolean[][] = Array(rows)
@@ -351,11 +351,12 @@ export function findAreas(grid: Grid, borders: Borders): Area[] {
 /**
  * Generates the complete maze from a QR matrix
  */
-export function generateMaze(qrMatrix: Grid, seed?: string): MazeResult {
+export function generateMaze(matrix: Matrix, seed?: string): MazeResult {
   const random = seed !== undefined ? mulberry32(hashString(seed)) : Math.random;
-  const grid = createHighResGrid(qrMatrix);
-  const borders = generateMazeBorders(grid, random);
-  const areas = findAreas(grid, borders);
+  const grid = new Grid(matrix).x2();
+  const mazeMatrix = grid.asMatrix();
+  const borders = generateMazeBorders(mazeMatrix, random);
+  const areas = findAreas(mazeMatrix, borders);
 
-  return { grid, borders, areas };
+  return { grid: mazeMatrix, borders, areas };
 }

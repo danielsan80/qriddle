@@ -1,16 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import { createHighResGrid, type Grid } from './grid';
+import { Grid } from './grid';
 
-describe('createHighResGrid', () => {
+describe('Grid.x2', () => {
   it('doubles the size of the grid', () => {
-    const input: Grid = [
+    const grid = new Grid([
       [0, 1],
       [1, 0],
-    ];
+    ]);
 
-    const result = createHighResGrid(input);
+    const result = grid.x2();
 
-    expect(result).toEqual([
+    expect(result.asMatrix()).toEqual([
       [0, 0, 1, 1],
       [0, 0, 1, 1],
       [1, 1, 0, 0],

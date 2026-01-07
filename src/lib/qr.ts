@@ -1,5 +1,5 @@
 import QRCode from 'qrcode';
-import type { Grid } from './grid';
+import type { Matrix } from './grid';
 
 export interface QROptions {
   width?: number;
@@ -8,7 +8,7 @@ export interface QROptions {
 }
 
 export interface QRMatrixResult {
-  matrix: Grid;
+  matrix: Matrix;
   size: number;
   blackCount: number;
 }
@@ -47,7 +47,7 @@ export function getQRMatrix(
   });
 
   const size = qr.modules.size;
-  const matrix: Grid = [];
+  const matrix: Matrix = [];
   let blackCount = 0;
 
   for (let row = 0; row < size; row++) {
