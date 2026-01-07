@@ -1,4 +1,5 @@
-import type { Grid, Borders, Area } from './maze';
+import type { Grid } from './grid';
+import type { Borders, Area } from './maze';
 
 export interface PuzzleRenderOptions {
   cellSize?: number;

@@ -1,5 +1,5 @@
 import QRCode from 'qrcode';
-import type { Grid } from './maze';
+import type { Grid } from './grid';
 
 export interface QROptions {
   width?: number;

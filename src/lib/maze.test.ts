@@ -1,24 +1,6 @@
-import { describe, it, expect } from 'vitest'
-import { createHighResGrid, generateMazeBorders, findAreas, generateMaze, type Grid } from './maze'
-
-describe('createHighResGrid', () => {
-
-  it('doubles the size of the grid', () => {
-    const input: Grid = [
-      [0, 1],
-      [1, 0],
-    ]
-
-    const result = createHighResGrid(input)
-
-    expect(result).toEqual([
-        [0,0,1,1],
-        [0,0,1,1],
-        [1,1,0,0],
-        [1,1,0,0],
-    ]);
-  })
-})
+import { describe, it, expect } from 'vitest';
+import { generateMazeBorders, findAreas, generateMaze } from './maze';
+import { type Grid } from './grid';
 
 describe('generateMazeBorders', () => {
   it('generates no internal borders for uniform grid', () => {

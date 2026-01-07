@@ -1,6 +1,5 @@
-import { type RandomFn, mulberry32, hashString } from './random'
-
-export type Grid = number[][];
+import { type RandomFn, mulberry32, hashString } from './random';
+import { type Grid, createHighResGrid } from './grid';
 
 export interface Borders {
   horizontal: boolean[][];
@@ -16,26 +15,6 @@ export interface MazeResult {
   grid: Grid;
   borders: Borders;
   areas: Area[];
-}
-
-/**
- * Generates a high resolution grid (2x) from the QR matrix
- */
-export function createHighResGrid(qrMatrix: Grid): Grid {
-  const size = qrMatrix.length;
-  const highResSize = size * 2;
-  const grid: Grid = [];
-
-  for (let row = 0; row < highResSize; row++) {
-    grid[row] = [];
-    for (let col = 0; col < highResSize; col++) {
-      const origRow = Math.floor(row / 2);
-      const origCol = Math.floor(col / 2);
-      grid[row][col] = qrMatrix[origRow][origCol];
-    }
-  }
-
-  return grid;
 }
 
 /**
