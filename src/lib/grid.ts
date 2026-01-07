@@ -1,10 +1,7 @@
+import type { Coord } from './coord';
+
 export type Color = 'black' | 'white';
 export type Matrix = number[][];
-
-export interface Coord {
-  readonly row: number;
-  readonly col: number;
-}
 
 export interface Cell {
   readonly coord: Coord;
