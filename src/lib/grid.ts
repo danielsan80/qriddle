@@ -56,11 +56,10 @@ export class Grid {
     for (let row = 0; row < doubledSize; row++) {
       matrix[row] = [];
       for (let col = 0; col < doubledSize; col++) {
-        const orig = this.get({
-          row: Math.floor(row / 2),
-          col: Math.floor(col / 2),
-        });
-        matrix[row][col] = orig.color === 'black' ? 1 : 0;
+        const cell = this.get(
+          new Coord(Math.floor(row / 2), Math.floor(col / 2)),
+        );
+        matrix[row][col] = cell.color === 'black' ? 1 : 0;
       }
     }
 
