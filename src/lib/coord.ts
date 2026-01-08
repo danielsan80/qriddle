@@ -1,3 +1,5 @@
+export type Direction = 'north' | 'south' | 'east' | 'west';
+
 export class Coord {
   readonly row: number;
   readonly col: number;
@@ -25,5 +27,9 @@ export class Coord {
 
   west(): Coord {
     return new Coord(this.row, this.col - 1);
+  }
+
+  goTo(direction: Direction): Coord {
+    return this[direction]();
   }
 }

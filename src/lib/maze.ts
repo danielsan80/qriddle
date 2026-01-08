@@ -1,5 +1,70 @@
 import { type RandomFn, mulberry32, hashString } from './random';
-import { Grid, type Matrix } from './grid';
+import { Grid, type Matrix, type Color } from './grid';
+import { Coord, type Direction } from './coord';
+
+export class MazeCell {
+  readonly coord: Coord;
+  readonly color: Color;
+
+  constructor(coord: Coord, color: Color) {
+    this.coord = coord;
+    this.color = color;
+  }
+}
+
+export class Edge {
+  readonly isExternal: boolean;
+  readonly hasWall: boolean;
+
+  constructor(cell: MazeCell, neighbor: MazeCell | null) {
+    this.isExternal = neighbor === null;
+    this.hasWall = neighbor === null || cell.color !== neighbor.color;
+  }
+}
+
+export class Maze {
+  readonly size: number;
+  private readonly cells: MazeCell[][];
+
+  constructor(matrix: number[][]) {
+    this.size = matrix.length;
+
+    this.cells = matrix.map((row, i) =>
+      row.map((value, j) => {
+        const coord = new Coord(i, j);
+        const color: Color = value === 1 ? 'black' : 'white';
+        return new MazeCell(coord, color);
+      }),
+    );
+  }
+
+  get(coord: Coord): MazeCell {
+    return this.cells[coord.row][coord.col];
+  }
+
+  has(coord: Coord): boolean {
+    return (
+      coord.row >= 0 &&
+      coord.row < this.size &&
+      coord.col >= 0 &&
+      coord.col < this.size
+    );
+  }
+
+  forEach(callback: (cell: MazeCell) => void): void {
+    for (const row of this.cells) {
+      for (const cell of row) {
+        callback(cell);
+      }
+    }
+  }
+
+  createEdge(cell: MazeCell, direction: Direction): Edge {
+    const neighborCoord = cell.coord.goTo(direction);
+    const neighbor = this.has(neighborCoord) ? this.get(neighborCoord) : null;
+    return new Edge(cell, neighbor);
+  }
+}
 
 export interface Borders {
   horizontal: boolean[][];

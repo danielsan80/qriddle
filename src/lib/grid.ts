@@ -10,7 +10,7 @@ export interface Cell {
 
 export class Grid {
   readonly size: number;
-  private cells: Cell[][];
+  private readonly cells: Cell[][];
 
   constructor(matrix: number[][]) {
     this.size = matrix.length;
