@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { Maze, generateMazeBorders, findAreas, generateMaze } from './maze';
+import {
+  Maze,
+  MazeCell,
+  generateMazeBorders,
+  findAreas,
+  generateMaze,
+} from './maze';
 import { type Grid } from './grid';
 import { Coord } from './coord';
 
@@ -114,26 +120,27 @@ describe('generateMaze', () => {
 });
 
 describe('Maze', () => {
-  function externalSummary(cell: { edges: import('./maze').Edges }): string {
+  function externalSummary(cell: MazeCell): string {
     const dirs = ['N', 'E', 'S', 'W'] as const;
-    const edges = [
-      cell.edges.north,
-      cell.edges.east,
-      cell.edges.south,
-      cell.edges.west,
-    ];
+    const edges = [cell.edges.north, cell.edges.east, cell.edges.south, cell.edges.west];
     return dirs.filter((_, i) => edges[i].isExternal).join('') || '-';
   }
 
-  function wallSummary(cell: { edges: import('./maze').Edges }): string {
+  function wallSummary(cell: MazeCell): string {
     const dirs = ['N', 'E', 'S', 'W'] as const;
-    const edges = [
-      cell.edges.north,
-      cell.edges.east,
-      cell.edges.south,
-      cell.edges.west,
-    ];
+    const edges = [cell.edges.north, cell.edges.east, cell.edges.south, cell.edges.west];
     return dirs.filter((_, i) => edges[i].hasWall).join('') || '-';
+  }
+
+  function mapMaze(maze: Maze, fn: (cell: MazeCell) => string): string[][] {
+    const result: string[][] = [];
+    for (let row = 0; row < maze.size; row++) {
+      result[row] = [];
+      for (let col = 0; col < maze.size; col++) {
+        result[row][col] = fn(maze.get(new Coord(row, col)));
+      }
+    }
+    return result;
   }
 
   describe('edges', () => {
@@ -144,15 +151,11 @@ describe('Maze', () => {
         [0, 0, 0],
       ]);
 
-      expect(externalSummary(maze.get(new Coord(0, 0)))).toBe('NW');
-      expect(externalSummary(maze.get(new Coord(0, 1)))).toBe('N');
-      expect(externalSummary(maze.get(new Coord(0, 2)))).toBe('NE');
-      expect(externalSummary(maze.get(new Coord(1, 0)))).toBe('W');
-      expect(externalSummary(maze.get(new Coord(1, 1)))).toBe('-');
-      expect(externalSummary(maze.get(new Coord(1, 2)))).toBe('E');
-      expect(externalSummary(maze.get(new Coord(2, 0)))).toBe('SW');
-      expect(externalSummary(maze.get(new Coord(2, 1)))).toBe('S');
-      expect(externalSummary(maze.get(new Coord(2, 2)))).toBe('ES');
+      expect(mapMaze(maze, externalSummary)).toEqual([
+        ['NW', 'N', 'NE'],
+        ['W', '-', 'E'],
+        ['SW', 'S', 'ES'],
+      ]);
     });
 
     it('has walls between different colors and on external edges', () => {
@@ -161,10 +164,10 @@ describe('Maze', () => {
         [0, 1],
       ]);
 
-      expect(wallSummary(maze.get(new Coord(0, 0)))).toBe('NEW');
-      expect(wallSummary(maze.get(new Coord(0, 1)))).toBe('NEW');
-      expect(wallSummary(maze.get(new Coord(1, 0)))).toBe('ESW');
-      expect(wallSummary(maze.get(new Coord(1, 1)))).toBe('ESW');
+      expect(mapMaze(maze, wallSummary)).toEqual([
+        ['NEW', 'NEW'],
+        ['ESW', 'ESW'],
+      ]);
     });
 
     it('has no internal walls between same colors', () => {
@@ -173,10 +176,10 @@ describe('Maze', () => {
         [1, 1],
       ]);
 
-      expect(wallSummary(maze.get(new Coord(0, 0)))).toBe('NW');
-      expect(wallSummary(maze.get(new Coord(0, 1)))).toBe('NE');
-      expect(wallSummary(maze.get(new Coord(1, 0)))).toBe('SW');
-      expect(wallSummary(maze.get(new Coord(1, 1)))).toBe('ES');
+      expect(mapMaze(maze, wallSummary)).toEqual([
+        ['NW', 'NE'],
+        ['SW', 'ES'],
+      ]);
     });
   });
 });
