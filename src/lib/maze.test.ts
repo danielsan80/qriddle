@@ -121,13 +121,23 @@ describe('generateMaze', () => {
 describe('Maze', () => {
   function externalSummary(cell: MazeCell): string {
     const dirs = ['N', 'E', 'S', 'W'] as const;
-    const edges = [cell.edges.north, cell.edges.east, cell.edges.south, cell.edges.west];
+    const edges = [
+      cell.edges.north,
+      cell.edges.east,
+      cell.edges.south,
+      cell.edges.west,
+    ];
     return dirs.filter((_, i) => edges[i].isExternal).join('') || '-';
   }
 
   function wallSummary(cell: MazeCell): string {
     const dirs = ['N', 'E', 'S', 'W'] as const;
-    const edges = [cell.edges.north, cell.edges.east, cell.edges.south, cell.edges.west];
+    const edges = [
+      cell.edges.north,
+      cell.edges.east,
+      cell.edges.south,
+      cell.edges.west,
+    ];
     return dirs.filter((_, i) => edges[i].hasWall).join('') || '-';
   }
 
