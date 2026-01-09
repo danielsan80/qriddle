@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   Maze,
   MazeCell,
+  Area,
   generateMazeBorders,
   findAreas,
   generateMaze,
@@ -179,6 +180,63 @@ describe('Maze', () => {
       expect(mapMaze(maze, wallSummary)).toEqual([
         ['NW', 'NE'],
         ['SW', 'ES'],
+      ]);
+    });
+  });
+
+  describe('areas', () => {
+    function areaMap(maze: Maze): string[][] {
+      const cellToArea = new Map<string, number>();
+      maze.areas.forEach((area, index) => {
+        area.cells.forEach((cell) => {
+          cellToArea.set(cell.coord.toString(), index);
+        });
+      });
+
+      return mapMaze(maze, (cell) => {
+        const areaIndex = cellToArea.get(cell.coord.toString())!;
+        const symbol = cell.color === 'black' ? '◾' : '◻';
+        return `${areaIndex}${symbol}`;
+      });
+    }
+
+    it('groups cells by color', () => {
+      const maze = new Maze([
+        [0, 1],
+        [0, 1],
+      ]);
+
+      expect(areaMap(maze)).toEqual([
+        ['0◻', '1◾'],
+        ['0◻', '1◾'],
+      ]);
+    });
+
+    it('separates non-adjacent same-color cells into different areas', () => {
+      const maze = new Maze([
+        [1, 0, 1],
+        [0, 0, 0],
+        [1, 0, 1],
+      ]);
+
+      expect(areaMap(maze)).toEqual([
+        ['0◾', '1◻', '2◾'],
+        ['1◻', '1◻', '1◻'],
+        ['3◾', '1◻', '4◾'],
+      ]);
+    });
+
+    it('merges adjacent same-color cells into one area', () => {
+      const maze = new Maze([
+        [1, 1, 1],
+        [1, 1, 1],
+        [1, 1, 1],
+      ]);
+
+      expect(areaMap(maze)).toEqual([
+        ['0◾', '0◾', '0◾'],
+        ['0◾', '0◾', '0◾'],
+        ['0◾', '0◾', '0◾'],
       ]);
     });
   });

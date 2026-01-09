@@ -30,8 +30,19 @@ export interface Edges {
   west: Edge;
 }
 
+export class Area {
+  readonly cells: MazeCell[];
+  readonly color: Color;
+
+  constructor(cells: MazeCell[], color: Color) {
+    this.cells = cells;
+    this.color = color;
+  }
+}
+
 export class Maze {
   readonly size: number;
+  readonly areas: Area[];
   private readonly cells: MazeCell[][];
 
   constructor(matrix: number[][]) {
@@ -53,6 +64,45 @@ export class Maze {
         west: this.createEdge(cell, 'west'),
       };
     });
+
+    this.areas = this.findAreas();
+  }
+
+  private findAreas(): Area[] {
+    const visited = new Set<string>();
+    const areas: Area[] = [];
+
+    this.forEach((cell) => {
+      const key = cell.coord.toString();
+      if (visited.has(key)) return;
+
+      const areaCells: MazeCell[] = [];
+      const queue: MazeCell[] = [cell];
+      visited.add(key);
+
+      while (queue.length > 0) {
+        const current = queue.shift()!;
+        areaCells.push(current);
+
+        for (const direction of ['north', 'east', 'south', 'west'] as const) {
+          const neighborCoord = current.coord.goTo(direction);
+          const neighborKey = neighborCoord.toString();
+
+          if (
+            this.has(neighborCoord) &&
+            !visited.has(neighborKey) &&
+            this.get(neighborCoord).color === cell.color
+          ) {
+            visited.add(neighborKey);
+            queue.push(this.get(neighborCoord));
+          }
+        }
+      }
+
+      areas.push(new Area(areaCells, cell.color));
+    });
+
+    return areas;
   }
 
   get(coord: Coord): MazeCell {
@@ -88,7 +138,7 @@ export interface Borders {
   vertical: boolean[][];
 }
 
-export interface Area {
+export interface LegacyArea {
   cells: [number, number][];
   isBlack: boolean;
 }
@@ -96,7 +146,7 @@ export interface Area {
 export interface MazeResult {
   grid: Matrix;
   borders: Borders;
-  areas: Area[];
+  areas: LegacyArea[];
 }
 
 /**
@@ -399,16 +449,16 @@ export function generateMazeBorders(
 /**
  * Finds all areas delimited by borders
  */
-export function findAreas(grid: Matrix, borders: Borders): Area[] {
+export function findAreas(grid: Matrix, borders: Borders): LegacyArea[] {
   const rows = grid.length;
   const cols = grid[0].length;
   const visited: boolean[][] = Array(rows)
     .fill(null)
     .map(() => Array(cols).fill(false));
-  const areas: Area[] = [];
+  const areas: LegacyArea[] = [];
 
-  function floodFill(startRow: number, startCol: number): Area {
-    const area: Area = {
+  function floodFill(startRow: number, startCol: number): LegacyArea {
+    const area: LegacyArea = {
       cells: [],
       isBlack: grid[startRow][startCol] === 1,
     };
