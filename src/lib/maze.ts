@@ -5,6 +5,7 @@ import { Coord, type Direction } from './coord';
 export class MazeCell {
   readonly coord: Coord;
   readonly color: Color;
+  readonly edges!: Edges;
 
   constructor(coord: Coord, color: Color) {
     this.coord = coord;
@@ -22,6 +23,13 @@ export class Edge {
   }
 }
 
+export interface Edges {
+  north: Edge;
+  east: Edge;
+  south: Edge;
+  west: Edge;
+}
+
 export class Maze {
   readonly size: number;
   private readonly cells: MazeCell[][];
@@ -36,6 +44,15 @@ export class Maze {
         return new MazeCell(coord, color);
       }),
     );
+
+    this.forEach((cell) => {
+      (cell as { edges: Edges }).edges = {
+        north: this.createEdge(cell, 'north'),
+        east: this.createEdge(cell, 'east'),
+        south: this.createEdge(cell, 'south'),
+        west: this.createEdge(cell, 'west'),
+      };
+    });
   }
 
   get(coord: Coord): MazeCell {
