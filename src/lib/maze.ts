@@ -126,6 +126,17 @@ export class Maze {
     }
   }
 
+  map<T>(fn: (cell: MazeCell) => T): T[][] {
+    const result: T[][] = [];
+    for (let row = 0; row < this.size; row++) {
+      result[row] = [];
+      for (let col = 0; col < this.size; col++) {
+        result[row][col] = fn(this.get(new Coord(row, col)));
+      }
+    }
+    return result;
+  }
+
   createEdge(cell: MazeCell, direction: Direction): Edge {
     const neighborCoord = cell.coord.goTo(direction);
     const neighbor = this.has(neighborCoord) ? this.get(neighborCoord) : null;

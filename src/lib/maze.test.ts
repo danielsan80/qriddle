@@ -2,13 +2,11 @@ import { describe, it, expect } from 'vitest';
 import {
   Maze,
   MazeCell,
-  Area,
   generateMazeBorders,
   findAreas,
   generateMaze,
 } from './maze';
 import { type Grid } from './grid';
-import { Coord } from './coord';
 
 describe('generateMazeBorders', () => {
   it('generates no internal borders for uniform grid', () => {
@@ -133,17 +131,6 @@ describe('Maze', () => {
     return dirs.filter((_, i) => edges[i].hasWall).join('') || '-';
   }
 
-  function mapMaze(maze: Maze, fn: (cell: MazeCell) => string): string[][] {
-    const result: string[][] = [];
-    for (let row = 0; row < maze.size; row++) {
-      result[row] = [];
-      for (let col = 0; col < maze.size; col++) {
-        result[row][col] = fn(maze.get(new Coord(row, col)));
-      }
-    }
-    return result;
-  }
-
   describe('edges', () => {
     it('marks external edges for border cells', () => {
       const maze = new Maze([
@@ -152,7 +139,7 @@ describe('Maze', () => {
         [0, 0, 0],
       ]);
 
-      expect(mapMaze(maze, externalSummary)).toEqual([
+      expect(maze.map(externalSummary)).toEqual([
         ['NW', 'N', 'NE'],
         ['W', '-', 'E'],
         ['SW', 'S', 'ES'],
@@ -165,7 +152,7 @@ describe('Maze', () => {
         [0, 1],
       ]);
 
-      expect(mapMaze(maze, wallSummary)).toEqual([
+      expect(maze.map(wallSummary)).toEqual([
         ['NEW', 'NEW'],
         ['ESW', 'ESW'],
       ]);
@@ -177,7 +164,7 @@ describe('Maze', () => {
         [1, 1],
       ]);
 
-      expect(mapMaze(maze, wallSummary)).toEqual([
+      expect(maze.map(wallSummary)).toEqual([
         ['NW', 'NE'],
         ['SW', 'ES'],
       ]);
@@ -185,19 +172,16 @@ describe('Maze', () => {
   });
 
   describe('areas', () => {
-    function areaMap(maze: Maze): string[][] {
-      const cellToArea = new Map<string, number>();
+    function mapAreas(maze: Maze): string[][] {
+      const areaMap = new Map<string, string>();
       maze.areas.forEach((area, index) => {
+        const symbol = area.color === 'black' ? '◾' : '◻';
         area.cells.forEach((cell) => {
-          cellToArea.set(cell.coord.toString(), index);
+          areaMap.set(cell.coord.toString(), `${index}${symbol}`);
         });
       });
 
-      return mapMaze(maze, (cell) => {
-        const areaIndex = cellToArea.get(cell.coord.toString())!;
-        const symbol = cell.color === 'black' ? '◾' : '◻';
-        return `${areaIndex}${symbol}`;
-      });
+      return maze.map((cell) => areaMap.get(cell.coord.toString())!);
     }
 
     it('groups cells by color', () => {
@@ -206,7 +190,7 @@ describe('Maze', () => {
         [0, 1],
       ]);
 
-      expect(areaMap(maze)).toEqual([
+      expect(mapAreas(maze)).toEqual([
         ['0◻', '1◾'],
         ['0◻', '1◾'],
       ]);
@@ -219,7 +203,7 @@ describe('Maze', () => {
         [1, 0, 1],
       ]);
 
-      expect(areaMap(maze)).toEqual([
+      expect(mapAreas(maze)).toEqual([
         ['0◾', '1◻', '2◾'],
         ['1◻', '1◻', '1◻'],
         ['3◾', '1◻', '4◾'],
@@ -233,7 +217,7 @@ describe('Maze', () => {
         [1, 1, 1],
       ]);
 
-      expect(areaMap(maze)).toEqual([
+      expect(mapAreas(maze)).toEqual([
         ['0◾', '0◾', '0◾'],
         ['0◾', '0◾', '0◾'],
         ['0◾', '0◾', '0◾'],
