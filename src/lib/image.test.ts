@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Image } from './image';
+import { Coord } from './coord';
 
 describe('Image', () => {
   const image = new Image([
@@ -8,19 +9,19 @@ describe('Image', () => {
   ]);
 
   describe('size', () => {
-    it('returns the grid dimension', () => {
+    it('returns the image dimension', () => {
       expect(image.size).toBe(2);
     });
   });
 
   describe('get', () => {
     it('returns cell with coord and color', () => {
-      expect(image.get({ row: 0, col: 0 })).toEqual({
-        coord: { row: 0, col: 0 },
+      expect(image.get(new Coord(0, 0))).toEqual({
+        coord: new Coord(0, 0),
         color: 'white',
       });
-      expect(image.get({ row: 0, col: 1 })).toEqual({
-        coord: { row: 0, col: 1 },
+      expect(image.get(new Coord(0, 1))).toEqual({
+        coord: new Coord(0, 1),
         color: 'black',
       });
     });
@@ -28,14 +29,14 @@ describe('Image', () => {
 
   describe('has', () => {
     it('returns true for valid coords', () => {
-      expect(image.has({ row: 0, col: 0 })).toBe(true);
-      expect(image.has({ row: 1, col: 1 })).toBe(true);
+      expect(image.has(new Coord(0, 0))).toBe(true);
+      expect(image.has(new Coord(1, 1))).toBe(true);
     });
 
     it('returns false for out of bounds', () => {
-      expect(image.has({ row: -1, col: 0 })).toBe(false);
-      expect(image.has({ row: 0, col: 2 })).toBe(false);
-      expect(image.has({ row: 2, col: 0 })).toBe(false);
+      expect(image.has(new Coord(-1, 0))).toBe(false);
+      expect(image.has(new Coord(0, 2))).toBe(false);
+      expect(image.has(new Coord(2, 0))).toBe(false);
     });
   });
 
@@ -57,7 +58,7 @@ describe('Image', () => {
   });
 
   describe('x2', () => {
-    it('doubles the size of the grid', () => {
+    it('doubles the size of the image', () => {
       const result = image.x2();
 
       expect(result.asMatrix()).toEqual([

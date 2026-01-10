@@ -552,8 +552,8 @@ export function findAreas(grid: Matrix, borders: Borders): LegacyArea[] {
 export function generateMaze(matrix: Matrix, seed?: string): MazeResult {
   const random =
     seed !== undefined ? mulberry32(hashString(seed)) : Math.random;
-  const grid = new Image(matrix).x2();
-  const mazeMatrix = grid.asMatrix();
+  const image = new Image(matrix).x2();
+  const mazeMatrix = image.asMatrix();
   const borders = generateMazeBorders(mazeMatrix, random);
   const areas = findAreas(mazeMatrix, borders);
 
