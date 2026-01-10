@@ -72,6 +72,26 @@ describe('Puzzle', () => {
     expect(puzzle.hasWall(new Coord(1, 1), 'west')).toBe(true);
   });
 
+  it('generates deterministic maze with fixed seed', () => {
+    const maze = new Maze([
+      [1, 1, 1],
+      [1, 1, 1],
+      [1, 1, 1],
+    ]);
+
+    const puzzle = Puzzle.create(maze, 'fixed-seed');
+
+    expect(toBoxDrawing(puzzle)).toBe(
+      '┌─────┐\n' +
+      '│◾ ◾ ◾│\n' +
+      '├───╴ │\n' +
+      '│◾ ◾ ◾│\n' +
+      '│ ┌─╴ │\n' +
+      '│◾│◾ ◾│\n' +
+      '└─┴───┘',
+    );
+  });
+
   it('ensures all cells in an area are connected (spanning tree)', () => {
     const maze = new Maze([
       [1, 1, 1],
@@ -125,4 +145,88 @@ function wallMap(puzzle: Puzzle): string[][] {
     }
   }
   return result;
+}
+
+function toBoxDrawing(puzzle: Puzzle): string {
+  const size = puzzle.maze.size;
+  const grid: string[][] = [];
+
+  // Initialize grid (2*size + 1) x (2*size + 1)
+  for (let r = 0; r < size * 2 + 1; r++) {
+    grid[r] = [];
+    for (let c = 0; c < size * 2 + 1; c++) {
+      grid[r][c] = ' ';
+    }
+  }
+
+  // Fill cells with color indicator
+  for (let row = 0; row < size; row++) {
+    for (let col = 0; col < size; col++) {
+      const cell = puzzle.maze.get(new Coord(row, col));
+      grid[row * 2 + 1][col * 2 + 1] = cell.color === 'black' ? '◾' : '◻';
+    }
+  }
+
+  // Fill horizontal walls
+  for (let row = 0; row < size; row++) {
+    for (let col = 0; col < size; col++) {
+      const coord = new Coord(row, col);
+      if (puzzle.hasWall(coord, 'north')) {
+        grid[row * 2][col * 2 + 1] = '─';
+      }
+      if (puzzle.hasWall(coord, 'south')) {
+        grid[row * 2 + 2][col * 2 + 1] = '─';
+      }
+    }
+  }
+
+  // Fill vertical walls
+  for (let row = 0; row < size; row++) {
+    for (let col = 0; col < size; col++) {
+      const coord = new Coord(row, col);
+      if (puzzle.hasWall(coord, 'west')) {
+        grid[row * 2 + 1][col * 2] = '│';
+      }
+      if (puzzle.hasWall(coord, 'east')) {
+        grid[row * 2 + 1][col * 2 + 2] = '│';
+      }
+    }
+  }
+
+  // Fill corners with appropriate box-drawing characters
+  for (let r = 0; r < size * 2 + 1; r += 2) {
+    for (let c = 0; c < size * 2 + 1; c += 2) {
+      const up = r > 0 && grid[r - 1][c] === '│';
+      const down = r < size * 2 && grid[r + 1][c] === '│';
+      const left = c > 0 && grid[r][c - 1] === '─';
+      const right = c < size * 2 && grid[r][c + 1] === '─';
+
+      grid[r][c] = getCorner(up, down, left, right);
+    }
+  }
+
+  return grid.map((row) => row.join('')).join('\n');
+}
+
+function getCorner(up: boolean, down: boolean, left: boolean, right: boolean): string {
+  const key = `${up ? 'U' : ''}${down ? 'D' : ''}${left ? 'L' : ''}${right ? 'R' : ''}`;
+  const corners: Record<string, string> = {
+    '': ' ',
+    'U': '╵',
+    'D': '╷',
+    'L': '╴',
+    'R': '╶',
+    'UD': '│',
+    'LR': '─',
+    'DR': '┌',
+    'DL': '┐',
+    'UR': '└',
+    'UL': '┘',
+    'UDR': '├',
+    'UDL': '┤',
+    'ULR': '┴',
+    'DLR': '┬',
+    'UDLR': '┼',
+  };
+  return corners[key] || '+';
 }
