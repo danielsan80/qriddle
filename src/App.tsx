@@ -8,8 +8,10 @@ import {
   type PuzzleStats,
 } from './components/Workspace';
 import { renderQRToCanvas, getQRMatrix } from './lib/qr';
-import { generateMaze } from './lib/maze';
-import { renderPuzzle } from './lib/renderPuzzle';
+import { Maze } from './lib/maze';
+import { Puzzle } from './lib/puzzle';
+import { render } from './lib/renderPuzzle';
+import { Image } from './lib/image';
 import './App.css';
 
 function App() {
@@ -32,10 +34,13 @@ function App() {
     });
 
     // Genera e renderizza puzzle
-    const { grid, borders, areas } = generateMaze(matrix);
-    renderPuzzle(puzzleCanvasRef.current, grid, borders, areas);
+    const image = new Image(matrix).x2();
+    const maze = new Maze(image.asMatrix());
+    const puzzle = Puzzle.create(maze, 'seed');
+    render(puzzleCanvasRef.current, puzzle);
 
-    const blackAreas = areas.filter((a) => a.isBlack).length;
+    const areas = puzzle.maze.areas;
+    const blackAreas = areas.filter((a) => a.color === 'black').length;
     const totalCells = areas.reduce((sum, a) => sum + a.cells.length, 0);
     const minSize = Math.min(...areas.map((a) => a.cells.length));
     const maxSize = Math.max(...areas.map((a) => a.cells.length));

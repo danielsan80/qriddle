@@ -1,5 +1,5 @@
-import type { Matrix } from './image';
-import type { Borders, Area } from './maze';
+import { Puzzle } from './puzzle';
+import { Coord } from './coord';
 
 export interface PuzzleRenderOptions {
   cellSize?: number;
@@ -15,51 +15,61 @@ const defaultOptions: PuzzleRenderOptions = {
   dotColor: '#1a1a1a',
 };
 
-export function renderPuzzle(
+export function render(
   canvas: HTMLCanvasElement,
-  grid: Matrix,
-  borders: Borders,
-  areas: Area[],
+  puzzle: Puzzle,
   options: PuzzleRenderOptions = {},
 ): void {
   const opts = { ...defaultOptions, ...options };
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  const rows = grid.length;
-  const cols = grid[0].length;
+  const size = puzzle.maze.size;
   const cellSize = opts.cellSize!;
 
-  canvas.width = cols * cellSize;
-  canvas.height = rows * cellSize;
+  canvas.width = size * cellSize;
+  canvas.height = size * cellSize;
 
   // Background
   ctx.fillStyle = opts.backgroundColor!;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Borders
+  // Walls
   ctx.strokeStyle = opts.borderColor!;
   ctx.lineWidth = 2;
 
-  // Horizontal borders
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      if (borders.horizontal[row][col]) {
+  for (let row = 0; row < size; row++) {
+    for (let col = 0; col < size; col++) {
+      const coord = new Coord(row, col);
+      const x = col * cellSize;
+      const y = row * cellSize;
+
+      if (puzzle.hasWall(coord, 'north')) {
         ctx.beginPath();
-        ctx.moveTo(col * cellSize, (row + 1) * cellSize);
-        ctx.lineTo((col + 1) * cellSize, (row + 1) * cellSize);
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + cellSize, y);
         ctx.stroke();
       }
-    }
-  }
 
-  // Vertical borders
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      if (borders.vertical[row][col]) {
+      if (puzzle.hasWall(coord, 'west')) {
         ctx.beginPath();
-        ctx.moveTo((col + 1) * cellSize, row * cellSize);
-        ctx.lineTo((col + 1) * cellSize, (row + 1) * cellSize);
+        ctx.moveTo(x, y);
+        ctx.lineTo(x, y + cellSize);
+        ctx.stroke();
+      }
+
+      // Only draw south/east for last row/col to complete the border
+      if (row === size - 1 && puzzle.hasWall(coord, 'south')) {
+        ctx.beginPath();
+        ctx.moveTo(x, y + cellSize);
+        ctx.lineTo(x + cellSize, y + cellSize);
+        ctx.stroke();
+      }
+
+      if (col === size - 1 && puzzle.hasWall(coord, 'east')) {
+        ctx.beginPath();
+        ctx.moveTo(x + cellSize, y);
+        ctx.lineTo(x + cellSize, y + cellSize);
         ctx.stroke();
       }
     }
@@ -67,28 +77,30 @@ export function renderPuzzle(
 
   // Dot in black areas - positioned in the cell furthest from center
   ctx.fillStyle = opts.dotColor!;
-  for (const area of areas) {
-    if (area.isBlack && area.cells.length > 0) {
+  for (const area of puzzle.maze.areas) {
+    if (area.color === 'black' && area.cells.length > 0) {
+      const coords = area.cells.map((c) => c.coord);
+
       // Geometric center of the area
-      const sumRow = area.cells.reduce((sum, [r]) => sum + r, 0);
-      const sumCol = area.cells.reduce((sum, [, c]) => sum + c, 0);
-      const centerRow = sumRow / area.cells.length;
-      const centerCol = sumCol / area.cells.length;
+      const sumRow = coords.reduce((sum, c) => sum + c.row, 0);
+      const sumCol = coords.reduce((sum, c) => sum + c.col, 0);
+      const centerRow = sumRow / coords.length;
+      const centerCol = sumCol / coords.length;
 
       // Find the cell furthest from center
-      let furthestCell = area.cells[0];
+      let furthest = coords[0];
       let maxDist = 0;
-      for (const [r, c] of area.cells) {
-        const dist = Math.pow(r - centerRow, 2) + Math.pow(c - centerCol, 2);
+      for (const c of coords) {
+        const dist =
+          Math.pow(c.row - centerRow, 2) + Math.pow(c.col - centerCol, 2);
         if (dist > maxDist) {
           maxDist = dist;
-          furthestCell = [r, c];
+          furthest = c;
         }
       }
 
-      const [row, col] = furthestCell;
-      const x = (col + 0.5) * cellSize;
-      const y = (row + 0.5) * cellSize;
+      const x = (furthest.col + 0.5) * cellSize;
+      const y = (furthest.row + 0.5) * cellSize;
 
       ctx.beginPath();
       ctx.arc(x, y, cellSize * 0.3, 0, Math.PI * 2);
