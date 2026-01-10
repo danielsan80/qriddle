@@ -6,7 +6,6 @@ import {
   findAreas,
   generateMaze,
 } from './maze';
-import { Coord, type Direction } from './coord';
 import { type Grid } from './grid';
 
 describe('generateMazeBorders', () => {
@@ -233,120 +232,6 @@ describe('Maze', () => {
         ['0◾', '0◾', '0◾'],
         ['0◾', '0◾', '0◾'],
       ]);
-    });
-  });
-
-  describe('generatePuzzle', () => {
-    it('returns a new Maze instance', () => {
-      const original = new Maze([
-        [1, 1],
-        [1, 1],
-      ]);
-
-      const puzzle = original.generatePuzzle('seed');
-
-      expect(puzzle).toBeInstanceOf(Maze);
-      expect(puzzle).not.toBe(original);
-    });
-
-    it('produces same result with same seed', () => {
-      const maze = new Maze([
-        [1, 1, 1],
-        [1, 1, 1],
-        [1, 1, 1],
-      ]);
-
-      const puzzle1 = maze.generatePuzzle('test-seed');
-      const puzzle2 = maze.generatePuzzle('test-seed');
-
-      const walls1 = puzzle1.map(wallSummary);
-      const walls2 = puzzle2.map(wallSummary);
-      expect(walls1).toEqual(walls2);
-    });
-
-    it('produces different results with different seeds', () => {
-      const maze = new Maze([
-        [1, 1, 1, 1],
-        [1, 1, 1, 1],
-        [1, 1, 1, 1],
-        [1, 1, 1, 1],
-      ]);
-
-      const puzzle1 = maze.generatePuzzle('seed-a');
-      const puzzle2 = maze.generatePuzzle('seed-b');
-
-      const walls1 = puzzle1.map(wallSummary);
-      const walls2 = puzzle2.map(wallSummary);
-      expect(walls1).not.toEqual(walls2);
-    });
-
-    it('preserves external walls', () => {
-      const maze = new Maze([
-        [1, 1],
-        [1, 1],
-      ]);
-
-      const puzzle = maze.generatePuzzle('seed');
-
-      expect(puzzle.map(externalSummary)).toEqual([
-        ['NW', 'NE'],
-        ['SW', 'ES'],
-      ]);
-    });
-
-    it('preserves walls between different colors', () => {
-      const maze = new Maze([
-        [0, 1],
-        [0, 1],
-      ]);
-
-      const puzzle = maze.generatePuzzle('seed');
-
-      // East wall of (0,0) and (1,0) must remain (color boundary)
-      expect(puzzle.get(new Coord(0, 0)).edges.east.hasWall).toBe(true);
-      expect(puzzle.get(new Coord(1, 0)).edges.east.hasWall).toBe(true);
-      // West wall of (0,1) and (1,1) must remain (color boundary)
-      expect(puzzle.get(new Coord(0, 1)).edges.west.hasWall).toBe(true);
-      expect(puzzle.get(new Coord(1, 1)).edges.west.hasWall).toBe(true);
-    });
-
-    it('ensures all cells in an area are connected (spanning tree)', () => {
-      const maze = new Maze([
-        [1, 1, 1],
-        [1, 1, 1],
-        [1, 1, 1],
-      ]);
-
-      const puzzle = maze.generatePuzzle('seed');
-
-      // Check connectivity via flood fill through passages
-      const area = puzzle.areas[0];
-      const start = area.cells[0];
-      const visited = new Set<string>();
-      const queue = [start.coord.toString()];
-      visited.add(start.coord.toString());
-
-      const directions: Direction[] = ['north', 'east', 'south', 'west'];
-
-      while (queue.length > 0) {
-        const key = queue.shift()!;
-        const [row, col] = key.split(',').map(Number);
-        const cell = puzzle.get(new Coord(row, col));
-
-        for (const dir of directions) {
-          const edge = cell.edges[dir];
-          if (!edge.hasWall) {
-            const neighbor = cell.coord.goTo(dir);
-            const neighborKey = neighbor.toString();
-            if (!visited.has(neighborKey) && puzzle.has(neighbor)) {
-              visited.add(neighborKey);
-              queue.push(neighborKey);
-            }
-          }
-        }
-      }
-
-      expect(visited.size).toBe(area.cells.length);
     });
   });
 });

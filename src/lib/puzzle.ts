@@ -1,98 +1,124 @@
-import type { Matrix } from './grid';
-import type { Borders, Area } from './maze';
+import { type RandomFn, mulberry32, hashString } from './random';
+import { Maze, type MazeCell, Area } from './maze';
+import { Coord, type Direction, Directions } from './coord';
 
-export interface PuzzleRenderOptions {
-  cellSize?: number;
-  backgroundColor?: string;
-  borderColor?: string;
-  dotColor?: string;
+export class Puzzle {
+  readonly maze: Maze;
+  private readonly passages: Set<string>;
+
+  private constructor(maze: Maze, passages: Set<string>) {
+    this.maze = maze;
+    this.passages = passages;
+  }
+
+  static create(maze: Maze, seed: string): Puzzle {
+    const random = mulberry32(hashString(seed));
+    const passages = computePassages(maze, random);
+    return new Puzzle(maze, passages);
+  }
+
+  hasWall(coord: Coord, direction: Direction): boolean {
+    const cell = this.maze.get(coord);
+    const edge = cell.edges[direction];
+
+    // External edges and color boundaries always have walls
+    if (edge.isExternal || edge.hasWall) {
+      return true;
+    }
+
+    // Internal same-color edge: check passages
+    const neighborCoord = coord.goTo(direction);
+    const key = passageKey(coord, neighborCoord);
+    return !this.passages.has(key);
+  }
 }
 
-const defaultOptions: PuzzleRenderOptions = {
-  cellSize: 6,
-  backgroundColor: '#f8f5ed',
-  borderColor: '#c0c0c0',
-  dotColor: '#1a1a1a',
-};
+function computePassages(maze: Maze, random: RandomFn): Set<string> {
+  const passages = new Set<string>();
 
-export function renderPuzzle(
-  canvas: HTMLCanvasElement,
-  grid: Matrix,
-  borders: Borders,
-  areas: Area[],
-  options: PuzzleRenderOptions = {},
+  for (const area of maze.areas) {
+    if (area.cells.length <= 1) continue;
+    generateAreaPassages(maze, area, random, passages);
+  }
+
+  return passages;
+}
+
+function generateAreaPassages(
+  maze: Maze,
+  area: Area,
+  random: RandomFn,
+  passages: Set<string>,
 ): void {
-  const opts = { ...defaultOptions, ...options };
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
+  const cellSet = new Set(area.cells.map((c) => c.coord.toString()));
+  const visited = new Set<string>();
 
-  const rows = grid.length;
-  const cols = grid[0].length;
-  const cellSize = opts.cellSize!;
+  const startIndex = Math.floor(random() * area.cells.length);
+  const start = area.cells[startIndex];
 
-  canvas.width = cols * cellSize;
-  canvas.height = rows * cellSize;
+  const stack: { cell: MazeCell; lastDir: Direction | null }[] = [
+    { cell: start, lastDir: null },
+  ];
+  visited.add(start.coord.toString());
 
-  // Background
-  ctx.fillStyle = opts.backgroundColor!;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const biasStraight = 0.7;
 
-  // Borders
-  ctx.strokeStyle = opts.borderColor!;
-  ctx.lineWidth = 2;
+  while (stack.length > 0) {
+    const { cell, lastDir } = stack[stack.length - 1];
 
-  // Horizontal borders
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      if (borders.horizontal[row][col]) {
-        ctx.beginPath();
-        ctx.moveTo(col * cellSize, (row + 1) * cellSize);
-        ctx.lineTo((col + 1) * cellSize, (row + 1) * cellSize);
-        ctx.stroke();
-      }
+    const unvisitedDirs = Directions.filter((dir) => {
+      const neighborCoord = cell.coord.goTo(dir);
+      return (
+        cellSet.has(neighborCoord.toString()) &&
+        !visited.has(neighborCoord.toString())
+      );
+    });
+
+    if (unvisitedDirs.length === 0) {
+      stack.pop();
+      continue;
     }
+
+    const dir = chooseDirection(unvisitedDirs, lastDir, biasStraight, random);
+    const nextCoord = cell.coord.goTo(dir);
+    const next = maze.get(nextCoord);
+
+    passages.add(passageKey(cell.coord, nextCoord));
+    visited.add(nextCoord.toString());
+    stack.push({ cell: next, lastDir: dir });
+  }
+}
+
+function chooseDirection(
+  candidates: Direction[],
+  lastDir: Direction | null,
+  biasStraight: number,
+  random: RandomFn,
+): Direction {
+  if (candidates.length === 1) return candidates[0];
+
+  const weights: number[] = candidates.map((dir) => {
+    if (dir === lastDir) return biasStraight;
+    const remaining =
+      lastDir !== null && candidates.includes(lastDir)
+        ? candidates.length - 1
+        : candidates.length;
+    return (1 - biasStraight) / remaining;
+  });
+
+  const total = weights.reduce((a, b) => a + b, 0);
+  let r = random() * total;
+
+  for (let i = 0; i < candidates.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return candidates[i];
   }
 
-  // Vertical borders
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      if (borders.vertical[row][col]) {
-        ctx.beginPath();
-        ctx.moveTo((col + 1) * cellSize, row * cellSize);
-        ctx.lineTo((col + 1) * cellSize, (row + 1) * cellSize);
-        ctx.stroke();
-      }
-    }
-  }
+  return candidates[candidates.length - 1];
+}
 
-  // Dot in black areas - positioned in the cell furthest from center
-  ctx.fillStyle = opts.dotColor!;
-  for (const area of areas) {
-    if (area.isBlack && area.cells.length > 0) {
-      // Geometric center of the area
-      const sumRow = area.cells.reduce((sum, [r]) => sum + r, 0);
-      const sumCol = area.cells.reduce((sum, [, c]) => sum + c, 0);
-      const centerRow = sumRow / area.cells.length;
-      const centerCol = sumCol / area.cells.length;
-
-      // Find the cell furthest from center
-      let furthestCell = area.cells[0];
-      let maxDist = 0;
-      for (const [r, c] of area.cells) {
-        const dist = Math.pow(r - centerRow, 2) + Math.pow(c - centerCol, 2);
-        if (dist > maxDist) {
-          maxDist = dist;
-          furthestCell = [r, c];
-        }
-      }
-
-      const [row, col] = furthestCell;
-      const x = (col + 0.5) * cellSize;
-      const y = (row + 0.5) * cellSize;
-
-      ctx.beginPath();
-      ctx.arc(x, y, cellSize * 0.3, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
+function passageKey(a: Coord, b: Coord): string {
+  const [first, second] =
+    a.row < b.row || (a.row === b.row && a.col < b.col) ? [a, b] : [b, a];
+  return `${first.toString()}-${second.toString()}`;
 }

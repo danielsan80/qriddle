@@ -9,7 +9,7 @@ import {
 } from './components/Workspace';
 import { renderQRToCanvas, getQRMatrix } from './lib/qr';
 import { generateMaze } from './lib/maze';
-import { renderPuzzle } from './lib/puzzle';
+import { renderPuzzle } from './lib/renderPuzzle';
 import './App.css';
 
 function App() {
