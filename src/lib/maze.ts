@@ -1,6 +1,6 @@
 import { type RandomFn, mulberry32, hashString } from './random';
 import { Grid, type Matrix, type Color } from './grid';
-import { Coord, type Direction } from './coord';
+import { Coord, type Direction, Directions } from './coord';
 
 export class MazeCell {
   readonly coord: Coord;
@@ -17,9 +17,19 @@ export class Edge {
   readonly isExternal: boolean;
   readonly hasWall: boolean;
 
-  constructor(cell: MazeCell, neighbor: MazeCell | null) {
-    this.isExternal = neighbor === null;
-    this.hasWall = neighbor === null || cell.color !== neighbor.color;
+  private constructor(isExternal: boolean, hasWall: boolean) {
+    this.isExternal = isExternal;
+    this.hasWall = hasWall;
+  }
+
+  static create(cell: MazeCell, neighbor: MazeCell | null): Edge {
+    const isExternal = neighbor === null;
+    const hasWall = neighbor === null || cell.color !== neighbor.color;
+    return new Edge(isExternal, hasWall);
+  }
+
+  withWall(hasWall: boolean): Edge {
+    return new Edge(this.isExternal, hasWall);
   }
 }
 
@@ -140,7 +150,160 @@ export class Maze {
   createEdge(cell: MazeCell, direction: Direction): Edge {
     const neighborCoord = cell.coord.goTo(direction);
     const neighbor = this.has(neighborCoord) ? this.get(neighborCoord) : null;
-    return new Edge(cell, neighbor);
+    return Edge.create(cell, neighbor);
+  }
+
+  generatePuzzle(seed: string): Maze {
+    const random = mulberry32(hashString(seed));
+    const passages = this.computePassages(random);
+    return this.withPassages(passages);
+  }
+
+  private computePassages(random: RandomFn): Set<string> {
+    const passages = new Set<string>();
+
+    for (const area of this.areas) {
+      if (area.cells.length <= 1) continue;
+      this.generateAreaPassages(area, random, passages);
+    }
+
+    return passages;
+  }
+
+  private generateAreaPassages(
+    area: Area,
+    random: RandomFn,
+    passages: Set<string>,
+  ): void {
+    const cellSet = new Set(area.cells.map((c) => c.coord.toString()));
+    const visited = new Set<string>();
+
+    const startIndex = Math.floor(random() * area.cells.length);
+    const start = area.cells[startIndex];
+
+    const stack: { cell: MazeCell; lastDir: Direction | null }[] = [
+      { cell: start, lastDir: null },
+    ];
+    visited.add(start.coord.toString());
+
+    const biasStraight = 0.7;
+
+    while (stack.length > 0) {
+      const { cell, lastDir } = stack[stack.length - 1];
+
+      const unvisitedDirs = Directions.filter((dir) => {
+        const neighborCoord = cell.coord.goTo(dir);
+        return (
+          cellSet.has(neighborCoord.toString()) &&
+          !visited.has(neighborCoord.toString())
+        );
+      });
+
+      if (unvisitedDirs.length === 0) {
+        stack.pop();
+        continue;
+      }
+
+      const dir = this.chooseDirection(
+        unvisitedDirs,
+        lastDir,
+        biasStraight,
+        random,
+      );
+      const nextCoord = cell.coord.goTo(dir);
+      const next = this.get(nextCoord);
+
+      passages.add(this.passageKey(cell.coord, nextCoord));
+      visited.add(nextCoord.toString());
+      stack.push({ cell: next, lastDir: dir });
+    }
+  }
+
+  private chooseDirection(
+    candidates: Direction[],
+    lastDir: Direction | null,
+    biasStraight: number,
+    random: RandomFn,
+  ): Direction {
+    if (candidates.length === 1) return candidates[0];
+
+    const weights: number[] = candidates.map((dir) => {
+      if (dir === lastDir) return biasStraight;
+      const remaining =
+        lastDir !== null && candidates.includes(lastDir)
+          ? candidates.length - 1
+          : candidates.length;
+      return (1 - biasStraight) / remaining;
+    });
+
+    const total = weights.reduce((a, b) => a + b, 0);
+    let r = random() * total;
+
+    for (let i = 0; i < candidates.length; i++) {
+      r -= weights[i];
+      if (r <= 0) return candidates[i];
+    }
+
+    return candidates[candidates.length - 1];
+  }
+
+  private passageKey(a: Coord, b: Coord): string {
+    const [first, second] =
+      a.row < b.row || (a.row === b.row && a.col < b.col) ? [a, b] : [b, a];
+    return `${first.toString()}-${second.toString()}`;
+  }
+
+  private withPassages(passages: Set<string>): Maze {
+    const newCells: MazeCell[][] = [];
+
+    for (let row = 0; row < this.size; row++) {
+      newCells[row] = [];
+      for (let col = 0; col < this.size; col++) {
+        const oldCell = this.cells[row][col];
+        const newCell = new MazeCell(oldCell.coord, oldCell.color);
+
+        const newEdges: Edges = {
+          north: this.computeEdge(oldCell, 'north', passages),
+          east: this.computeEdge(oldCell, 'east', passages),
+          south: this.computeEdge(oldCell, 'south', passages),
+          west: this.computeEdge(oldCell, 'west', passages),
+        };
+
+        (newCell as { edges: Edges }).edges = newEdges;
+        newCells[row][col] = newCell;
+      }
+    }
+
+    return Maze.fromCells(newCells);
+  }
+
+  private computeEdge(
+    cell: MazeCell,
+    dir: Direction,
+    passages: Set<string>,
+  ): Edge {
+    const neighborCoord = cell.coord.goTo(dir);
+
+    if (!this.has(neighborCoord)) {
+      return cell.edges[dir];
+    }
+
+    const neighbor = this.get(neighborCoord);
+    if (cell.color !== neighbor.color) {
+      return cell.edges[dir];
+    }
+
+    const key = this.passageKey(cell.coord, neighborCoord);
+    const hasWall = !passages.has(key);
+    return cell.edges[dir].withWall(hasWall);
+  }
+
+  private static fromCells(cells: MazeCell[][]): Maze {
+    const maze = Object.create(Maze.prototype) as Maze;
+    (maze as { size: number }).size = cells.length;
+    (maze as { cells: MazeCell[][] }).cells = cells;
+    (maze as { areas: Area[] }).areas = maze.findAreas();
+    return maze;
   }
 }
 
