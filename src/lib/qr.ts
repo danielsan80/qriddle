@@ -1,5 +1,5 @@
 import QRCode from 'qrcode';
-import type { Matrix } from './grid';
+import type { Matrix } from './image';
 
 export interface QROptions {
   width?: number;

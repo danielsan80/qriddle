@@ -6,11 +6,11 @@ import {
   findAreas,
   generateMaze,
 } from './maze';
-import { type Grid } from './grid';
+import { type Matrix } from './image';
 
 describe('generateMazeBorders', () => {
   it('generates no internal borders for uniform grid', () => {
-    const grid: Grid = [
+    const grid: Matrix = [
       [0, 0],
       [0, 0],
     ];
@@ -24,7 +24,7 @@ describe('generateMazeBorders', () => {
   });
 
   it('generates borders between different color cells', () => {
-    const grid: Grid = [
+    const grid: Matrix = [
       [0, 1],
       [0, 1],
     ];
@@ -40,7 +40,7 @@ describe('generateMazeBorders', () => {
 
 describe('findAreas', () => {
   it('finds areas divided from borders', () => {
-    const grid: Grid = [
+    const grid: Matrix = [
       [0, 1],
       [0, 1],
     ];
@@ -69,7 +69,7 @@ describe('findAreas', () => {
 
 describe('generateMaze', () => {
   it('generates a complete maze from a QR code', () => {
-    const qrMatrix: Grid = [
+    const qrMatrix: Matrix = [
       [1, 1, 0],
       [1, 0, 0],
       [0, 0, 1],
@@ -84,7 +84,7 @@ describe('generateMaze', () => {
   });
 
   it('keeps the connection between the areas', () => {
-    const qrMatrix: Grid = [
+    const qrMatrix: Matrix = [
       [0, 0],
       [0, 0],
     ];
@@ -99,7 +99,7 @@ describe('generateMaze', () => {
   });
 
   it('generates the same maze with the same seed, and different ones with different ones', () => {
-    const qrMatrix: Grid = [
+    const qrMatrix: Matrix = [
       [0, 0, 0, 0],
       [0, 1, 1, 0],
       [0, 0, 1, 0],

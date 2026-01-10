@@ -16,6 +16,13 @@ File sorgente da cui stiamo portando il codice in React:
 
 ## Domain Model (WIP)
 
+### Refactoring pianificato
+
+Rimappatura concetti (codice attuale → target):
+
+- `Grid` + `Maze` → `Image` — l'immagine bicolore con proprietà derivate (aree, adiacenze). Maze era fuorviante: non è un labirinto, è solo l'input con info precalcolate.
+- `Puzzle` → `Puzzle` — il puzzle generato (paint-by-areas). Nome generico ma corretto.
+
 ### Value Objects
 
 **Coord** — posizione (row, col)

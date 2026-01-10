@@ -1,5 +1,5 @@
 import { type RandomFn, mulberry32, hashString } from './random';
-import { Grid, type Matrix, type Color } from './grid';
+import { Image, type Matrix, type Color } from './image';
 import { Coord, type Direction } from './coord';
 
 export class MazeCell {
@@ -552,7 +552,7 @@ export function findAreas(grid: Matrix, borders: Borders): LegacyArea[] {
 export function generateMaze(matrix: Matrix, seed?: string): MazeResult {
   const random =
     seed !== undefined ? mulberry32(hashString(seed)) : Math.random;
-  const grid = new Grid(matrix).x2();
+  const grid = new Image(matrix).x2();
   const mazeMatrix = grid.asMatrix();
   const borders = generateMazeBorders(mazeMatrix, random);
   const areas = findAreas(mazeMatrix, borders);

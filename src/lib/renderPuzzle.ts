@@ -1,4 +1,4 @@
-import type { Matrix } from './grid';
+import type { Matrix } from './image';
 import type { Borders, Area } from './maze';
 
 export interface PuzzleRenderOptions {

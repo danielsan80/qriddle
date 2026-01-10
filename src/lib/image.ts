@@ -8,7 +8,7 @@ export interface Cell {
   readonly color: Color;
 }
 
-export class Grid {
+export class Image {
   readonly size: number;
   private readonly cells: Cell[][];
 
@@ -49,7 +49,7 @@ export class Grid {
     );
   }
 
-  x2(): Grid {
+  x2(): Image {
     const doubledSize = this.size * 2;
     const matrix: Matrix = [];
 
@@ -63,6 +63,6 @@ export class Grid {
       }
     }
 
-    return new Grid(matrix);
+    return new Image(matrix);
   }
 }
