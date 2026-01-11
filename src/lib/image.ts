@@ -13,9 +13,14 @@ export class Size {
   }
 }
 
-export interface Pixel {
+export class Pixel {
   readonly coord: Coord;
   readonly color: Color;
+
+  constructor(coord: Coord, color: Color) {
+    this.coord = coord;
+    this.color = color;
+  }
 }
 
 export class Image {
@@ -25,10 +30,11 @@ export class Image {
   constructor(matrix: number[][]) {
     this.size = new Size(matrix.length, matrix[0]?.length ?? 0);
     this.pixels = matrix.map((row, i) =>
-      row.map((value, j) => ({
-        coord: new Coord(i, j),
-        color: value === 1 ? 'black' : ('white' as Color),
-      })),
+      row.map((value, j) => {
+        const coord = new Coord(i, j);
+        const color: Color = value === 1 ? 'black' : 'white';
+        return new Pixel(coord, color);
+      }),
     );
   }
 
