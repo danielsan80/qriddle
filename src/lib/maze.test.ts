@@ -30,7 +30,7 @@ describe('Maze', () => {
         ]),
       );
 
-      expect(maze.map(externalSummary(maze))).toEqual([
+      expect(maze.image.map(externalSummary(maze))).toEqual([
         ['NW', 'N', 'NE'],
         ['W', '-', 'E'],
         ['SW', 'S', 'ES'],
@@ -45,7 +45,7 @@ describe('Maze', () => {
         ]),
       );
 
-      expect(maze.map(wallSummary(maze))).toEqual([
+      expect(maze.image.map(wallSummary(maze))).toEqual([
         ['NEW', 'NEW'],
         ['ESW', 'ESW'],
       ]);
@@ -59,7 +59,7 @@ describe('Maze', () => {
         ]),
       );
 
-      expect(maze.map(wallSummary(maze))).toEqual([
+      expect(maze.image.map(wallSummary(maze))).toEqual([
         ['NW', 'NE'],
         ['SW', 'ES'],
       ]);
@@ -76,7 +76,7 @@ describe('Maze', () => {
         });
       });
 
-      return maze.map((pixel) => areaMap.get(pixel.coord.toString())!);
+      return maze.image.map((pixel) => areaMap.get(pixel.coord.toString())!);
     }
 
     it('groups cells by color', () => {

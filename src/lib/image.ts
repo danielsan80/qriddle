@@ -59,6 +59,10 @@ export class Image {
     }
   }
 
+  map<T>(fn: (pixel: Pixel) => T): T[][] {
+    return this.pixels.map((row) => row.map(fn));
+  }
+
   asMatrix(): Matrix {
     return this.pixels.map((row) =>
       row.map((pixel) => (pixel.color === 'black' ? 1 : 0)),

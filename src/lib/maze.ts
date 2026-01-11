@@ -169,15 +169,4 @@ export class Maze {
   forEach(callback: (pixel: Pixel) => void): void {
     this.image.forEach(callback);
   }
-
-  map<T>(fn: (pixel: Pixel) => T): T[][] {
-    const result: T[][] = [];
-    for (let row = 0; row < this.image.size.rows; row++) {
-      result[row] = [];
-      for (let col = 0; col < this.image.size.cols; col++) {
-        result[row][col] = fn(this.get(new Coord(row, col)));
-      }
-    }
-    return result;
-  }
 }
