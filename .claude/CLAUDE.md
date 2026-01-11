@@ -8,6 +8,7 @@ Regole sintetiche: scrivi il minimo necessario per essere compresi.
 - Commenti nel codice in inglese.
 - Feedback onesto: evidenzia problemi e alternative migliori senza giri di parole.
 - Test first: scrivi i test prima dell'implementazione.
+- Dopo modifiche, esegui `npm run check` (lint + format + test).
 
 ## Riferimento temporaneo
 

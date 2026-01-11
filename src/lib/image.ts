@@ -3,18 +3,18 @@ import { Coord } from './coord';
 export type Color = 'black' | 'white';
 export type Matrix = number[][];
 
-export interface Cell {
+export interface Pixel {
   readonly coord: Coord;
   readonly color: Color;
 }
 
 export class Image {
   readonly size: number;
-  private readonly cells: Cell[][];
+  private readonly pixels: Pixel[][];
 
   constructor(matrix: number[][]) {
     this.size = matrix.length;
-    this.cells = matrix.map((row, i) =>
+    this.pixels = matrix.map((row, i) =>
       row.map((value, j) => ({
         coord: new Coord(i, j),
         color: value === 1 ? 'black' : ('white' as Color),
@@ -22,8 +22,8 @@ export class Image {
     );
   }
 
-  get(coord: Coord): Cell {
-    return this.cells[coord.row][coord.col];
+  get(coord: Coord): Pixel {
+    return this.pixels[coord.row][coord.col];
   }
 
   has(coord: Coord): boolean {
@@ -35,17 +35,17 @@ export class Image {
     );
   }
 
-  forEach(callback: (cell: Cell) => void): void {
-    for (const row of this.cells) {
-      for (const cell of row) {
-        callback(cell);
+  forEach(callback: (pixel: Pixel) => void): void {
+    for (const row of this.pixels) {
+      for (const pixel of row) {
+        callback(pixel);
       }
     }
   }
 
   asMatrix(): Matrix {
-    return this.cells.map((row) =>
-      row.map((cell) => (cell.color === 'black' ? 1 : 0)),
+    return this.pixels.map((row) =>
+      row.map((pixel) => (pixel.color === 'black' ? 1 : 0)),
     );
   }
 
@@ -56,10 +56,10 @@ export class Image {
     for (let row = 0; row < doubledSize; row++) {
       matrix[row] = [];
       for (let col = 0; col < doubledSize; col++) {
-        const cell = this.get(
+        const pixel = this.get(
           new Coord(Math.floor(row / 2), Math.floor(col / 2)),
         );
-        matrix[row][col] = cell.color === 'black' ? 1 : 0;
+        matrix[row][col] = pixel.color === 'black' ? 1 : 0;
       }
     }
 
