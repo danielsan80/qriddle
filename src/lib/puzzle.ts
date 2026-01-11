@@ -1,5 +1,5 @@
 import { type RandomFn, mulberry32, hashString } from './random';
-import { Maze, type MazeCell, Area } from './maze';
+import { Maze, type Cell, Area } from './maze';
 import { Coord, type Direction, Directions } from './coord';
 
 export class Puzzle {
@@ -56,7 +56,7 @@ function generateAreaPassages(
   const startIndex = Math.floor(random() * area.cells.length);
   const start = area.cells[startIndex];
 
-  const stack: { cell: MazeCell; lastDir: Direction | null }[] = [
+  const stack: { cell: Cell; lastDir: Direction | null }[] = [
     { cell: start, lastDir: null },
   ];
   visited.add(start.coord.toString());

@@ -39,21 +39,21 @@ Rimappatura concetti (codice attuale → target):
 
 ### Input Context
 
-**Cell** (VO)
+**Pixel** (VO)
 
 - `coord: Coord`
 - `color: Color`
 
-**Grid** — contenitore di Cell
+**Image** — contenitore di Pixel
 
 - `size: number` — dimensione (griglia quadrata)
-- `get(coord: Coord): Cell`
+- `get(coord: Coord): Pixel`
 - `has(coord: Coord): boolean` — verifica bounds
-- `forEach(callback: (cell: Cell) => void)`
+- `forEach(callback: (pixel: Pixel) => void)`
 
 ### Output Context (Maze)
 
-**MazeCell** (Entity)
+**Cell** (Entity)
 
 - `coord: Coord`
 - `color: Color`
@@ -62,12 +62,12 @@ Rimappatura concetti (codice attuale → target):
 - `passages: Coord[]` — celle connesse (senza muro)
 - `marked: boolean` — puntino di partenza per il flood fill (solo celle nere)
 
-**Maze** — contenitore di MazeCell
+**Maze** — contenitore di Cell
 
 - `size: number`
-- `get(coord: Coord): MazeCell`
+- `get(coord: Coord): Cell`
 - `has(coord: Coord): boolean`
-- `forEach(callback: (cell: MazeCell) => void)`
+- `forEach(callback: (cell: Cell) => void)`
 
 ## Problema
 

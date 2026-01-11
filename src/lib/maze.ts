@@ -1,7 +1,7 @@
 import { type Color } from './image';
 import { Coord, type Direction } from './coord';
 
-export class MazeCell {
+export class Cell {
   readonly coord: Coord;
   readonly color: Color;
   readonly edges!: Edges;
@@ -21,7 +21,7 @@ export class Edge {
     this.hasWall = hasWall;
   }
 
-  static create(cell: MazeCell, neighbor: MazeCell | null): Edge {
+  static create(cell: Cell, neighbor: Cell | null): Edge {
     const isExternal = neighbor === null;
     const hasWall = neighbor === null || cell.color !== neighbor.color;
     return new Edge(isExternal, hasWall);
@@ -40,10 +40,10 @@ export interface Edges {
 }
 
 export class Area {
-  readonly cells: MazeCell[];
+  readonly cells: Cell[];
   readonly color: Color;
 
-  constructor(cells: MazeCell[], color: Color) {
+  constructor(cells: Cell[], color: Color) {
     this.cells = cells;
     this.color = color;
   }
@@ -52,7 +52,7 @@ export class Area {
 export class Maze {
   readonly size: number;
   readonly areas: Area[];
-  private readonly cells: MazeCell[][];
+  private readonly cells: Cell[][];
 
   constructor(matrix: number[][]) {
     this.size = matrix.length;
@@ -61,7 +61,7 @@ export class Maze {
       row.map((value, j) => {
         const coord = new Coord(i, j);
         const color: Color = value === 1 ? 'black' : 'white';
-        return new MazeCell(coord, color);
+        return new Cell(coord, color);
       }),
     );
 
@@ -85,8 +85,8 @@ export class Maze {
       const key = cell.coord.toString();
       if (visited.has(key)) return;
 
-      const areaCells: MazeCell[] = [];
-      const queue: MazeCell[] = [cell];
+      const areaCells: Cell[] = [];
+      const queue: Cell[] = [cell];
       visited.add(key);
 
       while (queue.length > 0) {
@@ -114,7 +114,7 @@ export class Maze {
     return areas;
   }
 
-  get(coord: Coord): MazeCell {
+  get(coord: Coord): Cell {
     return this.cells[coord.row][coord.col];
   }
 
@@ -127,7 +127,7 @@ export class Maze {
     );
   }
 
-  forEach(callback: (cell: MazeCell) => void): void {
+  forEach(callback: (cell: Cell) => void): void {
     for (const row of this.cells) {
       for (const cell of row) {
         callback(cell);
@@ -135,7 +135,7 @@ export class Maze {
     }
   }
 
-  map<T>(fn: (cell: MazeCell) => T): T[][] {
+  map<T>(fn: (cell: Cell) => T): T[][] {
     const result: T[][] = [];
     for (let row = 0; row < this.size; row++) {
       result[row] = [];
@@ -146,7 +146,7 @@ export class Maze {
     return result;
   }
 
-  createEdge(cell: MazeCell, direction: Direction): Edge {
+  createEdge(cell: Cell, direction: Direction): Edge {
     const neighborCoord = cell.coord.goTo(direction);
     const neighbor = this.has(neighborCoord) ? this.get(neighborCoord) : null;
     return Edge.create(cell, neighbor);

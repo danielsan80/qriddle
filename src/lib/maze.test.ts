@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { Maze, MazeCell } from './maze';
+import { Maze, Cell } from './maze';
 
 describe('Maze', () => {
-  function externalSummary(cell: MazeCell): string {
+  function externalSummary(cell: Cell): string {
     const dirs = ['N', 'E', 'S', 'W'] as const;
     const edges = [
       cell.edges.north,
@@ -13,7 +13,7 @@ describe('Maze', () => {
     return dirs.filter((_, i) => edges[i].isExternal).join('') || '-';
   }
 
-  function wallSummary(cell: MazeCell): string {
+  function wallSummary(cell: Cell): string {
     const dirs = ['N', 'E', 'S', 'W'] as const;
     const edges = [
       cell.edges.north,
