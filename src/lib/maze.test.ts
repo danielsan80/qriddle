@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { Maze, Cell } from './maze';
+import { Maze, Cell, EdgeMap } from './maze';
+import { Coord } from './coord';
 
 describe('Maze', () => {
   function externalSummary(cell: Cell): string {
@@ -116,5 +117,46 @@ describe('Maze', () => {
         ['0◾', '0◾', '0◾'],
       ]);
     });
+  });
+});
+
+describe('EdgeMap', () => {
+  it('stores and retrieves values for adjacent coords', () => {
+    const map = new EdgeMap<string>();
+    const a = new Coord(0, 0);
+    const b = new Coord(0, 1);
+
+    map.set(a, b, 'test');
+
+    expect(map.get(a, b)).toBe('test');
+    expect(map.has(a, b)).toBe(true);
+  });
+
+  it('returns same value regardless of coord order', () => {
+    const map = new EdgeMap<string>();
+    const a = new Coord(0, 0);
+    const b = new Coord(0, 1);
+
+    map.set(a, b, 'test');
+
+    expect(map.get(b, a)).toBe('test');
+    expect(map.has(b, a)).toBe(true);
+  });
+
+  it('returns undefined for missing edges', () => {
+    const map = new EdgeMap<string>();
+    const a = new Coord(0, 0);
+    const b = new Coord(0, 1);
+
+    expect(map.get(a, b)).toBeUndefined();
+    expect(map.has(a, b)).toBe(false);
+  });
+
+  it('asserts on non-adjacent coords', () => {
+    const map = new EdgeMap<string>();
+    const a = new Coord(0, 0);
+    const b = new Coord(2, 2);
+
+    expect(() => map.set(a, b, 'test')).toThrow();
   });
 });

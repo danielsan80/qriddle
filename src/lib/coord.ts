@@ -46,4 +46,8 @@ export class Coord {
   goTo(direction: Direction): Coord {
     return this[direction]();
   }
+
+  distance(other: Coord): number {
+    return Math.abs(this.row - other.row) + Math.abs(this.col - other.col);
+  }
 }

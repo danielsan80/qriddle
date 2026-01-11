@@ -32,6 +32,31 @@ export class Edge {
   }
 }
 
+export class EdgeMap<T> {
+  private map = new Map<string, T>();
+
+  private key(a: Coord, b: Coord): string {
+    const [first, second] =
+      a.row < b.row || (a.row === b.row && a.col < b.col) ? [a, b] : [b, a];
+    return `${first}-${second}`;
+  }
+
+  set(a: Coord, b: Coord, value: T): void {
+    if (a.distance(b) !== 1) {
+      throw new Error('EdgeMap: coordinates must be adjacent');
+    }
+    this.map.set(this.key(a, b), value);
+  }
+
+  get(a: Coord, b: Coord): T | undefined {
+    return this.map.get(this.key(a, b));
+  }
+
+  has(a: Coord, b: Coord): boolean {
+    return this.map.has(this.key(a, b));
+  }
+}
+
 export interface Edges {
   north: Edge;
   east: Edge;
