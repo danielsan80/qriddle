@@ -35,15 +35,15 @@ function App() {
 
     // Genera e renderizza puzzle
     const image = new Image(matrix).x2();
-    const maze = new Maze(image.asMatrix());
+    const maze = new Maze(image);
     const puzzle = Puzzle.create(maze, 'seed');
     render(puzzleCanvasRef.current, puzzle);
 
     const areas = puzzle.maze.areas;
     const blackAreas = areas.filter((a) => a.color === 'black').length;
-    const totalCells = areas.reduce((sum, a) => sum + a.cells.length, 0);
-    const minSize = Math.min(...areas.map((a) => a.cells.length));
-    const maxSize = Math.max(...areas.map((a) => a.cells.length));
+    const totalCells = areas.reduce((sum, a) => sum + a.pixels.length, 0);
+    const minSize = Math.min(...areas.map((a) => a.pixels.length));
+    const maxSize = Math.max(...areas.map((a) => a.pixels.length));
 
     setPuzzleStats({
       totalAreas: String(areas.length),

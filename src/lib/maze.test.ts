@@ -1,31 +1,34 @@
 import { describe, it, expect } from 'vitest';
-import { Maze, Cell, EdgeMap, EdgeStore } from './maze';
+import { Maze, EdgeMap, EdgeStore } from './maze';
 import { Coord, directions } from './coord';
+import { Image, type Pixel } from './image';
 
 describe('Maze', () => {
   function externalSummary(maze: Maze) {
-    return (cell: Cell): string => {
+    return (pixel: Pixel): string => {
       const dirs = ['N', 'E', 'S', 'W'] as const;
-      const edges = directions.map((dir) => maze.edges.get(cell.coord, dir));
+      const edges = directions.map((dir) => maze.edges.get(pixel.coord, dir));
       return dirs.filter((_, i) => edges[i].isExternal).join('') || '-';
     };
   }
 
   function wallSummary(maze: Maze) {
-    return (cell: Cell): string => {
+    return (pixel: Pixel): string => {
       const dirs = ['N', 'E', 'S', 'W'] as const;
-      const edges = directions.map((dir) => maze.edges.get(cell.coord, dir));
+      const edges = directions.map((dir) => maze.edges.get(pixel.coord, dir));
       return dirs.filter((_, i) => edges[i].hasWall).join('') || '-';
     };
   }
 
   describe('edges', () => {
     it('marks external edges for border cells', () => {
-      const maze = new Maze([
-        [0, 0, 0],
-        [0, 0, 0],
-        [0, 0, 0],
-      ]);
+      const maze = new Maze(
+        new Image([
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0],
+        ]),
+      );
 
       expect(maze.map(externalSummary(maze))).toEqual([
         ['NW', 'N', 'NE'],
@@ -35,10 +38,12 @@ describe('Maze', () => {
     });
 
     it('has walls between different colors and on external edges', () => {
-      const maze = new Maze([
-        [0, 1],
-        [0, 1],
-      ]);
+      const maze = new Maze(
+        new Image([
+          [0, 1],
+          [0, 1],
+        ]),
+      );
 
       expect(maze.map(wallSummary(maze))).toEqual([
         ['NEW', 'NEW'],
@@ -47,10 +52,12 @@ describe('Maze', () => {
     });
 
     it('has no internal walls between same colors', () => {
-      const maze = new Maze([
-        [1, 1],
-        [1, 1],
-      ]);
+      const maze = new Maze(
+        new Image([
+          [1, 1],
+          [1, 1],
+        ]),
+      );
 
       expect(maze.map(wallSummary(maze))).toEqual([
         ['NW', 'NE'],
@@ -64,19 +71,21 @@ describe('Maze', () => {
       const areaMap = new Map<string, string>();
       maze.areas.forEach((area, index) => {
         const symbol = area.color === 'black' ? '◾' : '◻';
-        area.cells.forEach((cell) => {
-          areaMap.set(cell.coord.toString(), `${index}${symbol}`);
+        area.pixels.forEach((pixel) => {
+          areaMap.set(pixel.coord.toString(), `${index}${symbol}`);
         });
       });
 
-      return maze.map((cell) => areaMap.get(cell.coord.toString())!);
+      return maze.map((pixel) => areaMap.get(pixel.coord.toString())!);
     }
 
     it('groups cells by color', () => {
-      const maze = new Maze([
-        [0, 1],
-        [0, 1],
-      ]);
+      const maze = new Maze(
+        new Image([
+          [0, 1],
+          [0, 1],
+        ]),
+      );
 
       expect(mapAreas(maze)).toEqual([
         ['0◻', '1◾'],
@@ -85,11 +94,13 @@ describe('Maze', () => {
     });
 
     it('separates non-adjacent same-color cells into different areas', () => {
-      const maze = new Maze([
-        [1, 0, 1],
-        [0, 0, 0],
-        [1, 0, 1],
-      ]);
+      const maze = new Maze(
+        new Image([
+          [1, 0, 1],
+          [0, 0, 0],
+          [1, 0, 1],
+        ]),
+      );
 
       expect(mapAreas(maze)).toEqual([
         ['0◾', '1◻', '2◾'],
@@ -99,11 +110,13 @@ describe('Maze', () => {
     });
 
     it('merges adjacent same-color cells into one area', () => {
-      const maze = new Maze([
-        [1, 1, 1],
-        [1, 1, 1],
-        [1, 1, 1],
-      ]);
+      const maze = new Maze(
+        new Image([
+          [1, 1, 1],
+          [1, 1, 1],
+          [1, 1, 1],
+        ]),
+      );
 
       expect(mapAreas(maze)).toEqual([
         ['0◾', '0◾', '0◾'],
@@ -157,8 +170,8 @@ describe('EdgeMap', () => {
 
 describe('EdgeStore', () => {
   it('returns external edge for border cells', () => {
-    const maze = new Maze([[0]]);
-    const store = new EdgeStore(maze);
+    const image = new Image([[0]]);
+    const store = new EdgeStore(image);
 
     const edge = store.get(new Coord(0, 0), 'north');
 
@@ -167,8 +180,8 @@ describe('EdgeStore', () => {
   });
 
   it('returns wall between different colors', () => {
-    const maze = new Maze([[0, 1]]);
-    const store = new EdgeStore(maze);
+    const image = new Image([[0, 1]]);
+    const store = new EdgeStore(image);
 
     const edge = store.get(new Coord(0, 0), 'east');
 
@@ -177,8 +190,8 @@ describe('EdgeStore', () => {
   });
 
   it('returns no wall between same colors', () => {
-    const maze = new Maze([[1, 1]]);
-    const store = new EdgeStore(maze);
+    const image = new Image([[1, 1]]);
+    const store = new EdgeStore(image);
 
     const edge = store.get(new Coord(0, 0), 'east');
 
@@ -187,8 +200,8 @@ describe('EdgeStore', () => {
   });
 
   it('allows to add custom walls', () => {
-    const maze = new Maze([[1, 1]]);
-    const store = new EdgeStore(maze);
+    const image = new Image([[1, 1]]);
+    const store = new EdgeStore(image);
 
     store.addWall(new Coord(0, 0), 'east');
 
@@ -196,8 +209,8 @@ describe('EdgeStore', () => {
   });
 
   it('allows to remove custom wall', () => {
-    const maze = new Maze([[1, 1]]);
-    const store = new EdgeStore(maze);
+    const image = new Image([[1, 1]]);
+    const store = new EdgeStore(image);
     store.addWall(new Coord(0, 0), 'east');
 
     store.removeWall(new Coord(0, 0), 'east');

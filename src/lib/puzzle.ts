@@ -1,6 +1,7 @@
 import { type RandomFn, mulberry32, hashString } from './random';
-import { Maze, type Cell, Area } from './maze';
+import { Maze, Area } from './maze';
 import { Coord, type Direction, directions } from './coord';
+import { type Pixel } from './image';
 
 export class Puzzle {
   readonly maze: Maze;
@@ -36,7 +37,7 @@ function computePassages(maze: Maze, random: RandomFn): Set<string> {
   const passages = new Set<string>();
 
   for (const area of maze.areas) {
-    if (area.cells.length <= 1) continue;
+    if (area.pixels.length <= 1) continue;
     generateAreaPassages(maze, area, random, passages);
   }
 
@@ -49,26 +50,26 @@ function generateAreaPassages(
   random: RandomFn,
   passages: Set<string>,
 ): void {
-  const cellSet = new Set(area.cells.map((c) => c.coord.toString()));
+  const pixelSet = new Set(area.pixels.map((p) => p.coord.toString()));
   const visited = new Set<string>();
 
-  const startIndex = Math.floor(random() * area.cells.length);
-  const start = area.cells[startIndex];
+  const startIndex = Math.floor(random() * area.pixels.length);
+  const start = area.pixels[startIndex];
 
-  const stack: { cell: Cell; lastDir: Direction | null }[] = [
-    { cell: start, lastDir: null },
+  const stack: { pixel: Pixel; lastDir: Direction | null }[] = [
+    { pixel: start, lastDir: null },
   ];
   visited.add(start.coord.toString());
 
   const biasStraight = 0.7;
 
   while (stack.length > 0) {
-    const { cell, lastDir } = stack[stack.length - 1];
+    const { pixel, lastDir } = stack[stack.length - 1];
 
     const unvisitedDirs = directions.filter((dir) => {
-      const neighborCoord = cell.coord.goTo(dir);
+      const neighborCoord = pixel.coord.goTo(dir);
       return (
-        cellSet.has(neighborCoord.toString()) &&
+        pixelSet.has(neighborCoord.toString()) &&
         !visited.has(neighborCoord.toString())
       );
     });
@@ -79,12 +80,12 @@ function generateAreaPassages(
     }
 
     const dir = chooseDirection(unvisitedDirs, lastDir, biasStraight, random);
-    const nextCoord = cell.coord.goTo(dir);
+    const nextCoord = pixel.coord.goTo(dir);
     const next = maze.get(nextCoord);
 
-    passages.add(passageKey(cell.coord, nextCoord));
+    passages.add(passageKey(pixel.coord, nextCoord));
     visited.add(nextCoord.toString());
-    stack.push({ cell: next, lastDir: dir });
+    stack.push({ pixel: next, lastDir: dir });
   }
 }
 

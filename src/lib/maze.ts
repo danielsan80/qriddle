@@ -1,15 +1,5 @@
-import { type Color, Size } from './image';
+import { type Color, Image, type Pixel } from './image';
 import { Coord, type Direction } from './coord';
-
-export class Cell {
-  readonly coord: Coord;
-  readonly color: Color;
-
-  constructor(coord: Coord, color: Color) {
-    this.coord = coord;
-    this.color = color;
-  }
-}
 
 export class Edge {
   readonly isExternal: boolean;
@@ -63,16 +53,16 @@ export class EdgeMap<T> {
 }
 
 export class EdgeStore {
-  private readonly maze: Maze;
+  private readonly image: Image;
   private readonly hasWallOverrides = new EdgeMap<boolean>();
 
-  constructor(maze: Maze) {
-    this.maze = maze;
+  constructor(image: Image) {
+    this.image = image;
   }
 
   get(coord: Coord, direction: Direction): Edge {
     const neighborCoord = coord.goTo(direction);
-    const isExternal = !this.maze.has(neighborCoord);
+    const isExternal = !this.image.has(neighborCoord);
 
     if (isExternal) {
       return Edge.external();
@@ -83,25 +73,25 @@ export class EdgeStore {
       return Edge.internal(override);
     }
 
-    const cell = this.maze.get(coord);
-    const neighbor = this.maze.get(neighborCoord);
-    return Edge.internal(cell.color !== neighbor.color);
+    const pixel = this.image.get(coord);
+    const neighbor = this.image.get(neighborCoord);
+    return Edge.internal(pixel.color !== neighbor.color);
   }
 
   addWall(coord: Coord, direction: Direction): void {
     const neighborCoord = coord.goTo(direction);
-    const cell = this.maze.get(coord);
-    const neighbor = this.maze.get(neighborCoord);
-    if (cell.color === neighbor.color) {
+    const pixel = this.image.get(coord);
+    const neighbor = this.image.get(neighborCoord);
+    if (pixel.color === neighbor.color) {
       this.hasWallOverrides.set(coord, neighborCoord, true);
     }
   }
 
   removeWall(coord: Coord, direction: Direction): void {
     const neighborCoord = coord.goTo(direction);
-    const cell = this.maze.get(coord);
-    const neighbor = this.maze.get(neighborCoord);
-    if (cell.color !== neighbor.color) {
+    const pixel = this.image.get(coord);
+    const neighbor = this.image.get(neighborCoord);
+    if (pixel.color !== neighbor.color) {
       throw Error('...');
     }
     if (this.hasWallOverrides.has(coord, neighborCoord)) {
@@ -111,33 +101,23 @@ export class EdgeStore {
 }
 
 export class Area {
-  readonly cells: Cell[];
+  readonly pixels: Pixel[];
   readonly color: Color;
 
-  constructor(cells: Cell[], color: Color) {
-    this.cells = cells;
+  constructor(pixels: Pixel[], color: Color) {
+    this.pixels = pixels;
     this.color = color;
   }
 }
 
 export class Maze {
-  readonly size: Size;
+  readonly image: Image;
   readonly areas: Area[];
   readonly edges: EdgeStore;
-  private readonly cells: Cell[][];
 
-  constructor(matrix: number[][]) {
-    this.size = new Size(matrix.length, matrix[0]?.length ?? 0);
-
-    this.cells = matrix.map((row, i) =>
-      row.map((value, j) => {
-        const coord = new Coord(i, j);
-        const color: Color = value === 1 ? 'black' : 'white';
-        return new Cell(coord, color);
-      }),
-    );
-
-    this.edges = new EdgeStore(this);
+  constructor(image: Image) {
+    this.image = image;
+    this.edges = new EdgeStore(image);
     this.areas = this.findAreas();
   }
 
@@ -145,65 +125,56 @@ export class Maze {
     const visited = new Set<string>();
     const areas: Area[] = [];
 
-    this.forEach((cell) => {
-      const key = cell.coord.toString();
+    this.image.forEach((pixel) => {
+      const key = pixel.coord.toString();
       if (visited.has(key)) return;
 
-      const areaCells: Cell[] = [];
-      const queue: Cell[] = [cell];
+      const areaPixels: Pixel[] = [];
+      const queue: Pixel[] = [pixel];
       visited.add(key);
 
       while (queue.length > 0) {
         const current = queue.shift()!;
-        areaCells.push(current);
+        areaPixels.push(current);
 
         for (const direction of ['north', 'east', 'south', 'west'] as const) {
           const neighborCoord = current.coord.goTo(direction);
           const neighborKey = neighborCoord.toString();
 
           if (
-            this.has(neighborCoord) &&
+            this.image.has(neighborCoord) &&
             !visited.has(neighborKey) &&
-            this.get(neighborCoord).color === cell.color
+            this.image.get(neighborCoord).color === pixel.color
           ) {
             visited.add(neighborKey);
-            queue.push(this.get(neighborCoord));
+            queue.push(this.image.get(neighborCoord));
           }
         }
       }
 
-      areas.push(new Area(areaCells, cell.color));
+      areas.push(new Area(areaPixels, pixel.color));
     });
 
     return areas;
   }
 
-  get(coord: Coord): Cell {
-    return this.cells[coord.row][coord.col];
+  get(coord: Coord): Pixel {
+    return this.image.get(coord);
   }
 
   has(coord: Coord): boolean {
-    return (
-      coord.row >= 0 &&
-      coord.row < this.size.rows &&
-      coord.col >= 0 &&
-      coord.col < this.size.cols
-    );
+    return this.image.has(coord);
   }
 
-  forEach(callback: (cell: Cell) => void): void {
-    for (const row of this.cells) {
-      for (const cell of row) {
-        callback(cell);
-      }
-    }
+  forEach(callback: (pixel: Pixel) => void): void {
+    this.image.forEach(callback);
   }
 
-  map<T>(fn: (cell: Cell) => T): T[][] {
+  map<T>(fn: (pixel: Pixel) => T): T[][] {
     const result: T[][] = [];
-    for (let row = 0; row < this.size.rows; row++) {
+    for (let row = 0; row < this.image.size.rows; row++) {
       result[row] = [];
-      for (let col = 0; col < this.size.cols; col++) {
+      for (let col = 0; col < this.image.size.cols; col++) {
         result[row][col] = fn(this.get(new Coord(row, col)));
       }
     }

@@ -2,13 +2,16 @@ import { describe, it, expect } from 'vitest';
 import { Puzzle } from './puzzle';
 import { Maze } from './maze';
 import { Coord, type Direction } from './coord';
+import { Image } from './image';
 
 describe('Puzzle', () => {
   it('wraps a Maze instance', () => {
-    const maze = new Maze([
-      [1, 1],
-      [1, 1],
-    ]);
+    const maze = new Maze(
+      new Image([
+        [1, 1],
+        [1, 1],
+      ]),
+    );
 
     const puzzle = Puzzle.create(maze, 'seed');
 
@@ -16,11 +19,13 @@ describe('Puzzle', () => {
   });
 
   it('produces same result with same seed', () => {
-    const maze = new Maze([
-      [1, 1, 1],
-      [1, 1, 1],
-      [1, 1, 1],
-    ]);
+    const maze = new Maze(
+      new Image([
+        [1, 1, 1],
+        [1, 1, 1],
+        [1, 1, 1],
+      ]),
+    );
 
     const puzzle1 = Puzzle.create(maze, 'test-seed');
     const puzzle2 = Puzzle.create(maze, 'test-seed');
@@ -29,12 +34,14 @@ describe('Puzzle', () => {
   });
 
   it('produces different results with different seeds', () => {
-    const maze = new Maze([
-      [1, 1, 1, 1],
-      [1, 1, 1, 1],
-      [1, 1, 1, 1],
-      [1, 1, 1, 1],
-    ]);
+    const maze = new Maze(
+      new Image([
+        [1, 1, 1, 1],
+        [1, 1, 1, 1],
+        [1, 1, 1, 1],
+        [1, 1, 1, 1],
+      ]),
+    );
 
     const puzzle1 = Puzzle.create(maze, 'seed-a');
     const puzzle2 = Puzzle.create(maze, 'seed-b');
@@ -43,10 +50,12 @@ describe('Puzzle', () => {
   });
 
   it('preserves external walls from maze', () => {
-    const maze = new Maze([
-      [1, 1],
-      [1, 1],
-    ]);
+    const maze = new Maze(
+      new Image([
+        [1, 1],
+        [1, 1],
+      ]),
+    );
 
     const puzzle = Puzzle.create(maze, 'seed');
 
@@ -58,10 +67,12 @@ describe('Puzzle', () => {
   });
 
   it('preserves walls between different colors', () => {
-    const maze = new Maze([
-      [0, 1],
-      [0, 1],
-    ]);
+    const maze = new Maze(
+      new Image([
+        [0, 1],
+        [0, 1],
+      ]),
+    );
 
     const puzzle = Puzzle.create(maze, 'seed');
 
@@ -73,14 +84,16 @@ describe('Puzzle', () => {
   });
 
   it('generates deterministic maze with fixed seed', () => {
-    const maze = new Maze([
-      [1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 0, 0],
-      [1, 1, 1, 0, 0, 0],
-      [1, 0, 0, 0, 1, 1],
-      [0, 0, 0, 0, 1, 1],
-    ]);
+    const maze = new Maze(
+      new Image([
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 0, 0],
+        [1, 1, 1, 0, 0, 0],
+        [1, 0, 0, 0, 1, 1],
+        [0, 0, 0, 0, 1, 1],
+      ]),
+    );
 
     const puzzle = Puzzle.create(maze, 'fixed-seed');
 
@@ -104,17 +117,19 @@ describe('Puzzle', () => {
   });
 
   it('ensures all cells in an area are connected (spanning tree)', () => {
-    const maze = new Maze([
-      [1, 1, 1],
-      [1, 1, 1],
-      [1, 1, 1],
-    ]);
+    const maze = new Maze(
+      new Image([
+        [1, 1, 1],
+        [1, 1, 1],
+        [1, 1, 1],
+      ]),
+    );
 
     const puzzle = Puzzle.create(maze, 'seed');
 
     // Check connectivity via flood fill through passages
     const area = maze.areas[0];
-    const start = area.cells[0];
+    const start = area.pixels[0];
     const visited = new Set<string>();
     const queue = [start.coord.toString()];
     visited.add(start.coord.toString());
@@ -138,12 +153,12 @@ describe('Puzzle', () => {
       }
     }
 
-    expect(visited.size).toBe(area.cells.length);
+    expect(visited.size).toBe(area.pixels.length);
   });
 });
 
 function wallMap(puzzle: Puzzle): string[][] {
-  const { rows, cols } = puzzle.maze.size;
+  const { rows, cols } = puzzle.maze.image.size;
   const result: string[][] = [];
   for (let row = 0; row < rows; row++) {
     result[row] = [];
@@ -160,7 +175,7 @@ function wallMap(puzzle: Puzzle): string[][] {
 }
 
 function toBoxDrawing(puzzle: Puzzle): string {
-  const { rows, cols } = puzzle.maze.size;
+  const { rows, cols } = puzzle.maze.image.size;
   const grid: string[][] = [];
 
   for (let r = 0; r < rows * 2 + 1; r++) {
