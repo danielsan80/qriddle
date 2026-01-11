@@ -1,6 +1,6 @@
 import { type RandomFn, mulberry32, hashString } from './random';
 import { Maze, type Cell, Area } from './maze';
-import { Coord, type Direction, Directions } from './coord';
+import { Coord, type Direction, directions } from './coord';
 
 export class Puzzle {
   readonly maze: Maze;
@@ -18,8 +18,7 @@ export class Puzzle {
   }
 
   hasWall(coord: Coord, direction: Direction): boolean {
-    const cell = this.maze.get(coord);
-    const edge = cell.edges[direction];
+    const edge = this.maze.edges.get(coord, direction);
 
     // External edges and color boundaries always have walls
     if (edge.isExternal || edge.hasWall) {
@@ -66,7 +65,7 @@ function generateAreaPassages(
   while (stack.length > 0) {
     const { cell, lastDir } = stack[stack.length - 1];
 
-    const unvisitedDirs = Directions.filter((dir) => {
+    const unvisitedDirs = directions.filter((dir) => {
       const neighborCoord = cell.coord.goTo(dir);
       return (
         cellSet.has(neighborCoord.toString()) &&

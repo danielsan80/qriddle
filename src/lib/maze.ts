@@ -4,7 +4,6 @@ import { Coord, type Direction } from './coord';
 export class Cell {
   readonly coord: Coord;
   readonly color: Color;
-  readonly edges!: Edges;
 
   constructor(coord: Coord, color: Color) {
     this.coord = coord;
@@ -21,10 +20,12 @@ export class Edge {
     this.hasWall = hasWall;
   }
 
-  static create(cell: Cell, neighbor: Cell | null): Edge {
-    const isExternal = neighbor === null;
-    const hasWall = neighbor === null || cell.color !== neighbor.color;
-    return new Edge(isExternal, hasWall);
+  static external(): Edge {
+    return new Edge(true, true);
+  }
+
+  static internal(hasWall: boolean): Edge {
+    return new Edge(false, hasWall);
   }
 
   withWall(hasWall: boolean): Edge {
@@ -55,13 +56,58 @@ export class EdgeMap<T> {
   has(a: Coord, b: Coord): boolean {
     return this.map.has(this.key(a, b));
   }
+
+  unset(a: Coord, b: Coord): void {
+    this.map.delete(this.key(a, b));
+  }
 }
 
-export interface Edges {
-  north: Edge;
-  east: Edge;
-  south: Edge;
-  west: Edge;
+export class EdgeStore {
+  private readonly maze: Maze;
+  private readonly hasWallOverrides = new EdgeMap<boolean>();
+
+  constructor(maze: Maze) {
+    this.maze = maze;
+  }
+
+  get(coord: Coord, direction: Direction): Edge {
+    const neighborCoord = coord.goTo(direction);
+    const isExternal = !this.maze.has(neighborCoord);
+
+    if (isExternal) {
+      return Edge.external();
+    }
+
+    const override = this.hasWallOverrides.get(coord, neighborCoord);
+    if (override !== undefined) {
+      return Edge.internal(override);
+    }
+
+    const cell = this.maze.get(coord);
+    const neighbor = this.maze.get(neighborCoord);
+    return Edge.internal(cell.color !== neighbor.color);
+  }
+
+  addWall(coord: Coord, direction: Direction): void {
+    const neighborCoord = coord.goTo(direction);
+    const cell = this.maze.get(coord);
+    const neighbor = this.maze.get(neighborCoord);
+    if (cell.color === neighbor.color) {
+      this.hasWallOverrides.set(coord, neighborCoord, true);
+    }
+  }
+
+  removeWall(coord: Coord, direction: Direction): void {
+    const neighborCoord = coord.goTo(direction);
+    const cell = this.maze.get(coord);
+    const neighbor = this.maze.get(neighborCoord);
+    if (cell.color !== neighbor.color) {
+      throw Error('...');
+    }
+    if (this.hasWallOverrides.has(coord, neighborCoord)) {
+      this.hasWallOverrides.unset(coord, neighborCoord);
+    }
+  }
 }
 
 export class Area {
@@ -77,6 +123,7 @@ export class Area {
 export class Maze {
   readonly size: number;
   readonly areas: Area[];
+  readonly edges: EdgeStore;
   private readonly cells: Cell[][];
 
   constructor(matrix: number[][]) {
@@ -90,15 +137,7 @@ export class Maze {
       }),
     );
 
-    this.forEach((cell) => {
-      (cell as { edges: Edges }).edges = {
-        north: this.createEdge(cell, 'north'),
-        east: this.createEdge(cell, 'east'),
-        south: this.createEdge(cell, 'south'),
-        west: this.createEdge(cell, 'west'),
-      };
-    });
-
+    this.edges = new EdgeStore(this);
     this.areas = this.findAreas();
   }
 
@@ -169,11 +208,5 @@ export class Maze {
       }
     }
     return result;
-  }
-
-  createEdge(cell: Cell, direction: Direction): Edge {
-    const neighborCoord = cell.coord.goTo(direction);
-    const neighbor = this.has(neighborCoord) ? this.get(neighborCoord) : null;
-    return Edge.create(cell, neighbor);
   }
 }

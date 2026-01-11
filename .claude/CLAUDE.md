@@ -35,8 +35,6 @@ Rimappatura concetti (codice attuale → target):
 - `isExternal: boolean` — bordo esterno della griglia
 - `hasWall: boolean` — presenza del muro
 
-**Edges** — { top, right, bottom, left: Edge }
-
 ### Input Context
 
 **Pixel** (VO)
@@ -53,25 +51,28 @@ Rimappatura concetti (codice attuale → target):
 
 ### Output Context (Maze)
 
-**Cell** (Entity)
+**Cell** (VO)
 
 - `coord: Coord`
 - `color: Color`
-- `edges: Edges` — bordi della cella
-- `neighbors: Coord[]` — celle geometricamente adiacenti
-- `passages: Coord[]` — celle connesse (senza muro)
-- `marked: boolean` — puntino di partenza per il flood fill (solo celle nere)
+
+**EdgeStore** — gestisce i bordi tra celle
+
+- `get(coord: Coord, direction: Direction): Edge`
+- `addWall(coord: Coord, direction: Direction): void`
+- `removeWall(coord: Coord, direction: Direction): void`
 
 **Maze** — contenitore di Cell
 
 - `size: number`
+- `edges: EdgeStore`
 - `get(coord: Coord): Cell`
 - `has(coord: Coord): boolean`
 - `forEach(callback: (cell: Cell) => void)`
 
 ## Problema
 
-Abbiamo diverse Aree monocromatiche di tile (MazeCell) quadrate adiacenti ortogonalmente.
+Abbiamo diverse Aree monocromatiche di tile (Cell) quadrate adiacenti ortogonalmente.
 Per ciascuna Area abbiamo bisogno di piazzare dei muri tra le tile adiacenti in modo che
 da ogni tile sia possibile raggiungere ogni altra tile dell'area.
 Esistono dei muri anche sui confini esterni dell'area, fissi e irremovibili.

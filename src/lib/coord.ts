@@ -1,6 +1,6 @@
 export type Direction = 'north' | 'south' | 'east' | 'west';
 
-export const Directions: readonly Direction[] = [
+export const directions: readonly Direction[] = [
   'north',
   'east',
   'south',
