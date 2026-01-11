@@ -143,10 +143,11 @@ describe('Puzzle', () => {
 });
 
 function wallMap(puzzle: Puzzle): string[][] {
+  const { rows, cols } = puzzle.maze.size;
   const result: string[][] = [];
-  for (let row = 0; row < puzzle.maze.size; row++) {
+  for (let row = 0; row < rows; row++) {
     result[row] = [];
-    for (let col = 0; col < puzzle.maze.size; col++) {
+    for (let col = 0; col < cols; col++) {
       const coord = new Coord(row, col);
       const walls = ['north', 'east', 'south', 'west']
         .filter((dir) => puzzle.hasWall(coord, dir as Direction))
@@ -159,28 +160,25 @@ function wallMap(puzzle: Puzzle): string[][] {
 }
 
 function toBoxDrawing(puzzle: Puzzle): string {
-  const size = puzzle.maze.size;
+  const { rows, cols } = puzzle.maze.size;
   const grid: string[][] = [];
 
-  // Initialize grid (2*size + 1) x (2*size + 1)
-  for (let r = 0; r < size * 2 + 1; r++) {
+  for (let r = 0; r < rows * 2 + 1; r++) {
     grid[r] = [];
-    for (let c = 0; c < size * 2 + 1; c++) {
+    for (let c = 0; c < cols * 2 + 1; c++) {
       grid[r][c] = ' ';
     }
   }
 
-  // Fill cells with color indicator
-  for (let row = 0; row < size; row++) {
-    for (let col = 0; col < size; col++) {
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
       const cell = puzzle.maze.get(new Coord(row, col));
       grid[row * 2 + 1][col * 2 + 1] = cell.color === 'black' ? '◾' : '◻';
     }
   }
 
-  // Fill horizontal walls
-  for (let row = 0; row < size; row++) {
-    for (let col = 0; col < size; col++) {
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
       const coord = new Coord(row, col);
       if (puzzle.hasWall(coord, 'north')) {
         grid[row * 2][col * 2 + 1] = '─';
@@ -191,9 +189,8 @@ function toBoxDrawing(puzzle: Puzzle): string {
     }
   }
 
-  // Fill vertical walls
-  for (let row = 0; row < size; row++) {
-    for (let col = 0; col < size; col++) {
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
       const coord = new Coord(row, col);
       if (puzzle.hasWall(coord, 'west')) {
         grid[row * 2 + 1][col * 2] = '│';
@@ -204,13 +201,12 @@ function toBoxDrawing(puzzle: Puzzle): string {
     }
   }
 
-  // Fill corners with appropriate box-drawing characters
-  for (let r = 0; r < size * 2 + 1; r += 2) {
-    for (let c = 0; c < size * 2 + 1; c += 2) {
+  for (let r = 0; r < rows * 2 + 1; r += 2) {
+    for (let c = 0; c < cols * 2 + 1; c += 2) {
       const up = r > 0 && grid[r - 1][c] === '│';
-      const down = r < size * 2 && grid[r + 1][c] === '│';
+      const down = r < rows * 2 && grid[r + 1][c] === '│';
       const left = c > 0 && grid[r][c - 1] === '─';
-      const right = c < size * 2 && grid[r][c + 1] === '─';
+      const right = c < cols * 2 && grid[r][c + 1] === '─';
 
       grid[r][c] = getCorner(up, down, left, right);
     }

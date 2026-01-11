@@ -24,11 +24,11 @@ export function render(
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  const size = puzzle.maze.size;
+  const { rows, cols } = puzzle.maze.size;
   const cellSize = opts.cellSize!;
 
-  canvas.width = size * cellSize;
-  canvas.height = size * cellSize;
+  canvas.width = cols * cellSize;
+  canvas.height = rows * cellSize;
 
   // Background
   ctx.fillStyle = opts.backgroundColor!;
@@ -38,8 +38,8 @@ export function render(
   ctx.strokeStyle = opts.borderColor!;
   ctx.lineWidth = 2;
 
-  for (let row = 0; row < size; row++) {
-    for (let col = 0; col < size; col++) {
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
       const coord = new Coord(row, col);
       const x = col * cellSize;
       const y = row * cellSize;
@@ -59,14 +59,14 @@ export function render(
       }
 
       // Only draw south/east for last row/col to complete the border
-      if (row === size - 1 && puzzle.hasWall(coord, 'south')) {
+      if (row === rows - 1 && puzzle.hasWall(coord, 'south')) {
         ctx.beginPath();
         ctx.moveTo(x, y + cellSize);
         ctx.lineTo(x + cellSize, y + cellSize);
         ctx.stroke();
       }
 
-      if (col === size - 1 && puzzle.hasWall(coord, 'east')) {
+      if (col === cols - 1 && puzzle.hasWall(coord, 'east')) {
         ctx.beginPath();
         ctx.moveTo(x + cellSize, y);
         ctx.lineTo(x + cellSize, y + cellSize);

@@ -167,10 +167,7 @@ describe('EdgeStore', () => {
   });
 
   it('returns wall between different colors', () => {
-    const maze = new Maze([
-      [0, 1],
-      [0, 1],
-    ]);
+    const maze = new Maze([[0, 1]]);
     const store = new EdgeStore(maze);
 
     const edge = store.get(new Coord(0, 0), 'east');
@@ -180,10 +177,7 @@ describe('EdgeStore', () => {
   });
 
   it('returns no wall between same colors', () => {
-    const maze = new Maze([
-      [1, 1],
-      [1, 1],
-    ]);
+    const maze = new Maze([[1, 1]]);
     const store = new EdgeStore(maze);
 
     const edge = store.get(new Coord(0, 0), 'east');
@@ -193,10 +187,7 @@ describe('EdgeStore', () => {
   });
 
   it('allows to add custom walls', () => {
-    const maze = new Maze([
-      [1, 1],
-      [1, 1],
-    ]);
+    const maze = new Maze([[1, 1]]);
     const store = new EdgeStore(maze);
 
     store.addWall(new Coord(0, 0), 'east');
@@ -205,10 +196,7 @@ describe('EdgeStore', () => {
   });
 
   it('allows to remove custom wall', () => {
-    const maze = new Maze([
-      [1, 1],
-      [1, 1],
-    ]);
+    const maze = new Maze([[1, 1]]);
     const store = new EdgeStore(maze);
     store.addWall(new Coord(0, 0), 'east');
 

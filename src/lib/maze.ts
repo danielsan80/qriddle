@@ -1,4 +1,4 @@
-import { type Color } from './image';
+import { type Color, Size } from './image';
 import { Coord, type Direction } from './coord';
 
 export class Cell {
@@ -121,13 +121,13 @@ export class Area {
 }
 
 export class Maze {
-  readonly size: number;
+  readonly size: Size;
   readonly areas: Area[];
   readonly edges: EdgeStore;
   private readonly cells: Cell[][];
 
   constructor(matrix: number[][]) {
-    this.size = matrix.length;
+    this.size = new Size(matrix.length, matrix[0]?.length ?? 0);
 
     this.cells = matrix.map((row, i) =>
       row.map((value, j) => {
@@ -185,9 +185,9 @@ export class Maze {
   has(coord: Coord): boolean {
     return (
       coord.row >= 0 &&
-      coord.row < this.size &&
+      coord.row < this.size.rows &&
       coord.col >= 0 &&
-      coord.col < this.size
+      coord.col < this.size.cols
     );
   }
 
@@ -201,9 +201,9 @@ export class Maze {
 
   map<T>(fn: (cell: Cell) => T): T[][] {
     const result: T[][] = [];
-    for (let row = 0; row < this.size; row++) {
+    for (let row = 0; row < this.size.rows; row++) {
       result[row] = [];
-      for (let col = 0; col < this.size; col++) {
+      for (let col = 0; col < this.size.cols; col++) {
         result[row][col] = fn(this.get(new Coord(row, col)));
       }
     }

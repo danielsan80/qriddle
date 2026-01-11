@@ -28,6 +28,8 @@ Rimappatura concetti (codice attuale → target):
 
 **Coord** — posizione (row, col)
 
+**Size** — dimensioni (rows, cols)
+
 **Color** — `'black' | 'white'` (enum)
 
 **Edge** — bordo di una cella
@@ -44,7 +46,7 @@ Rimappatura concetti (codice attuale → target):
 
 **Image** — contenitore di Pixel
 
-- `size: number` — dimensione (griglia quadrata)
+- `size: Size`
 - `get(coord: Coord): Pixel`
 - `has(coord: Coord): boolean` — verifica bounds
 - `forEach(callback: (pixel: Pixel) => void)`
@@ -64,7 +66,7 @@ Rimappatura concetti (codice attuale → target):
 
 **Maze** — contenitore di Cell
 
-- `size: number`
+- `size: Size`
 - `edges: EdgeStore`
 - `get(coord: Coord): Cell`
 - `has(coord: Coord): boolean`

@@ -9,8 +9,9 @@ describe('Image', () => {
   ]);
 
   describe('size', () => {
-    it('returns the image dimension', () => {
-      expect(image.size).toBe(2);
+    it('returns the image dimensions', () => {
+      expect(image.size.rows).toBe(2);
+      expect(image.size.cols).toBe(2);
     });
   });
 

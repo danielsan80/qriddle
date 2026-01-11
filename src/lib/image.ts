@@ -3,17 +3,27 @@ import { Coord } from './coord';
 export type Color = 'black' | 'white';
 export type Matrix = number[][];
 
+export class Size {
+  readonly rows: number;
+  readonly cols: number;
+
+  constructor(rows: number, cols: number) {
+    this.rows = rows;
+    this.cols = cols;
+  }
+}
+
 export interface Pixel {
   readonly coord: Coord;
   readonly color: Color;
 }
 
 export class Image {
-  readonly size: number;
+  readonly size: Size;
   private readonly pixels: Pixel[][];
 
   constructor(matrix: number[][]) {
-    this.size = matrix.length;
+    this.size = new Size(matrix.length, matrix[0]?.length ?? 0);
     this.pixels = matrix.map((row, i) =>
       row.map((value, j) => ({
         coord: new Coord(i, j),
@@ -29,9 +39,9 @@ export class Image {
   has(coord: Coord): boolean {
     return (
       coord.row >= 0 &&
-      coord.row < this.size &&
+      coord.row < this.size.rows &&
       coord.col >= 0 &&
-      coord.col < this.size
+      coord.col < this.size.cols
     );
   }
 
@@ -50,12 +60,11 @@ export class Image {
   }
 
   x2(): Image {
-    const doubledSize = this.size * 2;
     const matrix: Matrix = [];
 
-    for (let row = 0; row < doubledSize; row++) {
+    for (let row = 0; row < this.size.rows * 2; row++) {
       matrix[row] = [];
-      for (let col = 0; col < doubledSize; col++) {
+      for (let col = 0; col < this.size.cols * 2; col++) {
         const pixel = this.get(
           new Coord(Math.floor(row / 2), Math.floor(col / 2)),
         );
