@@ -1,64 +1,55 @@
 import { describe, it, expect } from 'vitest';
 import { Puzzle } from './puzzle';
-import { Maze } from './maze';
 import { Coord } from './coord';
 import { directions } from './direction';
 import { Image } from './image';
 
 describe('Puzzle', () => {
-  it('wraps a Maze instance', () => {
-    const maze = new Maze(
-      new Image([
-        [1, 1],
-        [1, 1],
-      ]),
-    );
+  it('exposes the image', () => {
+    const image = new Image([
+      [1, 1],
+      [1, 1],
+    ]);
 
-    const puzzle = Puzzle.create(maze, 'seed');
+    const puzzle = Puzzle.create(image, 'seed');
 
-    expect(puzzle.maze).toBe(maze);
+    expect(puzzle.image).toBe(image);
   });
 
   it('produces same result with same seed', () => {
-    const maze = new Maze(
-      new Image([
-        [1, 1, 1],
-        [1, 1, 1],
-        [1, 1, 1],
-      ]),
-    );
+    const image = new Image([
+      [1, 1, 1],
+      [1, 1, 1],
+      [1, 1, 1],
+    ]);
 
-    const puzzle1 = Puzzle.create(maze, 'test-seed');
-    const puzzle2 = Puzzle.create(maze, 'test-seed');
+    const puzzle1 = Puzzle.create(image, 'test-seed');
+    const puzzle2 = Puzzle.create(image, 'test-seed');
 
     expect(wallMap(puzzle1)).toEqual(wallMap(puzzle2));
   });
 
   it('produces different results with different seeds', () => {
-    const maze = new Maze(
-      new Image([
-        [1, 1, 1, 1],
-        [1, 1, 1, 1],
-        [1, 1, 1, 1],
-        [1, 1, 1, 1],
-      ]),
-    );
+    const image = new Image([
+      [1, 1, 1, 1],
+      [1, 1, 1, 1],
+      [1, 1, 1, 1],
+      [1, 1, 1, 1],
+    ]);
 
-    const puzzle1 = Puzzle.create(maze, 'seed-a');
-    const puzzle2 = Puzzle.create(maze, 'seed-b');
+    const puzzle1 = Puzzle.create(image, 'seed-a');
+    const puzzle2 = Puzzle.create(image, 'seed-b');
 
     expect(wallMap(puzzle1)).not.toEqual(wallMap(puzzle2));
   });
 
-  it('preserves external walls from maze', () => {
-    const maze = new Maze(
-      new Image([
-        [1, 1],
-        [1, 1],
-      ]),
-    );
+  it('preserves external walls', () => {
+    const image = new Image([
+      [1, 1],
+      [1, 1],
+    ]);
 
-    const puzzle = Puzzle.create(maze, 'seed');
+    const puzzle = Puzzle.create(image, 'seed');
 
     // External edges always have walls
     expect(puzzle.hasWall(new Coord(0, 0), 'north')).toBe(true);
@@ -68,14 +59,12 @@ describe('Puzzle', () => {
   });
 
   it('preserves walls between different colors', () => {
-    const maze = new Maze(
-      new Image([
-        [0, 1],
-        [0, 1],
-      ]),
-    );
+    const image = new Image([
+      [0, 1],
+      [0, 1],
+    ]);
 
-    const puzzle = Puzzle.create(maze, 'seed');
+    const puzzle = Puzzle.create(image, 'seed');
 
     // Color boundary walls are preserved
     expect(puzzle.hasWall(new Coord(0, 0), 'east')).toBe(true);
@@ -84,19 +73,17 @@ describe('Puzzle', () => {
     expect(puzzle.hasWall(new Coord(1, 1), 'west')).toBe(true);
   });
 
-  it('generates deterministic maze with fixed seed', () => {
-    const maze = new Maze(
-      new Image([
-        [1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 0, 0],
-        [1, 1, 1, 0, 0, 0],
-        [1, 0, 0, 0, 1, 1],
-        [0, 0, 0, 0, 1, 1],
-      ]),
-    );
+  it('generates deterministic puzzle with fixed seed', () => {
+    const image = new Image([
+      [1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 0, 0],
+      [1, 1, 1, 0, 0, 0],
+      [1, 0, 0, 0, 1, 1],
+      [0, 0, 0, 0, 1, 1],
+    ]);
 
-    const puzzle = Puzzle.create(maze, 'fixed-seed');
+    const puzzle = Puzzle.create(image, 'fixed-seed');
 
     expect(toBoxDrawing(puzzle)).toBe(
       [
@@ -118,18 +105,16 @@ describe('Puzzle', () => {
   });
 
   it('ensures all cells in an area are connected (spanning tree)', () => {
-    const maze = new Maze(
-      new Image([
-        [1, 1, 1],
-        [1, 1, 1],
-        [1, 1, 1],
-      ]),
-    );
+    const image = new Image([
+      [1, 1, 1],
+      [1, 1, 1],
+      [1, 1, 1],
+    ]);
 
-    const puzzle = Puzzle.create(maze, 'seed');
+    const puzzle = Puzzle.create(image, 'seed');
 
     // Check connectivity via flood fill through passages
-    const area = maze.areas.at(0)!;
+    const area = puzzle.areas.at(0)!;
     const start = area.pixels[0];
     const visited = new Set<string>();
     const queue = [start.coord.toString()];
@@ -144,7 +129,7 @@ describe('Puzzle', () => {
         if (!puzzle.hasWall(coord, dir)) {
           const neighbor = coord.goTo(dir);
           const neighborKey = neighbor.toString();
-          if (!visited.has(neighborKey) && maze.has(neighbor)) {
+          if (!visited.has(neighborKey) && puzzle.image.has(neighbor)) {
             visited.add(neighborKey);
             queue.push(neighborKey);
           }
@@ -157,7 +142,7 @@ describe('Puzzle', () => {
 });
 
 function wallMap(puzzle: Puzzle): string[][] {
-  const { rows, cols } = puzzle.maze.image.size;
+  const { rows, cols } = puzzle.image.size;
   const result: string[][] = [];
   for (let row = 0; row < rows; row++) {
     result[row] = [];
@@ -174,7 +159,7 @@ function wallMap(puzzle: Puzzle): string[][] {
 }
 
 function toBoxDrawing(puzzle: Puzzle): string {
-  const { rows, cols } = puzzle.maze.image.size;
+  const { rows, cols } = puzzle.image.size;
   const grid: string[][] = [];
 
   for (let r = 0; r < rows * 2 + 1; r++) {
@@ -186,7 +171,7 @@ function toBoxDrawing(puzzle: Puzzle): string {
 
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
-      const cell = puzzle.maze.get(new Coord(row, col));
+      const cell = puzzle.image.get(new Coord(row, col));
       grid[row * 2 + 1][col * 2 + 1] = cell.color === 'black' ? '◾' : '◻';
     }
   }

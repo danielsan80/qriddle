@@ -1,25 +1,27 @@
 import { type RandomFn, mulberry32, hashString } from './random';
-import { Maze } from './maze';
-import { Area } from './area';
+import { Area, AreaStore } from './area';
 import { Coord } from './coord';
 import { type Direction, directions } from './direction';
 import { EdgeStore } from './edge';
-import { type Pixel } from './image';
+import { Image, type Pixel } from './image';
 
 export class Puzzle {
-  readonly maze: Maze;
+  readonly image: Image;
+  readonly areas: AreaStore;
   private readonly edges: EdgeStore;
 
-  private constructor(maze: Maze, edges: EdgeStore) {
-    this.maze = maze;
+  private constructor(image: Image, areas: AreaStore, edges: EdgeStore) {
+    this.image = image;
+    this.areas = areas;
     this.edges = edges;
   }
 
-  static create(maze: Maze, seed: string): Puzzle {
+  static create(image: Image, seed: string): Puzzle {
     const random = mulberry32(hashString(seed));
-    const edges = EdgeStore.walled(maze.image);
-    generatePassages(maze, edges, random);
-    return new Puzzle(maze, edges);
+    const areas = new AreaStore(image);
+    const edges = EdgeStore.walled(image);
+    generatePassages(image, areas, edges, random);
+    return new Puzzle(image, areas, edges);
   }
 
   hasWall(coord: Coord, direction: Direction): boolean {
@@ -28,18 +30,19 @@ export class Puzzle {
 }
 
 function generatePassages(
-  maze: Maze,
+  image: Image,
+  areas: AreaStore,
   edges: EdgeStore,
   random: RandomFn,
 ): void {
-  for (const area of maze.areas.all()) {
+  for (const area of areas.all()) {
     if (area.pixels.length <= 1) continue;
-    generateAreaPassages(maze, area, edges, random);
+    generateAreaPassages(image, area, edges, random);
   }
 }
 
 function generateAreaPassages(
-  maze: Maze,
+  image: Image,
   area: Area,
   edges: EdgeStore,
   random: RandomFn,
@@ -75,7 +78,7 @@ function generateAreaPassages(
 
     const dir = chooseDirection(unvisitedDirs, lastDir, biasStraight, random);
     const nextCoord = pixel.coord.goTo(dir);
-    const next = maze.get(nextCoord);
+    const next = image.get(nextCoord);
 
     edges.removeWall(pixel.coord, dir);
     visited.add(nextCoord.toString());

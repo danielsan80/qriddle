@@ -8,7 +8,6 @@ import {
   type PuzzleStats,
 } from './components/Workspace';
 import { renderQRToCanvas, getQRMatrix } from './lib/qr';
-import { Maze } from './lib/maze';
 import { Puzzle } from './lib/puzzle';
 import { render } from './lib/renderPuzzle';
 import { Image } from './lib/image';
@@ -35,11 +34,10 @@ function App() {
 
     // Genera e renderizza puzzle
     const image = new Image(matrix).x2();
-    const maze = new Maze(image);
-    const puzzle = Puzzle.create(maze, 'seed');
+    const puzzle = Puzzle.create(image, 'seed');
     render(puzzleCanvasRef.current, puzzle);
 
-    const areas = puzzle.maze.areas.all();
+    const areas = puzzle.areas.all();
     const blackAreas = areas.filter((a) => a.color === 'black').length;
     const totalCells = areas.reduce((sum, a) => sum + a.pixels.length, 0);
     const minSize = Math.min(...areas.map((a) => a.pixels.length));

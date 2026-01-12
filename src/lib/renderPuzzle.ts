@@ -24,7 +24,7 @@ export function render(
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  const { rows, cols } = puzzle.maze.image.size;
+  const { rows, cols } = puzzle.image.size;
   const cellSize = opts.cellSize!;
 
   canvas.width = cols * cellSize;
@@ -77,7 +77,7 @@ export function render(
 
   // Dot in black areas - positioned in the cell furthest from center
   ctx.fillStyle = opts.dotColor!;
-  for (const area of puzzle.maze.areas.all()) {
+  for (const area of puzzle.areas.all()) {
     if (area.color === 'black' && area.pixels.length > 0) {
       const coords = area.pixels.map((p) => p.coord);
 
