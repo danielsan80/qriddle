@@ -1,7 +1,16 @@
 import { describe, it, expect } from 'vitest';
 import { edgeKey, EdgeMap, EdgeStore } from './edge';
 import { Coord } from './coord';
-import { Image } from './image';
+import { directions } from './direction';
+import { Image, type Pixel } from './image';
+
+function wallSummary(store: EdgeStore) {
+  return (pixel: Pixel): string => {
+    const dirs = ['N', 'E', 'S', 'W'] as const;
+    const edges = directions.map((dir) => store.get(pixel.coord, dir));
+    return dirs.filter((_, i) => edges[i].hasWall).join('') || '-';
+  };
+}
 
 describe('edgeKey', () => {
   it('returns same key regardless of coord order', () => {
@@ -105,5 +114,31 @@ describe('EdgeStore', () => {
     store.removeWall(new Coord(0, 0), 'east');
 
     expect(store.get(new Coord(0, 0), 'east').hasWall).toBe(false);
+  });
+
+  it('throws when removing wall between different colors', () => {
+    const image = new Image([[0, 1]]);
+    const store = new EdgeStore(image);
+
+    expect(() => store.removeWall(new Coord(0, 0), 'east')).toThrow(
+      'Cannot remove wall between different colors',
+    );
+  });
+
+  it('addAllWalls adds walls between all same-color cells', () => {
+    const image = new Image([
+      [1, 1, 1],
+      [1, 1, 1],
+      [1, 1, 1],
+    ]);
+    const store = new EdgeStore(image);
+
+    store.addAllWalls();
+
+    expect(image.map(wallSummary(store))).toEqual([
+      ['NESW', 'NESW', 'NESW'],
+      ['NESW', 'NESW', 'NESW'],
+      ['NESW', 'NESW', 'NESW'],
+    ]);
   });
 });

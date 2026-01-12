@@ -24,6 +24,8 @@ Rimappatura concetti (codice attuale → target):
 - `Grid` + `Maze` → `Image` — l'immagine bicolore con proprietà derivate (aree, adiacenze). Maze era fuorviante: non è un labirinto, è solo l'input con info precalcolate.
 - `Puzzle` → `Puzzle` — il puzzle generato (paint-by-areas). Nome generico ma corretto.
 
+**Prossimo passo**: smantellare `Maze`. È completamente deterministico e calcolabile da `Image`. Il suo contenuto (edges, areas) dovrebbe fluire dentro `Puzzle`.
+
 ### Value Objects
 
 **Coord** — posizione (row, col)

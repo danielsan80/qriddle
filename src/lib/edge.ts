@@ -93,10 +93,21 @@ export class EdgeStore {
     const pixel = this.image.get(coord);
     const neighbor = this.image.get(neighborCoord);
     if (pixel.color !== neighbor.color) {
-      throw Error('...');
+      throw new Error('Cannot remove wall between different colors');
     }
     if (this.hasWallOverrides.has(coord, neighborCoord)) {
       this.hasWallOverrides.unset(coord, neighborCoord);
     }
+  }
+
+  addAllWalls(): void {
+    this.image.forEach((pixel) => {
+      if (this.image.has(pixel.coord.east())) {
+        this.addWall(pixel.coord, 'east');
+      }
+      if (this.image.has(pixel.coord.south())) {
+        this.addWall(pixel.coord, 'south');
+      }
+    });
   }
 }
