@@ -3,6 +3,7 @@ import { Maze } from './maze';
 import { Area } from './area';
 import { Coord } from './coord';
 import { type Direction, directions } from './direction';
+import { edgeKey } from './edge';
 import { type Pixel } from './image';
 
 export class Puzzle {
@@ -30,7 +31,7 @@ export class Puzzle {
 
     // Internal same-color edge: check passages
     const neighborCoord = coord.goTo(direction);
-    const key = passageKey(coord, neighborCoord);
+    const key = edgeKey(coord, neighborCoord);
     return !this.passages.has(key);
   }
 }
@@ -85,7 +86,7 @@ function generateAreaPassages(
     const nextCoord = pixel.coord.goTo(dir);
     const next = maze.get(nextCoord);
 
-    passages.add(passageKey(pixel.coord, nextCoord));
+    passages.add(edgeKey(pixel.coord, nextCoord));
     visited.add(nextCoord.toString());
     stack.push({ pixel: next, lastDir: dir });
   }
@@ -117,10 +118,4 @@ function chooseDirection(
   }
 
   return candidates[candidates.length - 1];
-}
-
-function passageKey(a: Coord, b: Coord): string {
-  const [first, second] =
-    a.row < b.row || (a.row === b.row && a.col < b.col) ? [a, b] : [b, a];
-  return `${first.toString()}-${second.toString()}`;
 }

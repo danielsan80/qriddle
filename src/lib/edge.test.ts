@@ -1,7 +1,28 @@
 import { describe, it, expect } from 'vitest';
-import { EdgeMap, EdgeStore } from './edge';
+import { edgeKey, EdgeMap, EdgeStore } from './edge';
 import { Coord } from './coord';
 import { Image } from './image';
+
+describe('edgeKey', () => {
+  it('returns same key regardless of coord order', () => {
+    const a = new Coord(0, 0);
+    const b = new Coord(0, 1);
+
+    expect(edgeKey(a, b)).toBe(edgeKey(b, a));
+  });
+
+  it('formats key as "row,col-row,col" with smaller coord first', () => {
+    expect(edgeKey(new Coord(1, 2), new Coord(1, 3))).toBe('1,2-1,3');
+    expect(edgeKey(new Coord(1, 3), new Coord(1, 2))).toBe('1,2-1,3');
+  });
+
+  it('throws an error on non-adjacent coords', () => {
+    const a = new Coord(0, 0);
+    const b = new Coord(2, 2);
+
+    expect(() => edgeKey(a, b)).toThrow();
+  });
+});
 
 describe('EdgeMap', () => {
   it('stores and retrieves values for adjacent coords', () => {
@@ -33,14 +54,6 @@ describe('EdgeMap', () => {
 
     expect(map.get(a, b)).toBeUndefined();
     expect(map.has(a, b)).toBe(false);
-  });
-
-  it('asserts on non-adjacent coords', () => {
-    const map = new EdgeMap<string>();
-    const a = new Coord(0, 0);
-    const b = new Coord(2, 2);
-
-    expect(() => map.set(a, b, 'test')).toThrow();
   });
 });
 

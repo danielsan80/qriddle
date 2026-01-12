@@ -24,32 +24,32 @@ export class Edge {
   }
 }
 
+export function edgeKey(a: Coord, b: Coord): string {
+  if (a.distance(b) !== 1) {
+    throw new Error('edgeKey: coordinates must be adjacent');
+  }
+  const [first, second] =
+    a.row < b.row || (a.row === b.row && a.col < b.col) ? [a, b] : [b, a];
+  return `${first}-${second}`;
+}
+
 export class EdgeMap<T> {
   private map = new Map<string, T>();
 
-  private key(a: Coord, b: Coord): string {
-    const [first, second] =
-      a.row < b.row || (a.row === b.row && a.col < b.col) ? [a, b] : [b, a];
-    return `${first}-${second}`;
-  }
-
   set(a: Coord, b: Coord, value: T): void {
-    if (a.distance(b) !== 1) {
-      throw new Error('EdgeMap: coordinates must be adjacent');
-    }
-    this.map.set(this.key(a, b), value);
+    this.map.set(edgeKey(a, b), value);
   }
 
   get(a: Coord, b: Coord): T | undefined {
-    return this.map.get(this.key(a, b));
+    return this.map.get(edgeKey(a, b));
   }
 
   has(a: Coord, b: Coord): boolean {
-    return this.map.has(this.key(a, b));
+    return this.map.has(edgeKey(a, b));
   }
 
   unset(a: Coord, b: Coord): void {
-    this.map.delete(this.key(a, b));
+    this.map.delete(edgeKey(a, b));
   }
 }
 
