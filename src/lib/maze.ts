@@ -1,5 +1,6 @@
-import { type Color, Image, type Pixel } from './image';
+import { Image, type Pixel } from './image';
 import { Coord, type Direction } from './coord';
+import { AreaStore } from './area';
 
 export class Edge {
   readonly isExternal: boolean;
@@ -100,62 +101,15 @@ export class EdgeStore {
   }
 }
 
-export class Area {
-  readonly pixels: Pixel[];
-  readonly color: Color;
-
-  constructor(pixels: Pixel[], color: Color) {
-    this.pixels = pixels;
-    this.color = color;
-  }
-}
-
 export class Maze {
   readonly image: Image;
-  readonly areas: Area[];
   readonly edges: EdgeStore;
+  readonly areas: AreaStore;
 
   constructor(image: Image) {
     this.image = image;
     this.edges = new EdgeStore(image);
-    this.areas = this.findAreas();
-  }
-
-  private findAreas(): Area[] {
-    const visited = new Set<string>();
-    const areas: Area[] = [];
-
-    this.image.forEach((pixel) => {
-      const key = pixel.coord.toString();
-      if (visited.has(key)) return;
-
-      const areaPixels: Pixel[] = [];
-      const queue: Pixel[] = [pixel];
-      visited.add(key);
-
-      while (queue.length > 0) {
-        const current = queue.shift()!;
-        areaPixels.push(current);
-
-        for (const direction of ['north', 'east', 'south', 'west'] as const) {
-          const neighborCoord = current.coord.goTo(direction);
-          const neighborKey = neighborCoord.toString();
-
-          if (
-            this.image.has(neighborCoord) &&
-            !visited.has(neighborKey) &&
-            this.image.get(neighborCoord).color === pixel.color
-          ) {
-            visited.add(neighborKey);
-            queue.push(this.image.get(neighborCoord));
-          }
-        }
-      }
-
-      areas.push(new Area(areaPixels, pixel.color));
-    });
-
-    return areas;
+    this.areas = new AreaStore(image);
   }
 
   get(coord: Coord): Pixel {

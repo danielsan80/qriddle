@@ -1,5 +1,6 @@
 import { type RandomFn, mulberry32, hashString } from './random';
-import { Maze, Area } from './maze';
+import { Maze } from './maze';
+import { Area } from './area';
 import { Coord, type Direction, directions } from './coord';
 import { type Pixel } from './image';
 
@@ -36,7 +37,7 @@ export class Puzzle {
 function computePassages(maze: Maze, random: RandomFn): Set<string> {
   const passages = new Set<string>();
 
-  for (const area of maze.areas) {
+  for (const area of maze.areas.all()) {
     if (area.pixels.length <= 1) continue;
     generateAreaPassages(maze, area, random, passages);
   }

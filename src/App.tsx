@@ -39,7 +39,7 @@ function App() {
     const puzzle = Puzzle.create(maze, 'seed');
     render(puzzleCanvasRef.current, puzzle);
 
-    const areas = puzzle.maze.areas;
+    const areas = puzzle.maze.areas.all();
     const blackAreas = areas.filter((a) => a.color === 'black').length;
     const totalCells = areas.reduce((sum, a) => sum + a.pixels.length, 0);
     const minSize = Math.min(...areas.map((a) => a.pixels.length));

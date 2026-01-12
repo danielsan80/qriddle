@@ -77,7 +77,7 @@ export function render(
 
   // Dot in black areas - positioned in the cell furthest from center
   ctx.fillStyle = opts.dotColor!;
-  for (const area of puzzle.maze.areas) {
+  for (const area of puzzle.maze.areas.all()) {
     if (area.color === 'black' && area.pixels.length > 0) {
       const coords = area.pixels.map((p) => p.coord);
 

@@ -128,7 +128,7 @@ describe('Puzzle', () => {
     const puzzle = Puzzle.create(maze, 'seed');
 
     // Check connectivity via flood fill through passages
-    const area = maze.areas[0];
+    const area = maze.areas.at(0)!;
     const start = area.pixels[0];
     const visited = new Set<string>();
     const queue = [start.coord.toString()];

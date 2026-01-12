@@ -65,66 +65,6 @@ describe('Maze', () => {
       ]);
     });
   });
-
-  describe('areas', () => {
-    function mapAreas(maze: Maze): string[][] {
-      const areaMap = new Map<string, string>();
-      maze.areas.forEach((area, index) => {
-        const symbol = area.color === 'black' ? '◾' : '◻';
-        area.pixels.forEach((pixel) => {
-          areaMap.set(pixel.coord.toString(), `${index}${symbol}`);
-        });
-      });
-
-      return maze.image.map((pixel) => areaMap.get(pixel.coord.toString())!);
-    }
-
-    it('groups cells by color', () => {
-      const maze = new Maze(
-        new Image([
-          [0, 1],
-          [0, 1],
-        ]),
-      );
-
-      expect(mapAreas(maze)).toEqual([
-        ['0◻', '1◾'],
-        ['0◻', '1◾'],
-      ]);
-    });
-
-    it('separates non-adjacent same-color cells into different areas', () => {
-      const maze = new Maze(
-        new Image([
-          [1, 0, 1],
-          [0, 0, 0],
-          [1, 0, 1],
-        ]),
-      );
-
-      expect(mapAreas(maze)).toEqual([
-        ['0◾', '1◻', '2◾'],
-        ['1◻', '1◻', '1◻'],
-        ['3◾', '1◻', '4◾'],
-      ]);
-    });
-
-    it('merges adjacent same-color cells into one area', () => {
-      const maze = new Maze(
-        new Image([
-          [1, 1, 1],
-          [1, 1, 1],
-          [1, 1, 1],
-        ]),
-      );
-
-      expect(mapAreas(maze)).toEqual([
-        ['0◾', '0◾', '0◾'],
-        ['0◾', '0◾', '0◾'],
-        ['0◾', '0◾', '0◾'],
-      ]);
-    });
-  });
 });
 
 describe('EdgeMap', () => {
