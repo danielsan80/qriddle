@@ -57,8 +57,18 @@ export class EdgeStore {
   private readonly image: Image;
   private readonly hasWallOverrides = new EdgeMap<boolean>();
 
-  constructor(image: Image) {
+  private constructor(image: Image) {
     this.image = image;
+  }
+
+  static create(image: Image): EdgeStore {
+    return new EdgeStore(image);
+  }
+
+  static walled(image: Image): EdgeStore {
+    const store = new EdgeStore(image);
+    store.addAllWalls();
+    return store;
   }
 
   get(coord: Coord, direction: Direction): Edge {

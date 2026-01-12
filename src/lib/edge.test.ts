@@ -69,7 +69,7 @@ describe('EdgeMap', () => {
 describe('EdgeStore', () => {
   it('returns external edge for border cells', () => {
     const image = new Image([[0]]);
-    const store = new EdgeStore(image);
+    const store = EdgeStore.create(image);
 
     const edge = store.get(new Coord(0, 0), 'north');
 
@@ -79,7 +79,7 @@ describe('EdgeStore', () => {
 
   it('returns wall between different colors', () => {
     const image = new Image([[0, 1]]);
-    const store = new EdgeStore(image);
+    const store = EdgeStore.create(image);
 
     const edge = store.get(new Coord(0, 0), 'east');
 
@@ -89,7 +89,7 @@ describe('EdgeStore', () => {
 
   it('returns no wall between same colors', () => {
     const image = new Image([[1, 1]]);
-    const store = new EdgeStore(image);
+    const store = EdgeStore.create(image);
 
     const edge = store.get(new Coord(0, 0), 'east');
 
@@ -99,7 +99,7 @@ describe('EdgeStore', () => {
 
   it('allows to add custom walls', () => {
     const image = new Image([[1, 1]]);
-    const store = new EdgeStore(image);
+    const store = EdgeStore.create(image);
 
     store.addWall(new Coord(0, 0), 'east');
 
@@ -108,7 +108,7 @@ describe('EdgeStore', () => {
 
   it('allows to remove custom wall', () => {
     const image = new Image([[1, 1]]);
-    const store = new EdgeStore(image);
+    const store = EdgeStore.create(image);
     store.addWall(new Coord(0, 0), 'east');
 
     store.removeWall(new Coord(0, 0), 'east');
@@ -118,7 +118,7 @@ describe('EdgeStore', () => {
 
   it('throws when removing wall between different colors', () => {
     const image = new Image([[0, 1]]);
-    const store = new EdgeStore(image);
+    const store = EdgeStore.create(image);
 
     expect(() => store.removeWall(new Coord(0, 0), 'east')).toThrow(
       'Cannot remove wall between different colors',
@@ -131,7 +131,7 @@ describe('EdgeStore', () => {
       [1, 1, 1],
       [1, 1, 1],
     ]);
-    const store = new EdgeStore(image);
+    const store = EdgeStore.create(image);
 
     store.addAllWalls();
 

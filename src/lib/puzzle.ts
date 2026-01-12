@@ -3,55 +3,46 @@ import { Maze } from './maze';
 import { Area } from './area';
 import { Coord } from './coord';
 import { type Direction, directions } from './direction';
-import { edgeKey } from './edge';
+import { EdgeStore } from './edge';
 import { type Pixel } from './image';
 
 export class Puzzle {
   readonly maze: Maze;
-  private readonly passages: Set<string>;
+  private readonly edges: EdgeStore;
 
-  private constructor(maze: Maze, passages: Set<string>) {
+  private constructor(maze: Maze, edges: EdgeStore) {
     this.maze = maze;
-    this.passages = passages;
+    this.edges = edges;
   }
 
   static create(maze: Maze, seed: string): Puzzle {
     const random = mulberry32(hashString(seed));
-    const passages = computePassages(maze, random);
-    return new Puzzle(maze, passages);
+    const edges = EdgeStore.walled(maze.image);
+    generatePassages(maze, edges, random);
+    return new Puzzle(maze, edges);
   }
 
   hasWall(coord: Coord, direction: Direction): boolean {
-    const edge = this.maze.edges.get(coord, direction);
-
-    // External edges and color boundaries always have walls
-    if (edge.isExternal || edge.hasWall) {
-      return true;
-    }
-
-    // Internal same-color edge: check passages
-    const neighborCoord = coord.goTo(direction);
-    const key = edgeKey(coord, neighborCoord);
-    return !this.passages.has(key);
+    return this.edges.get(coord, direction).hasWall;
   }
 }
 
-function computePassages(maze: Maze, random: RandomFn): Set<string> {
-  const passages = new Set<string>();
-
+function generatePassages(
+  maze: Maze,
+  edges: EdgeStore,
+  random: RandomFn,
+): void {
   for (const area of maze.areas.all()) {
     if (area.pixels.length <= 1) continue;
-    generateAreaPassages(maze, area, random, passages);
+    generateAreaPassages(maze, area, edges, random);
   }
-
-  return passages;
 }
 
 function generateAreaPassages(
   maze: Maze,
   area: Area,
+  edges: EdgeStore,
   random: RandomFn,
-  passages: Set<string>,
 ): void {
   const pixelSet = new Set(area.pixels.map((p) => p.coord.toString()));
   const visited = new Set<string>();
@@ -86,7 +77,7 @@ function generateAreaPassages(
     const nextCoord = pixel.coord.goTo(dir);
     const next = maze.get(nextCoord);
 
-    passages.add(edgeKey(pixel.coord, nextCoord));
+    edges.removeWall(pixel.coord, dir);
     visited.add(nextCoord.toString());
     stack.push({ pixel: next, lastDir: dir });
   }

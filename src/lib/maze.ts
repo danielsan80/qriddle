@@ -10,7 +10,7 @@ export class Maze {
 
   constructor(image: Image) {
     this.image = image;
-    this.edges = new EdgeStore(image);
+    this.edges = EdgeStore.create(image);
     this.areas = new AreaStore(image);
   }
 
