@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { Puzzle } from './puzzle';
 import { Maze } from './maze';
-import { Coord, type Direction } from './coord';
+import { Coord } from './coord';
+import { directions } from './direction';
 import { Image } from './image';
 
 describe('Puzzle', () => {
@@ -134,8 +135,6 @@ describe('Puzzle', () => {
     const queue = [start.coord.toString()];
     visited.add(start.coord.toString());
 
-    const directions: Direction[] = ['north', 'east', 'south', 'west'];
-
     while (queue.length > 0) {
       const key = queue.shift()!;
       const [row, col] = key.split(',').map(Number);
@@ -164,8 +163,8 @@ function wallMap(puzzle: Puzzle): string[][] {
     result[row] = [];
     for (let col = 0; col < cols; col++) {
       const coord = new Coord(row, col);
-      const walls = ['north', 'east', 'south', 'west']
-        .filter((dir) => puzzle.hasWall(coord, dir as Direction))
+      const walls = directions
+        .filter((dir) => puzzle.hasWall(coord, dir))
         .map((d) => d[0].toUpperCase())
         .join('');
       result[row][col] = walls || '-';

@@ -1,18 +1,4 @@
-export type Direction = 'north' | 'south' | 'east' | 'west';
-
-export const directions: readonly Direction[] = [
-  'north',
-  'east',
-  'south',
-  'west',
-] as const;
-
-export const opposite: Record<Direction, Direction> = {
-  north: 'south',
-  south: 'north',
-  east: 'west',
-  west: 'east',
-};
+import { type Direction } from './direction';
 
 export class Coord {
   readonly row: number;

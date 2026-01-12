@@ -1,7 +1,8 @@
 import { type RandomFn, mulberry32, hashString } from './random';
 import { Maze } from './maze';
 import { Area } from './area';
-import { Coord, type Direction, directions } from './coord';
+import { Coord } from './coord';
+import { type Direction, directions } from './direction';
 import { type Pixel } from './image';
 
 export class Puzzle {

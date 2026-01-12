@@ -1,5 +1,6 @@
 import { Image } from './image';
-import { Coord, type Direction } from './coord';
+import { Coord } from './coord';
+import { type Direction } from './direction';
 
 export class Edge {
   readonly isExternal: boolean;

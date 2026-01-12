@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Maze } from './maze';
-import { directions } from './coord';
+import { directions } from './direction';
 import { Image, type Pixel } from './image';
 
 describe('Maze', () => {

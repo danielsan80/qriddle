@@ -1,5 +1,5 @@
 import { type Color, Image, type Pixel } from './image';
-import { directions } from './coord.ts';
+import { directions } from './direction';
 
 export class Area {
   readonly pixels: Pixel[];
