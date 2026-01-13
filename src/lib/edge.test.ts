@@ -12,6 +12,14 @@ function wallSummary(store: EdgeStore) {
   };
 }
 
+function externalSummary(store: EdgeStore) {
+  return (pixel: Pixel): string => {
+    const dirs = ['N', 'E', 'S', 'W'] as const;
+    const edges = directions.map((dir) => store.get(pixel.coord, dir));
+    return dirs.filter((_, i) => edges[i].isExternal).join('') || '-';
+  };
+}
+
 describe('edgeKey', () => {
   it('returns same key regardless of coord order', () => {
     const a = new Coord(0, 0);
@@ -67,34 +75,45 @@ describe('EdgeMap', () => {
 });
 
 describe('EdgeStore', () => {
-  it('returns external edge for border cells', () => {
-    const image = new Image([[0]]);
+  it('marks external edges for border cells', () => {
+    const image = new Image([
+      [0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0],
+    ]);
     const store = EdgeStore.create(image);
 
-    const edge = store.get(new Coord(0, 0), 'north');
-
-    expect(edge.isExternal).toBe(true);
-    expect(edge.hasWall).toBe(true);
+    expect(image.map(externalSummary(store))).toEqual([
+      ['NW', 'N', 'NE'],
+      ['W', '-', 'E'],
+      ['SW', 'S', 'ES'],
+    ]);
   });
 
-  it('returns wall between different colors', () => {
-    const image = new Image([[0, 1]]);
+  it('has walls between different colors and on external edges', () => {
+    const image = new Image([
+      [0, 1],
+      [0, 1],
+    ]);
     const store = EdgeStore.create(image);
 
-    const edge = store.get(new Coord(0, 0), 'east');
-
-    expect(edge.isExternal).toBe(false);
-    expect(edge.hasWall).toBe(true);
+    expect(image.map(wallSummary(store))).toEqual([
+      ['NEW', 'NEW'],
+      ['ESW', 'ESW'],
+    ]);
   });
 
-  it('returns no wall between same colors', () => {
-    const image = new Image([[1, 1]]);
+  it('has no internal walls between same colors', () => {
+    const image = new Image([
+      [1, 1],
+      [1, 1],
+    ]);
     const store = EdgeStore.create(image);
 
-    const edge = store.get(new Coord(0, 0), 'east');
-
-    expect(edge.isExternal).toBe(false);
-    expect(edge.hasWall).toBe(false);
+    expect(image.map(wallSummary(store))).toEqual([
+      ['NW', 'NE'],
+      ['SW', 'ES'],
+    ]);
   });
 
   it('allows to add custom walls', () => {
