@@ -15,16 +15,7 @@ Regole sintetiche: scrivi il minimo necessario per essere compresi.
 File sorgente da cui stiamo portando il codice in React:
 `/home/danilo/www/lab/smart-greeting-card/doc/tmp/qr-puzzle-generator-fixed.html`
 
-## Domain Model (WIP)
-
-### Refactoring pianificato
-
-Rimappatura concetti (codice attuale → target):
-
-- `Grid` + `Maze` → `Image` — l'immagine bicolore con proprietà derivate (aree, adiacenze). Maze era fuorviante: non è un labirinto, è solo l'input con info precalcolate.
-- `Puzzle` → `Puzzle` — il puzzle generato (paint-by-areas). Nome generico ma corretto.
-
-**Prossimo passo**: smantellare `Maze`. È completamente deterministico e calcolabile da `Image`. Il suo contenuto (edges, areas) dovrebbe fluire dentro `Puzzle`.
+## Domain Model
 
 ### Value Objects
 
@@ -32,47 +23,68 @@ Rimappatura concetti (codice attuale → target):
 
 **Size** — dimensioni (rows, cols)
 
-**Color** — `'black' | 'white'` (enum)
+**Color** — `'black' | 'white'`
 
-**Edge** — bordo di una cella
+**Direction** — `'north' | 'south' | 'east' | 'west'`
+
+- `directions` — array readonly delle 4 direzioni
+- `opposite` — mappa direzione → direzione opposta
+
+**Pixel** — cella dell'immagine
+
+- `coord: Coord`
+- `color: Color`
+
+**Edge** — bordo tra due celle adiacenti ortogonalmente
 
 - `isExternal: boolean` — bordo esterno della griglia
 - `hasWall: boolean` — presenza del muro
 
-### Input Context
+### Image
 
-**Pixel** (VO)
-
-- `coord: Coord`
-- `color: Color`
-
-**Image** — contenitore di Pixel
+Contenitore di Pixel (input).
 
 - `size: Size`
 - `get(coord: Coord): Pixel`
-- `has(coord: Coord): boolean` — verifica bounds
+- `has(coord: Coord): boolean`
 - `forEach(callback: (pixel: Pixel) => void)`
+- `map<T>(callback: (pixel: Pixel) => T): T[][]`
 
-### Output Context (Maze)
+### Area / AreaStore
 
-**Cell** (VO)
+**Area** — gruppo di pixel adiacenti dello stesso colore
 
-- `coord: Coord`
+- `pixels: Pixel[]`
 - `color: Color`
 
-**EdgeStore** — gestisce i bordi tra celle
+**AreaStore** — contenitore di aree
 
+- `at(index: number): Area | undefined`
+- `forEach(callback: (area: Area, index: number) => void)`
+- `map<T>(callback: (area: Area) => T): T[]`
+- `all(): Area[]`
+
+### EdgeStore
+
+Gestisce i bordi tra celle.
+
+- `create(image: Image): EdgeStore` — factory, senza muri interni
+- `walled(image: Image): EdgeStore` — factory, con tutti i muri interni
 - `get(coord: Coord, direction: Direction): Edge`
 - `addWall(coord: Coord, direction: Direction): void`
 - `removeWall(coord: Coord, direction: Direction): void`
+- `addAllWalls(): void` — aggiunge muri tra tutte le celle stesso colore
 
-**Maze** — contenitore di Cell
+**edgeKey(a: Coord, b: Coord): string** — chiave univoca per un bordo tra due celle adiacenti
 
-- `size: Size`
-- `edges: EdgeStore`
-- `get(coord: Coord): Cell`
-- `has(coord: Coord): boolean`
-- `forEach(callback: (cell: Cell) => void)`
+### Puzzle
+
+Il puzzle generato (output).
+
+- `image: Image`
+- `areas: AreaStore`
+- `create(image: Image, seed: string): Puzzle` — factory
+- `hasWall(coord: Coord, direction: Direction): boolean`
 
 ## Problema
 
