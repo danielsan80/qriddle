@@ -1,6 +1,13 @@
 import { Image } from './image';
 import { Coord } from './coord';
-import { type Direction } from './direction';
+import { type Direction, directions } from './direction';
+
+export type Edges = {
+  north: Edge;
+  east: Edge;
+  south: Edge;
+  west: Edge;
+};
 
 export class Edge {
   readonly isExternal: boolean;
@@ -119,5 +126,37 @@ export class EdgeStore {
         this.addWall(pixel.coord, 'south');
       }
     });
+  }
+
+  map<T>(fn: (edges: Edges) => T): T[][] {
+    return this.image.map((pixel) => {
+      const edges: Edges = {
+        north: this.get(pixel.coord, 'north'),
+        east: this.get(pixel.coord, 'east'),
+        south: this.get(pixel.coord, 'south'),
+        west: this.get(pixel.coord, 'west'),
+      };
+      return fn(edges);
+    });
+  }
+
+  wallMap(): string[][] {
+    return this.map<string>(
+      (edges: Edges): string =>
+        directions
+          .filter((dir) => edges[dir].hasWall)
+          .map((dir) => dir[0].toUpperCase())
+          .join('') || '-',
+    );
+  }
+
+  externalMap(): string[][] {
+    return this.map<string>(
+      (edges: Edges): string =>
+        directions
+          .filter((dir) => edges[dir].isExternal)
+          .map((dir) => dir[0].toUpperCase())
+          .join('') || '-',
+    );
   }
 }

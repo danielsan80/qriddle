@@ -1,23 +1,34 @@
 import { describe, it, expect } from 'vitest';
-import { edgeKey, EdgeMap, EdgeStore } from './edge';
+import { edgeKey, EdgeMap, EdgeStore, type Edges } from './edge';
 import { Coord } from './coord';
-import { directions } from './direction';
-import { Image, type Pixel } from './image';
+import { Image } from './image';
+import { type Direction, directions } from './direction.ts';
 
-function wallSummary(store: EdgeStore) {
-  return (pixel: Pixel): string => {
-    const dirs = ['N', 'E', 'S', 'W'] as const;
-    const edges = directions.map((dir) => store.get(pixel.coord, dir));
-    return dirs.filter((_, i) => edges[i].hasWall).join('') || '-';
-  };
-}
+const boxChars: Record<string, string> = {
+  '': '·',
+  N: '╵',
+  E: '╶',
+  S: '╷',
+  W: '╴',
+  NE: '└',
+  NS: '│',
+  NW: '┘',
+  ES: '┌',
+  EW: '─',
+  SW: '┐',
+  NES: '├',
+  NEW: '┴',
+  NSW: '┤',
+  ESW: '┬',
+  NESW: '┼',
+};
 
-function externalSummary(store: EdgeStore) {
-  return (pixel: Pixel): string => {
-    const dirs = ['N', 'E', 'S', 'W'] as const;
-    const edges = directions.map((dir) => store.get(pixel.coord, dir));
-    return dirs.filter((_, i) => edges[i].isExternal).join('') || '-';
-  };
+function toBoxChar(edges: Edges): string {
+  const key = directions
+    .filter((dir: Direction): boolean => edges[dir].hasWall)
+    .map((dir: Direction): string => dir[0].toUpperCase())
+    .join('');
+  return boxChars[key] ?? '?';
 }
 
 describe('edgeKey', () => {
@@ -75,48 +86,48 @@ describe('EdgeMap', () => {
 });
 
 describe('EdgeStore', () => {
-  it('marks external edges for border cells', () => {
+  it('externalMap returns external edges', () => {
     const image = new Image([
       [0, 0, 0],
-      [0, 0, 0],
+      [0, 1, 0],
       [0, 0, 0],
     ]);
     const store = EdgeStore.create(image);
 
-    expect(image.map(externalSummary(store))).toEqual([
+    expect(store.externalMap()).toEqual([
       ['NW', 'N', 'NE'],
       ['W', '-', 'E'],
       ['SW', 'S', 'ES'],
     ]);
   });
 
-  it('has walls between different colors and on external edges', () => {
+  it('wallMap shows walls between different colors and on external edges', () => {
     const image = new Image([
       [0, 1],
       [0, 1],
     ]);
     const store = EdgeStore.create(image);
 
-    expect(image.map(wallSummary(store))).toEqual([
+    expect(store.wallMap()).toEqual([
       ['NEW', 'NEW'],
       ['ESW', 'ESW'],
     ]);
   });
 
-  it('has no internal walls between same colors', () => {
+  it('wallMap shows no internal walls between same colors', () => {
     const image = new Image([
       [1, 1],
       [1, 1],
     ]);
     const store = EdgeStore.create(image);
 
-    expect(image.map(wallSummary(store))).toEqual([
+    expect(store.wallMap()).toEqual([
       ['NW', 'NE'],
       ['SW', 'ES'],
     ]);
   });
 
-  it('allows to add custom walls', () => {
+  it('addWall adds a wall', () => {
     const image = new Image([[1, 1]]);
     const store = EdgeStore.create(image);
 
@@ -125,7 +136,7 @@ describe('EdgeStore', () => {
     expect(store.get(new Coord(0, 0), 'east').hasWall).toBe(true);
   });
 
-  it('allows to remove custom wall', () => {
+  it('removeWall removes a wall', () => {
     const image = new Image([[1, 1]]);
     const store = EdgeStore.create(image);
     store.addWall(new Coord(0, 0), 'east');
@@ -135,7 +146,7 @@ describe('EdgeStore', () => {
     expect(store.get(new Coord(0, 0), 'east').hasWall).toBe(false);
   });
 
-  it('throws when removing wall between different colors', () => {
+  it('removeWall throws an error when removing wall between different colors', () => {
     const image = new Image([[0, 1]]);
     const store = EdgeStore.create(image);
 
@@ -154,10 +165,37 @@ describe('EdgeStore', () => {
 
     store.addAllWalls();
 
-    expect(image.map(wallSummary(store))).toEqual([
+    expect(store.wallMap()).toEqual([
       ['NESW', 'NESW', 'NESW'],
       ['NESW', 'NESW', 'NESW'],
       ['NESW', 'NESW', 'NESW'],
     ]);
+  });
+
+  it('map allows custom wall rendering with box-drawing characters', () => {
+    const image = new Image([
+      [1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1],
+      [1, 1, 0, 0, 1, 1],
+      [1, 1, 0, 0, 1, 1],
+      [1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1],
+    ]);
+    const store = EdgeStore.create(image);
+
+    // prettier-ignore
+    expect(
+      store
+        .map(toBoxChar)
+        .map((row) => row.join(''))
+        .join('\n'),
+    ).toBe([
+      '┘╵╵╵╵└',
+      '╴·╷╷·╶',
+      '╴╶┘└╴╶',
+      '╴╶┐┌╴╶',
+      '╴·╵╵·╶',
+      '┐╷╷╷╷┌',
+    ].join('\n'));
   });
 });
