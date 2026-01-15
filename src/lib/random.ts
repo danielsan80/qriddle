@@ -4,6 +4,15 @@ export function createRandom(seed: string): RandomFn {
   return mulberry32(hashString(seed));
 }
 
+export function createFakeRandom(values: number[]): RandomFn {
+  let index = 0;
+  return () => {
+    const value = values[index % values.length];
+    index++;
+    return value;
+  };
+}
+
 export function mulberry32(seed: number): RandomFn {
   return () => {
     seed |= 0;
