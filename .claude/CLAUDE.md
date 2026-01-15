@@ -88,7 +88,7 @@ Il puzzle generato (output).
 
 ### ToDo
 
-- [ ] Riorganizzare i file .ts in cartelle semantiche
+- [x] Riorganizzare i file .ts in cartelle semantiche
 - [ ] Rivedere l'interfaccia UI
 - [ ] Mostrare il seed in interfaccia (token alfanumerico 10 caratteri)
 - [ ] Aggiungere pulsante per rigenerare il seed casualmente

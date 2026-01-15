@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import { Image } from '../image';
 import { AreaStore } from './area';
-import { Image } from './image';
 
 describe('AreaStore', () => {
   function mapAreas(image: Image, store: AreaStore): string[][] {

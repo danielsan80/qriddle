@@ -1,6 +1,4 @@
-import { Image } from './image';
-import { Coord } from './coord';
-import { type Direction, directions } from './direction';
+import { Coord, directions, Image, type Direction } from '../image';
 
 export type Edges = {
   north: Edge;

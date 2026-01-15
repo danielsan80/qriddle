@@ -1,9 +1,7 @@
 import { describe, it, expect } from 'vitest';
+import { Coord, directions, Image } from '../image';
+import { createRandom } from '../util';
 import { Puzzle } from './puzzle';
-import { Coord } from './coord';
-import { directions } from './direction';
-import { Image } from './image';
-import { createRandom } from './random';
 
 describe('Puzzle', () => {
   it('exposes the image', () => {

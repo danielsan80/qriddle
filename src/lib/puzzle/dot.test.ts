@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { chooseDots } from './dot';
+import { Image } from '../image';
+import { createRandom } from '../util';
 import { AreaStore } from './area';
-import { Image } from './image';
-import { createRandom } from './random';
+import { chooseDots } from './dot';
 
 describe('chooseDots', () => {
   it('produces same result with same seed', () => {

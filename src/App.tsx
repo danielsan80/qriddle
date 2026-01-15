@@ -7,11 +7,10 @@ import {
   type QRStats,
   type PuzzleStats,
 } from './components/Workspace';
-import { renderQRToCanvas, getQRMatrix } from './lib/qr';
-import { Puzzle } from './lib/puzzle';
-import { render } from './lib/renderPuzzle';
 import { Image } from './lib/image';
-import { createRandom } from './lib/random';
+import { Puzzle } from './lib/puzzle';
+import { render } from './lib/render';
+import { createRandom, renderQRToCanvas, getQRMatrix } from './lib/util';
 import './App.css';
 
 function App() {

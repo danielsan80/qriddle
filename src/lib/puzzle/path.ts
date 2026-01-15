@@ -1,9 +1,8 @@
-import { type RandomFn } from './random';
+import { config } from '../config';
+import { directions, Image, type Direction, type Pixel } from '../image';
+import { type RandomFn } from '../util';
 import { Area, AreaStore } from './area';
-import { type Direction, directions } from './direction';
 import { EdgeStore } from './edge';
-import { Image, type Pixel } from './image';
-import { config } from './config';
 
 export function digPaths(image: Image, random: RandomFn): EdgeStore {
   const areas = new AreaStore(image);

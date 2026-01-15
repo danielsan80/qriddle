@@ -1,10 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { digPaths } from './path';
+import { Coord, directions, Image } from '../image';
+import { createRandom } from '../util';
 import { AreaStore } from './area';
-import { Coord } from './coord';
-import { directions } from './direction';
-import { Image } from './image';
-import { createRandom } from './random';
+import { digPaths } from './path';
 
 describe('digPaths', () => {
   it('produces same result with same seed', () => {

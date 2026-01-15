@@ -1,8 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import { Coord, directions, Image, type Direction } from '../image';
 import { edgeKey, EdgeMap, EdgeStore, type Edges } from './edge';
-import { Coord } from './coord';
-import { Image } from './image';
-import { type Direction, directions } from './direction.ts';
 
 const boxChars: Record<string, string> = {
   '': '·',

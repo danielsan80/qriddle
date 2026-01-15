@@ -1,11 +1,9 @@
+import { Coord, Image, type Direction } from '../image';
+import { type RandomFn } from '../util';
 import { AreaStore } from './area';
-import { Coord } from './coord';
-import { type Direction } from './direction';
 import { chooseDots } from './dot';
 import { EdgeStore } from './edge';
-import { Image } from './image';
 import { digPaths } from './path';
-import { type RandomFn } from './random';
 
 export class Puzzle {
   readonly image: Image;

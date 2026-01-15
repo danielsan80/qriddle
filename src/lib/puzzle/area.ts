@@ -1,5 +1,4 @@
-import { type Color, Image, type Pixel } from './image';
-import { directions } from './direction';
+import { directions, Image, type Color, type Pixel } from '../image';
 
 export class Area {
   readonly pixels: Pixel[];
