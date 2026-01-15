@@ -31,23 +31,4 @@
       image-rendering: pixelated;
     }
   }
-
-  .stats {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    background: var(--paper);
-    border-left: 4px solid var(--accent);
-    font-size: 0.9rem;
-  }
-
-  .statsItem {
-    margin: 0.5rem 0;
-  }
-
-  .statsLabel {
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.05em;
-  }
 }
