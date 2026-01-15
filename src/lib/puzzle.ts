@@ -1,6 +1,7 @@
 import { AreaStore } from './area';
 import { Coord } from './coord';
 import { type Direction } from './direction';
+import { chooseDots } from './dot';
 import { EdgeStore } from './edge';
 import { Image } from './image';
 import { digPaths } from './path';
@@ -27,13 +28,7 @@ export class Puzzle {
   static create(image: Image, random: RandomFn): Puzzle {
     const edges = digPaths(image, random);
     const areas = new AreaStore(image);
-    const dots = areas
-      .all()
-      .filter((area) => area.color === 'black')
-      .map((area) => {
-        const index = Math.floor(random() * area.pixels.length);
-        return area.pixels[index].coord;
-      });
+    const dots = chooseDots(image, random);
     return new Puzzle(image, areas, edges, dots);
   }
 

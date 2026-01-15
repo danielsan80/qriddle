@@ -86,9 +86,9 @@ Il puzzle generato (output).
 - `create(image: Image, seed: string): Puzzle` — factory
 - `hasWall(coord: Coord, direction: Direction): boolean`
 
-### Refactoring pianificato
+### ToDo
 
-**PathFinder** — estrarre da Puzzle la logica di generazione dello spanning tree (DFS + bias direzionale). Puzzle diventa un Facade che coordina Image, AreaStore, EdgeStore e PathFinder.
+Da definire
 
 ## Problema
 

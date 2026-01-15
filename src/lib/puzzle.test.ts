@@ -93,13 +93,13 @@ describe('Puzzle', () => {
         '│ ╶─────┐ ╵ │',
         '│◾ ◾ ◾ ◾│◾ ◾│',
         '│ ╶─┬─╴ ├───┤',
-        '│◾ ◾│◾ ◾│◻ ◻│',
+        '│◉ ◾│◾ ◾│◻ ◻│',
         '├─╴ └─┬─┘ ╶─┤',
         '│◾ ◾ ◾│◻ ◻ ◻│',
         '│ ┌───┤ ┌───┤',
         '│◾│◻ ◻│◻│◾ ◾│',
         '├─┘ ╷ ╵ │ ╷ │',
-        '│◻ ◻│◻ ◻│◾│◾│',
+        '│◻ ◻│◻ ◻│◾│◉│',
         '└───┴───┴─┴─┘',
       ].join('\n'),
     );
@@ -224,6 +224,7 @@ function wallMap(puzzle: Puzzle): string[][] {
 function toBoxDrawing(puzzle: Puzzle): string {
   const { rows, cols } = puzzle.image.size;
   const grid: string[][] = [];
+  const dotSet = new Set(puzzle.dots.map((d) => d.toString()));
 
   for (let r = 0; r < rows * 2 + 1; r++) {
     grid[r] = [];
@@ -234,8 +235,14 @@ function toBoxDrawing(puzzle: Puzzle): string {
 
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
-      const cell = puzzle.image.get(new Coord(row, col));
-      grid[row * 2 + 1][col * 2 + 1] = cell.color === 'black' ? '◾' : '◻';
+      const coord = new Coord(row, col);
+      const cell = puzzle.image.get(coord);
+      const isDot = dotSet.has(coord.toString());
+      grid[row * 2 + 1][col * 2 + 1] = isDot
+        ? '◉'
+        : cell.color === 'black'
+          ? '◾'
+          : '◻';
     }
   }
 

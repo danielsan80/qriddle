@@ -1,5 +1,5 @@
-import { Puzzle } from './puzzle';
 import { Coord } from './coord';
+import { Puzzle } from './puzzle';
 
 export interface PuzzleRenderOptions {
   cellSize?: number;
@@ -75,36 +75,13 @@ export function render(
     }
   }
 
-  // Dot in black areas - positioned in the cell furthest from center
+  // Dots
   ctx.fillStyle = opts.dotColor!;
-  for (const area of puzzle.areas.all()) {
-    if (area.color === 'black' && area.pixels.length > 0) {
-      const coords = area.pixels.map((p) => p.coord);
-
-      // Geometric center of the area
-      const sumRow = coords.reduce((sum, c) => sum + c.row, 0);
-      const sumCol = coords.reduce((sum, c) => sum + c.col, 0);
-      const centerRow = sumRow / coords.length;
-      const centerCol = sumCol / coords.length;
-
-      // Find the cell furthest from center
-      let furthest = coords[0];
-      let maxDist = 0;
-      for (const c of coords) {
-        const dist =
-          Math.pow(c.row - centerRow, 2) + Math.pow(c.col - centerCol, 2);
-        if (dist > maxDist) {
-          maxDist = dist;
-          furthest = c;
-        }
-      }
-
-      const x = (furthest.col + 0.5) * cellSize;
-      const y = (furthest.row + 0.5) * cellSize;
-
-      ctx.beginPath();
-      ctx.arc(x, y, cellSize * 0.3, 0, Math.PI * 2);
-      ctx.fill();
-    }
+  for (const dot of puzzle.dots) {
+    const x = (dot.col + 0.5) * cellSize;
+    const y = (dot.row + 0.5) * cellSize;
+    ctx.beginPath();
+    ctx.arc(x, y, cellSize * 0.3, 0, Math.PI * 2);
+    ctx.fill();
   }
 }
