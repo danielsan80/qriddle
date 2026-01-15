@@ -11,6 +11,7 @@ import { renderQRToCanvas, getQRMatrix } from './lib/qr';
 import { Puzzle } from './lib/puzzle';
 import { render } from './lib/renderPuzzle';
 import { Image } from './lib/image';
+import { createRandom } from './lib/random';
 import './App.css';
 
 function App() {
@@ -34,7 +35,7 @@ function App() {
 
     // Genera e renderizza puzzle
     const image = new Image(matrix).x2();
-    const puzzle = Puzzle.create(image, 'seed');
+    const puzzle = Puzzle.create(image, createRandom('seed'));
     render(puzzleCanvasRef.current, puzzle);
 
     const areas = puzzle.areas.all();

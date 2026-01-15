@@ -1,8 +1,9 @@
 export type RandomFn = () => number;
 
-/**
- * Mulberry32 PRNG - generates pseudo-random numbers from a seed
- */
+export function createRandom(seed: string): RandomFn {
+  return mulberry32(hashString(seed));
+}
+
 export function mulberry32(seed: number): RandomFn {
   return () => {
     seed |= 0;
@@ -13,9 +14,6 @@ export function mulberry32(seed: number): RandomFn {
   };
 }
 
-/**
- * Converts a string to a numeric hash
- */
 export function hashString(str: string): number {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {

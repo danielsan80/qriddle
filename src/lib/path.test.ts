@@ -4,6 +4,7 @@ import { AreaStore } from './area';
 import { Coord } from './coord';
 import { directions } from './direction';
 import { Image } from './image';
+import { createRandom } from './random';
 
 describe('digPaths', () => {
   it('produces same result with same seed', () => {
@@ -13,8 +14,8 @@ describe('digPaths', () => {
       [1, 1, 1],
     ]);
 
-    const edges1 = digPaths(image, 'test-seed');
-    const edges2 = digPaths(image, 'test-seed');
+    const edges1 = digPaths(image, createRandom('test-seed'));
+    const edges2 = digPaths(image, createRandom('test-seed'));
 
     expect(edges1.wallMap()).toEqual(edges2.wallMap());
   });
@@ -27,8 +28,8 @@ describe('digPaths', () => {
       [1, 1, 1, 1],
     ]);
 
-    const edges1 = digPaths(image, 'seed-a');
-    const edges2 = digPaths(image, 'seed-b');
+    const edges1 = digPaths(image, createRandom('seed-a'));
+    const edges2 = digPaths(image, createRandom('seed-b'));
 
     expect(edges1.wallMap()).not.toEqual(edges2.wallMap());
   });
@@ -39,7 +40,7 @@ describe('digPaths', () => {
       [1, 1],
     ]);
 
-    const edges = digPaths(image, 'seed');
+    const edges = digPaths(image, createRandom('seed'));
 
     expect(edges.get(new Coord(0, 0), 'north').hasWall).toBe(true);
     expect(edges.get(new Coord(0, 0), 'west').hasWall).toBe(true);
@@ -58,7 +59,7 @@ describe('digPaths', () => {
       [0, 1],
     ]);
 
-    const edges = digPaths(image, 'seed');
+    const edges = digPaths(image, createRandom('seed'));
 
     expect(edges.get(new Coord(0, 0), 'east').hasWall).toBe(true);
     expect(edges.get(new Coord(1, 0), 'east').hasWall).toBe(true);
@@ -73,7 +74,7 @@ describe('digPaths', () => {
       [1, 1, 1],
     ]);
 
-    const edges = digPaths(image, 'seed');
+    const edges = digPaths(image, createRandom('seed'));
     const areas = new AreaStore(image);
 
     const area = areas.at(0)!;

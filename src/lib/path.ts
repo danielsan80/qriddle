@@ -1,12 +1,11 @@
-import { type RandomFn, mulberry32, hashString } from './random';
+import { type RandomFn } from './random';
 import { Area, AreaStore } from './area';
 import { type Direction, directions } from './direction';
 import { EdgeStore } from './edge';
 import { Image, type Pixel } from './image';
 import { config } from './config';
 
-export function digPaths(image: Image, seed: string): EdgeStore {
-  const random = mulberry32(hashString(seed));
+export function digPaths(image: Image, random: RandomFn): EdgeStore {
   const areas = new AreaStore(image);
   const edges = EdgeStore.walled(image);
 

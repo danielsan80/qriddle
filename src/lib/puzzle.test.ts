@@ -3,6 +3,7 @@ import { Puzzle } from './puzzle';
 import { Coord } from './coord';
 import { directions } from './direction';
 import { Image } from './image';
+import { createRandom } from './random';
 
 describe('Puzzle', () => {
   it('exposes the image', () => {
@@ -11,7 +12,7 @@ describe('Puzzle', () => {
       [1, 1],
     ]);
 
-    const puzzle = Puzzle.create(image, 'seed');
+    const puzzle = Puzzle.create(image, createRandom('seed'));
 
     expect(puzzle.image).toBe(image);
   });
@@ -23,8 +24,8 @@ describe('Puzzle', () => {
       [1, 1, 1],
     ]);
 
-    const puzzle1 = Puzzle.create(image, 'test-seed');
-    const puzzle2 = Puzzle.create(image, 'test-seed');
+    const puzzle1 = Puzzle.create(image, createRandom('test-seed'));
+    const puzzle2 = Puzzle.create(image, createRandom('test-seed'));
 
     expect(wallMap(puzzle1)).toEqual(wallMap(puzzle2));
   });
@@ -37,8 +38,8 @@ describe('Puzzle', () => {
       [1, 1, 1, 1],
     ]);
 
-    const puzzle1 = Puzzle.create(image, 'seed-a');
-    const puzzle2 = Puzzle.create(image, 'seed-b');
+    const puzzle1 = Puzzle.create(image, createRandom('seed-a'));
+    const puzzle2 = Puzzle.create(image, createRandom('seed-b'));
 
     expect(wallMap(puzzle1)).not.toEqual(wallMap(puzzle2));
   });
@@ -49,7 +50,7 @@ describe('Puzzle', () => {
       [1, 1],
     ]);
 
-    const puzzle = Puzzle.create(image, 'seed');
+    const puzzle = Puzzle.create(image, createRandom('seed'));
 
     // External edges always have walls
     expect(puzzle.hasWall(new Coord(0, 0), 'north')).toBe(true);
@@ -64,7 +65,7 @@ describe('Puzzle', () => {
       [0, 1],
     ]);
 
-    const puzzle = Puzzle.create(image, 'seed');
+    const puzzle = Puzzle.create(image, createRandom('seed'));
 
     // Color boundary walls are preserved
     expect(puzzle.hasWall(new Coord(0, 0), 'east')).toBe(true);
@@ -83,7 +84,7 @@ describe('Puzzle', () => {
       [0, 0, 0, 0, 1, 1],
     ]);
 
-    const puzzle = Puzzle.create(image, 'fixed-seed');
+    const puzzle = Puzzle.create(image, createRandom('fixed-seed'));
 
     expect(toBoxDrawing(puzzle)).toBe(
       [
@@ -111,7 +112,7 @@ describe('Puzzle', () => {
       [1, 1, 1],
     ]);
 
-    const puzzle = Puzzle.create(image, 'seed');
+    const puzzle = Puzzle.create(image, createRandom('seed'));
 
     // Check connectivity via flood fill through passages
     const area = puzzle.areas.at(0)!;
@@ -138,6 +139,68 @@ describe('Puzzle', () => {
     }
 
     expect(visited.size).toBe(area.pixels.length);
+  });
+
+  describe('dots', () => {
+    it('has one dot per black area', () => {
+      const image = new Image([
+        [1, 1, 0, 0],
+        [1, 1, 0, 0],
+      ]);
+
+      const puzzle = Puzzle.create(image, createRandom('seed'));
+      const blackAreas = puzzle.areas.all().filter((a) => a.color === 'black');
+
+      expect(puzzle.dots.length).toBe(blackAreas.length);
+    });
+
+    it('each dot belongs to a black area', () => {
+      const image = new Image([
+        [1, 1, 0, 0],
+        [1, 1, 0, 0],
+      ]);
+
+      const puzzle = Puzzle.create(image, createRandom('seed'));
+      const blackAreas = puzzle.areas.all().filter((a) => a.color === 'black');
+
+      puzzle.dots.forEach((dot, index) => {
+        const area = blackAreas[index];
+        const pixelCoords = area.pixels.map((p) => p.coord.toString());
+        expect(pixelCoords).toContain(dot.toString());
+      });
+    });
+
+    it('produces same dots with same seed', () => {
+      const image = new Image([
+        [1, 1, 1],
+        [1, 1, 1],
+        [1, 1, 1],
+      ]);
+
+      const puzzle1 = Puzzle.create(image, createRandom('test-seed'));
+      const puzzle2 = Puzzle.create(image, createRandom('test-seed'));
+
+      const dots1 = puzzle1.dots.map((d) => d.toString());
+      const dots2 = puzzle2.dots.map((d) => d.toString());
+      expect(dots1).toEqual(dots2);
+    });
+
+    it('produces different dots with different seeds', () => {
+      const image = new Image([
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
+      ]);
+
+      const puzzle1 = Puzzle.create(image, createRandom('seed-a'));
+      const puzzle2 = Puzzle.create(image, createRandom('seed-b'));
+
+      const dots1 = puzzle1.dots.map((d) => d.toString());
+      const dots2 = puzzle2.dots.map((d) => d.toString());
+      expect(dots1).not.toEqual(dots2);
+    });
   });
 });
 
