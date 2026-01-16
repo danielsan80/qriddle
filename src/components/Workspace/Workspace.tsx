@@ -6,12 +6,16 @@ interface WorkspaceProps {
   qrCanvasRef: RefObject<HTMLCanvasElement | null>;
   puzzleCanvasRef: RefObject<HTMLCanvasElement | null>;
   showCanvas: boolean;
+  onDownloadPdf: () => void;
+  canDownload: boolean;
 }
 
 export function Workspace({
   qrCanvasRef,
   puzzleCanvasRef,
   showCanvas,
+  onDownloadPdf,
+  canDownload,
 }: WorkspaceProps) {
   return (
     <div className={styles.workspace}>
@@ -19,7 +23,17 @@ export function Workspace({
         <canvas ref={qrCanvasRef}></canvas>
       </Panel>
 
-      <Panel title="Puzzle" type="puzzle" showCanvas={showCanvas}>
+      <Panel
+        title="Puzzle"
+        type="puzzle"
+        showCanvas={showCanvas}
+        action={{
+          icon: '↓',
+          label: 'Scarica PDF',
+          onClick: onDownloadPdf,
+          disabled: !canDownload,
+        }}
+      >
         <canvas ref={puzzleCanvasRef}></canvas>
       </Panel>
     </div>

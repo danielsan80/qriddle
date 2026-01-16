@@ -5,7 +5,7 @@ import { Controls } from './components/Controls';
 import { Workspace } from './components/Workspace';
 import { Image } from './lib/image';
 import { Puzzle } from './lib/puzzle';
-import { render, renderImage } from './lib/render';
+import { render, renderImage, downloadPuzzlePdf } from './lib/render';
 import { createRandom, generateSeed, getQRMatrix } from './lib/util';
 import './App.css';
 
@@ -32,10 +32,12 @@ function App() {
   const [initial] = useState(getInitialState);
   const [qrText, setQrText] = useState(initial.qrText);
   const [seed, setSeed] = useState(initial.seed);
+  const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
 
   useEffect(() => {
     updateURL(qrText, seed);
   }, [qrText, seed]);
+
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
   const puzzleCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -51,12 +53,19 @@ function App() {
       renderImage(qrCanvasRef.current!, qrImage, { cellSize: 12 });
 
       const puzzleImage = qrImage.x2();
-      const puzzle = Puzzle.create(puzzleImage, createRandom(seed));
-      render(puzzleCanvasRef.current!, puzzle);
+      const newPuzzle = Puzzle.create(puzzleImage, createRandom(seed));
+      render(puzzleCanvasRef.current!, newPuzzle);
+      setPuzzle(newPuzzle);
     }, DEBOUNCE_MS);
 
     return () => clearTimeout(timer);
   }, [qrText, seed]);
+
+  const handleDownloadPdf = () => {
+    if (puzzle) {
+      downloadPuzzlePdf(puzzle);
+    }
+  };
 
   const showCanvas = qrText.length > 0;
 
@@ -75,6 +84,8 @@ function App() {
           qrCanvasRef={qrCanvasRef}
           puzzleCanvasRef={puzzleCanvasRef}
           showCanvas={showCanvas}
+          onDownloadPdf={handleDownloadPdf}
+          canDownload={puzzle !== null && qrText.length > 0}
         />
       </main>
     </Layout>

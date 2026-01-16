@@ -8,12 +8,47 @@
     animation-delay: 0.1s;
   }
 
-  h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.5rem;
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid var(--grid);
+
+    h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      margin: 0;
+    }
+
+    .actionButton {
+      background: var(--accent);
+      color: white;
+      border: 1px solid var(--ink);
+      padding: 0.2rem 0.5rem;
+      font-family: 'Courier Prime', monospace;
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 1px 1px 0 var(--ink);
+
+      &:hover:not(:disabled) {
+        transform: translate(1px, 1px);
+        box-shadow: 0 0 0 var(--ink);
+      }
+
+      &:active:not(:disabled) {
+        transform: translate(1px, 1px);
+        box-shadow: 0 0 0 var(--ink);
+      }
+
+      &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+    }
   }
 
   .canvasContainer {

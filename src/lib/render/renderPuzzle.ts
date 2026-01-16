@@ -6,6 +6,7 @@ export interface PuzzleRenderOptions {
   backgroundColor?: string;
   borderColor?: string;
   dotColor?: string;
+  dotRadius?: number;
 }
 
 const defaultOptions: PuzzleRenderOptions = {
@@ -13,6 +14,7 @@ const defaultOptions: PuzzleRenderOptions = {
   backgroundColor: '#f8f5ed',
   borderColor: '#c0c0c0',
   dotColor: '#a0a0a0',
+  dotRadius: 0.3,
 };
 
 export function render(
@@ -81,7 +83,7 @@ export function render(
     const x = (dot.col + 0.5) * cellSize;
     const y = (dot.row + 0.5) * cellSize;
     ctx.beginPath();
-    ctx.arc(x, y, cellSize * 0.3, 0, Math.PI * 2);
+    ctx.arc(x, y, cellSize * opts.dotRadius!, 0, Math.PI * 2);
     ctx.fill();
   }
 }

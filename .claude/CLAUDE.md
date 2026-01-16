@@ -89,10 +89,26 @@ Il puzzle generato (output).
 ### ToDo
 
 - [x] Riorganizzare i file .ts in cartelle semantiche
-- [ ] Rivedere l'interfaccia UI
-- [ ] Mostrare il seed in interfaccia (token alfanumerico 10 caratteri)
-- [ ] Aggiungere pulsante per rigenerare il seed casualmente
-- [ ] Rendere il seed modificabile manualmente
+- [x] Rivedere l'interfaccia UI
+- [x] Mostrare il seed in interfaccia (token alfanumerico 10 caratteri)
+- [x] Aggiungere pulsante per rigenerare il seed casualmente
+- [x] Rendere il seed modificabile manualmente
+- [x] Download PDF del puzzle da stampare
+- [ ] Creare repo GitHub pubblico
+- [ ] CI/CD con GitHub Actions per deploy su GitHub Pages
+- [ ] Linkare il progetto dalla GitHub Pages principale (sezione "Lab")
+- [ ] Centralizzare la gestione dei parametri di configurazione
+
+### Suggerimenti
+
+**Deploy:** GitHub Pages del repo separato è la soluzione più semplice:
+
+- Repo separato (`github.com/username/qr-puzzle-generator`)
+- GitHub Actions builda e deploya su push a main
+- GitHub Pages serve da `https://username.github.io/qr-puzzle-generator`
+- Link dalla pagina principale in sezione "Lab" punta al sottodominio
+
+Vantaggi: gratuito, CI/CD nativo, nessuna dipendenza esterna, tutto in GitHub.
 
 ## Problema
 
