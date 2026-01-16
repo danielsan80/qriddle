@@ -2,8 +2,6 @@ import QRCode from 'qrcode';
 import type { Matrix } from '../image';
 
 export interface QROptions {
-  width?: number;
-  margin?: number;
   errorCorrectionLevel?: 'L' | 'M' | 'Q' | 'H';
 }
 
@@ -14,28 +12,8 @@ export interface QRMatrixResult {
 }
 
 const defaultOptions: QROptions = {
-  width: 256,
-  margin: 0,
   errorCorrectionLevel: 'M',
 };
-
-export async function renderQRToCanvas(
-  canvas: HTMLCanvasElement,
-  text: string,
-  options: QROptions = {},
-): Promise<void> {
-  const opts = { ...defaultOptions, ...options };
-
-  await QRCode.toCanvas(canvas, text, {
-    width: opts.width,
-    margin: opts.margin,
-    errorCorrectionLevel: opts.errorCorrectionLevel,
-    color: {
-      dark: '#1a1a1a',
-      light: '#ffffff',
-    },
-  });
-}
 
 export function getQRMatrix(
   text: string,

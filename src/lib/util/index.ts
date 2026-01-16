@@ -4,4 +4,4 @@ export {
   generateSeed,
   type RandomFn,
 } from './random';
-export { renderQRToCanvas, getQRMatrix } from './qr';
+export { getQRMatrix } from './qr';

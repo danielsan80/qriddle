@@ -5,13 +5,8 @@ import { Controls } from './components/Controls';
 import { Workspace } from './components/Workspace';
 import { Image } from './lib/image';
 import { Puzzle } from './lib/puzzle';
-import { render } from './lib/render';
-import {
-  createRandom,
-  generateSeed,
-  renderQRToCanvas,
-  getQRMatrix,
-} from './lib/util';
+import { render, renderImage } from './lib/render';
+import { createRandom, generateSeed, getQRMatrix } from './lib/util';
 import './App.css';
 
 const DEBOUNCE_MS = 300;
@@ -27,12 +22,14 @@ function App() {
       return;
     }
 
-    const timer = setTimeout(async () => {
-      await renderQRToCanvas(qrCanvasRef.current!, qrText);
+    const timer = setTimeout(() => {
       const { matrix } = getQRMatrix(qrText);
+      const qrImage = new Image(matrix);
 
-      const image = new Image(matrix).x2();
-      const puzzle = Puzzle.create(image, createRandom(seed));
+      renderImage(qrCanvasRef.current!, qrImage, { cellSize: 12 });
+
+      const puzzleImage = qrImage.x2();
+      const puzzle = Puzzle.create(puzzleImage, createRandom(seed));
       render(puzzleCanvasRef.current!, puzzle);
     }, DEBOUNCE_MS);
 
