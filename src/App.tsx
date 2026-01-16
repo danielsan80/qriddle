@@ -11,6 +11,7 @@ import './App.css';
 
 function App() {
   const [qrText, setQrText] = useState('https://example.com');
+  const [generated, setGenerated] = useState(false);
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
   const puzzleCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -23,6 +24,7 @@ function App() {
     const image = new Image(matrix).x2();
     const puzzle = Puzzle.create(image, createRandom('seed'));
     render(puzzleCanvasRef.current, puzzle);
+    setGenerated(true);
   };
 
   return (
@@ -37,6 +39,7 @@ function App() {
         <Workspace
           qrCanvasRef={qrCanvasRef}
           puzzleCanvasRef={puzzleCanvasRef}
+          showCanvas={generated}
         />
       </main>
     </Layout>

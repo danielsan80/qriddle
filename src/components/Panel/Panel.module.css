@@ -26,6 +26,11 @@
     padding: 1rem;
 
     canvas {
+      display: none;
+    }
+
+    &.hasContent canvas {
+      display: block;
       border: 2px solid var(--ink);
       box-shadow: 4px 4px 0 var(--grid);
       image-rendering: pixelated;
