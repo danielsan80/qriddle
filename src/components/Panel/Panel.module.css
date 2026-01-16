@@ -27,6 +27,8 @@
 
     canvas {
       display: none;
+      max-width: 100%;
+      height: auto;
       image-rendering: pixelated;
       box-shadow: 4px 4px 0 var(--grid);
     }
