@@ -11,9 +11,31 @@ import './App.css';
 
 const DEBOUNCE_MS = 300;
 
+function getInitialState() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    qrText: params.get('text') ?? '',
+    seed: params.get('seed') ?? generateSeed(),
+  };
+}
+
+function updateURL(qrText: string, seed: string) {
+  const params = new URLSearchParams();
+  if (qrText) params.set('text', qrText);
+  if (seed) params.set('seed', seed);
+  const query = params.toString();
+  const url = query ? `?${query}` : window.location.pathname;
+  window.history.replaceState({}, '', url);
+}
+
 function App() {
-  const [qrText, setQrText] = useState('');
-  const [seed, setSeed] = useState(generateSeed);
+  const [initial] = useState(getInitialState);
+  const [qrText, setQrText] = useState(initial.qrText);
+  const [seed, setSeed] = useState(initial.seed);
+
+  useEffect(() => {
+    updateURL(qrText, seed);
+  }, [qrText, seed]);
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
   const puzzleCanvasRef = useRef<HTMLCanvasElement>(null);
 
