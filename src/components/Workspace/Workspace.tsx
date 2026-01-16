@@ -15,11 +15,11 @@ export function Workspace({
 }: WorkspaceProps) {
   return (
     <div className={styles.workspace}>
-      <Panel title="QR Code" showCanvas={showCanvas}>
+      <Panel title="QR Code" type="qrcode" showCanvas={showCanvas}>
         <canvas ref={qrCanvasRef}></canvas>
       </Panel>
 
-      <Panel title="Puzzle" showCanvas={showCanvas}>
+      <Panel title="Puzzle" type="puzzle" showCanvas={showCanvas}>
         <canvas ref={puzzleCanvasRef}></canvas>
       </Panel>
     </div>

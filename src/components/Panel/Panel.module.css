@@ -27,13 +27,20 @@
 
     canvas {
       display: none;
+      image-rendering: pixelated;
+      box-shadow: 4px 4px 0 var(--grid);
+    }
+
+    &.qrcode canvas {
+      border: 2px solid #c0c0c0;
+    }
+
+    &.puzzle canvas {
+      border: 1px solid #c0c0c0;
     }
 
     &.hasContent canvas {
       display: block;
-      border: 2px solid var(--ink);
-      box-shadow: 4px 4px 0 var(--grid);
-      image-rendering: pixelated;
     }
   }
 }

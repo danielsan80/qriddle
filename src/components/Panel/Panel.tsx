@@ -1,16 +1,19 @@
 import type { ReactNode } from 'react';
 import styles from './Panel.module.css';
 
+type PanelType = 'qrcode' | 'puzzle';
+
 interface PanelProps {
   title: string;
+  type: PanelType;
   showCanvas: boolean;
   children?: ReactNode;
 }
 
-export function Panel({ title, showCanvas, children }: PanelProps) {
-  const containerClass = showCanvas
-    ? `${styles.canvasContainer} ${styles.hasContent}`
-    : styles.canvasContainer;
+export function Panel({ title, type, showCanvas, children }: PanelProps) {
+  const classes = [styles.canvasContainer, styles[type]];
+  if (showCanvas) classes.push(styles.hasContent);
+  const containerClass = classes.join(' ');
 
   return (
     <div className={styles.panel}>
