@@ -12,7 +12,7 @@ const defaultOptions: PuzzleRenderOptions = {
   cellSize: 6,
   backgroundColor: '#f8f5ed',
   borderColor: '#c0c0c0',
-  dotColor: '#1a1a1a',
+  dotColor: '#a0a0a0',
 };
 
 export function render(

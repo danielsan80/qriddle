@@ -270,12 +270,12 @@ function toBoxDrawing(puzzle: Puzzle): string {
 
   for (let r = 0; r < rows * 2 + 1; r += 2) {
     for (let c = 0; c < cols * 2 + 1; c += 2) {
-      const up = r > 0 && grid[r - 1][c] === '│';
-      const down = r < rows * 2 && grid[r + 1][c] === '│';
-      const left = c > 0 && grid[r][c - 1] === '─';
-      const right = c < cols * 2 && grid[r][c + 1] === '─';
+      const north = r > 0 && grid[r - 1][c] === '│';
+      const south = r < rows * 2 && grid[r + 1][c] === '│';
+      const west = c > 0 && grid[r][c - 1] === '─';
+      const east = c < cols * 2 && grid[r][c + 1] === '─';
 
-      grid[r][c] = getCorner(up, down, left, right);
+      grid[r][c] = getCorner(north, east, south, west);
     }
   }
 
@@ -283,29 +283,29 @@ function toBoxDrawing(puzzle: Puzzle): string {
 }
 
 function getCorner(
-  up: boolean,
-  down: boolean,
-  left: boolean,
-  right: boolean,
+  north: boolean,
+  east: boolean,
+  south: boolean,
+  west: boolean,
 ): string {
-  const key = `${up ? 'U' : ''}${down ? 'D' : ''}${left ? 'L' : ''}${right ? 'R' : ''}`;
+  const key = `${north ? 'N' : ''}${east ? 'E' : ''}${south ? 'S' : ''}${west ? 'W' : ''}`;
   const corners: Record<string, string> = {
     '': ' ',
-    U: '╵',
-    D: '╷',
-    L: '╴',
-    R: '╶',
-    UD: '│',
-    LR: '─',
-    DR: '┌',
-    DL: '┐',
-    UR: '└',
-    UL: '┘',
-    UDR: '├',
-    UDL: '┤',
-    ULR: '┴',
-    DLR: '┬',
-    UDLR: '┼',
+    N: '╵',
+    E: '╶',
+    S: '╷',
+    W: '╴',
+    NE: '└',
+    NS: '│',
+    NW: '┘',
+    ES: '┌',
+    EW: '─',
+    SW: '┐',
+    NES: '├',
+    NEW: '┴',
+    NSW: '┤',
+    ESW: '┬',
+    NESW: '┼',
   };
   return corners[key] || '+';
 }
