@@ -16,7 +16,7 @@ import './App.css';
 
 function App() {
   const [qrText, setQrText] = useState('https://example.com');
-  const [seed] = useState(generateSeed);
+  const [seed, setSeed] = useState(generateSeed);
   const [generated, setGenerated] = useState(false);
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
   const puzzleCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -41,6 +41,8 @@ function App() {
           qrText={qrText}
           onQrTextChange={setQrText}
           seed={seed}
+          onSeedChange={setSeed}
+          onSeedRegenerate={() => setSeed(generateSeed())}
           onGenerate={handleGenerate}
         />
         <Workspace

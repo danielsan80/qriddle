@@ -4,6 +4,8 @@ interface ControlsProps {
   qrText: string;
   onQrTextChange: (text: string) => void;
   seed: string;
+  onSeedChange: (seed: string) => void;
+  onSeedRegenerate: () => void;
   onGenerate: () => void;
 }
 
@@ -11,6 +13,8 @@ export function Controls({
   qrText,
   onQrTextChange,
   seed,
+  onSeedChange,
+  onSeedRegenerate,
   onGenerate,
 }: ControlsProps) {
   return (
@@ -28,7 +32,17 @@ export function Controls({
 
       <div className={styles.inputGroup}>
         <label htmlFor="seed">Seed</label>
-        <input type="text" id="seed" value={seed} readOnly />
+        <div className={styles.seedInput}>
+          <input
+            type="text"
+            id="seed"
+            value={seed}
+            onChange={(e) => onSeedChange(e.target.value)}
+          />
+          <button type="button" onClick={onSeedRegenerate}>
+            ↻
+          </button>
+        </div>
       </div>
 
       <button type="button" onClick={onGenerate}>
