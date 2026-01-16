@@ -1,5 +1,16 @@
 export type RandomFn = () => number;
 
+const SEED_LENGTH = 10;
+const SEED_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+export function generateSeed(): string {
+  let seed = '';
+  for (let i = 0; i < SEED_LENGTH; i++) {
+    seed += SEED_CHARS[Math.floor(Math.random() * SEED_CHARS.length)];
+  }
+  return seed;
+}
+
 export function createRandom(seed: string): RandomFn {
   return mulberry32(hashString(seed));
 }

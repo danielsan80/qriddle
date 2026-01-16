@@ -1,5 +1,26 @@
 import { describe, it, expect } from 'vitest';
-import { createFakeRandom } from './random';
+import { createFakeRandom, generateSeed } from './random';
+
+describe('generateSeed', () => {
+  it('returns a 10 character string', () => {
+    const seed = generateSeed();
+
+    expect(seed).toHaveLength(10);
+  });
+
+  it('contains only alphanumeric characters', () => {
+    const seed = generateSeed();
+
+    expect(seed).toMatch(/^[a-z0-9]+$/);
+  });
+
+  it('generates different seeds on each call', () => {
+    const seed1 = generateSeed();
+    const seed2 = generateSeed();
+
+    expect(seed1).not.toBe(seed2);
+  });
+});
 
 describe('createFakeRandom', () => {
   it('returns values in sequence', () => {

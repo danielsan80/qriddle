@@ -6,11 +6,17 @@ import { Workspace } from './components/Workspace';
 import { Image } from './lib/image';
 import { Puzzle } from './lib/puzzle';
 import { render } from './lib/render';
-import { createRandom, renderQRToCanvas, getQRMatrix } from './lib/util';
+import {
+  createRandom,
+  generateSeed,
+  renderQRToCanvas,
+  getQRMatrix,
+} from './lib/util';
 import './App.css';
 
 function App() {
   const [qrText, setQrText] = useState('https://example.com');
+  const [seed] = useState(generateSeed);
   const [generated, setGenerated] = useState(false);
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
   const puzzleCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -22,7 +28,7 @@ function App() {
     const { matrix } = getQRMatrix(qrText);
 
     const image = new Image(matrix).x2();
-    const puzzle = Puzzle.create(image, createRandom('seed'));
+    const puzzle = Puzzle.create(image, createRandom(seed));
     render(puzzleCanvasRef.current, puzzle);
     setGenerated(true);
   };
@@ -34,6 +40,7 @@ function App() {
         <Controls
           qrText={qrText}
           onQrTextChange={setQrText}
+          seed={seed}
           onGenerate={handleGenerate}
         />
         <Workspace
