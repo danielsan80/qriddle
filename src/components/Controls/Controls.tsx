@@ -6,7 +6,6 @@ interface ControlsProps {
   seed: string;
   onSeedChange: (seed: string) => void;
   onSeedRegenerate: () => void;
-  onGenerate: () => void;
 }
 
 export function Controls({
@@ -15,7 +14,6 @@ export function Controls({
   seed,
   onSeedChange,
   onSeedRegenerate,
-  onGenerate,
 }: ControlsProps) {
   return (
     <div className={styles.controls}>
@@ -44,10 +42,6 @@ export function Controls({
           </button>
         </div>
       </div>
-
-      <button type="button" onClick={onGenerate}>
-        Genera Puzzle
-      </button>
     </div>
   );
 }
