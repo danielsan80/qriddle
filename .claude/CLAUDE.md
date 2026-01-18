@@ -10,11 +10,6 @@ Regole sintetiche: scrivi il minimo necessario per essere compresi.
 - Test first: scrivi i test prima dell'implementazione.
 - Dopo modifiche, esegui `npm run check` (lint + format + test).
 
-## Riferimento temporaneo
-
-File sorgente da cui stiamo portando il codice in React:
-`/home/danilo/www/lab/smart-greeting-card/doc/tmp/qr-puzzle-generator-fixed.html`
-
 ## Domain Model
 
 ### Value Objects
@@ -94,8 +89,8 @@ Il puzzle generato (output).
 - [x] Aggiungere pulsante per rigenerare il seed casualmente
 - [x] Rendere il seed modificabile manualmente
 - [x] Download PDF del puzzle da stampare
-- [ ] Creare repo GitHub pubblico
-- [ ] CI/CD con GitHub Actions per deploy su GitHub Pages
+- [x] Creare repo GitHub pubblico
+- [x] CI/CD con GitHub Actions per deploy su GitHub Pages
 - [ ] Linkare il progetto dalla GitHub Pages principale (sezione "Lab")
 - [ ] Centralizzare la gestione dei parametri di configurazione
 
