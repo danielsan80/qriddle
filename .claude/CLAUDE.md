@@ -8,7 +8,20 @@ Regole sintetiche: scrivi il minimo necessario per essere compresi.
 - Commenti nel codice in inglese.
 - Feedback onesto: evidenzia problemi e alternative migliori senza giri di parole.
 - Test first: scrivi i test prima dell'implementazione.
+- Asserzioni: evita assertion roulette. Asserisci sul valore intero, non sulle sue parti.
+  - OK: `toEqual([...])` sull'array intero
+  - NO: `toHaveLength(n)` seguito da asserzioni sui singoli elementi
+  - NO: asserzioni separate su parti di un risultato
 - Dopo modifiche, esegui `npm run check` (lint + format + test).
+- Piccoli passi: implementa una cosa alla volta.
+- Librerie esterne: diffuse, ben supportate, componibili, stilizzabili. No monoliti.
+- Nomi variabili: evita nomi da una sola lettera, anche in scope locali (no `e` per edge, usa `edge`).
+- "il file" senza specificare quale = CLAUDE.md
+- Quando ti parlo in inglese e ti scrivo "eng?", dammi un breve feedback sulle frasi che ho scritto correggendo i miei errori.
+
+## Kanban
+
+Vedi `/kanban` per la board di progetto.
 
 ## Domain Model
 
@@ -80,30 +93,6 @@ Il puzzle generato (output).
 - `areas: AreaStore`
 - `create(image: Image, seed: string): Puzzle` — factory
 - `hasWall(coord: Coord, direction: Direction): boolean`
-
-### ToDo
-
-- [x] Riorganizzare i file .ts in cartelle semantiche
-- [x] Rivedere l'interfaccia UI
-- [x] Mostrare il seed in interfaccia (token alfanumerico 10 caratteri)
-- [x] Aggiungere pulsante per rigenerare il seed casualmente
-- [x] Rendere il seed modificabile manualmente
-- [x] Download PDF del puzzle da stampare
-- [x] Creare repo GitHub pubblico
-- [x] CI/CD con GitHub Actions per deploy su GitHub Pages
-- [ ] Linkare il progetto dalla GitHub Pages principale (sezione "Lab")
-- [ ] Centralizzare la gestione dei parametri di configurazione
-
-### Suggerimenti
-
-**Deploy:** GitHub Pages del repo separato è la soluzione più semplice:
-
-- Repo separato (`github.com/username/qr-puzzle-generator`)
-- GitHub Actions builda e deploya su push a main
-- GitHub Pages serve da `https://username.github.io/qr-puzzle-generator`
-- Link dalla pagina principale in sezione "Lab" punta al sottodominio
-
-Vantaggi: gratuito, CI/CD nativo, nessuna dipendenza esterna, tutto in GitHub.
 
 ## Problema
 
