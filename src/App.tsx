@@ -63,7 +63,7 @@ function App() {
 
   const handleDownloadPdf = () => {
     if (puzzle) {
-      downloadPuzzlePdf(puzzle);
+      void downloadPuzzlePdf(puzzle);
     }
   };
 
