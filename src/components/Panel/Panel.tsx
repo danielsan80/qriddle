@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import styles from './Panel.module.css';
 
-type PanelType = 'qrcode' | 'puzzle';
+type PanelType = 'qrcode' | 'puzzle' | 'preview';
 
 interface PanelAction {
   icon: string;

@@ -1,5 +1,5 @@
 .workspace {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 3rem;
 }

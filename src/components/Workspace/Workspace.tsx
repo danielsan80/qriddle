@@ -24,8 +24,8 @@ export function Workspace({
       </Panel>
 
       <Panel
-        title="Puzzle"
-        type="puzzle"
+        title="Anteprima PDF"
+        type="preview"
         showCanvas={showCanvas}
         action={{
           icon: '↓',

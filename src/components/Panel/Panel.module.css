@@ -79,5 +79,10 @@
     &.hasContent canvas {
       display: block;
     }
+
+    &.preview canvas {
+      border: none;
+      box-shadow: none;
+    }
   }
 }

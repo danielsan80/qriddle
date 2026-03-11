@@ -5,7 +5,7 @@ import { Controls } from './components/Controls';
 import { Workspace } from './components/Workspace';
 import { Image } from './lib/image';
 import { Puzzle } from './lib/puzzle';
-import { render, renderImage, downloadPuzzlePdf } from './lib/render';
+import { renderPdfPreview, renderImage, downloadPuzzlePdf } from './lib/render';
 import { createRandom, generateSeed, getQRMatrix } from './lib/util';
 import './App.css';
 
@@ -47,15 +47,17 @@ function App() {
     }
 
     const timer = setTimeout(() => {
-      const { matrix } = getQRMatrix(qrText);
-      const qrImage = new Image(matrix);
+      void (async () => {
+        const { matrix } = getQRMatrix(qrText);
+        const qrImage = new Image(matrix);
 
-      renderImage(qrCanvasRef.current!, qrImage, { cellSize: 12 });
+        renderImage(qrCanvasRef.current!, qrImage, { cellSize: 12 });
 
-      const puzzleImage = qrImage.x2();
-      const newPuzzle = Puzzle.create(puzzleImage, createRandom(seed));
-      render(puzzleCanvasRef.current!, newPuzzle);
-      setPuzzle(newPuzzle);
+        const puzzleImage = qrImage.x2();
+        const newPuzzle = Puzzle.create(puzzleImage, createRandom(seed));
+        await renderPdfPreview(puzzleCanvasRef.current!, newPuzzle);
+        setPuzzle(newPuzzle);
+      })();
     }, DEBOUNCE_MS);
 
     return () => clearTimeout(timer);

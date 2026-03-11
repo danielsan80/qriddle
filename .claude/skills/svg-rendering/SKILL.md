@@ -84,7 +84,28 @@ function svgToPng(svgString: string, w: number, h: number): Promise<string> {
 }
 ```
 
-## Direzione attuale
+## Direzione attuale: SVG-first
 
-Obiettivo: passare a SVG-first per supportare layout multipuzzle (biglietto auguri).
-SVG generato → download diretto o conversione PDF via svg2pdf.js.
+Obiettivo: passare a SVG-first per supportare multipuzzle, biglietto auguri e download modificabile.
+
+### Fattibilità
+
+**Il puzzle è già rappresentabile in SVG.** `renderPuzzle.ts` disegna solo primitive geometriche (rettangoli, linee, cerchi) — riscriverlo come `renderPuzzleSvg()` è diretto, usando il codice canvas come riferimento.
+
+**Lo sfondo è già un SVG.** `inner.svg` ha immagini embedded in base64 — è autocontenuto, Inkscape lo apre senza problemi.
+
+**Compositing SVG + SVG**: il puzzle generato diventa un `<g>` posizionato dentro l'SVG dello sfondo. Nessuna rasterizzazione, qualità vettoriale.
+
+**Testi della wizard**: semplici elementi `<text>` SVG.
+
+### Pipeline a confronto
+
+```
+attuale:   puzzle (canvas) → PNG → jsPDF → .pdf
+SVG-first: puzzle (SVG) → compositing SVG → svg2pdf.js → .pdf
+                                           → download .svg (Inkscape)
+```
+
+### Spike: renderPuzzleSvg()
+
+Scrivere `renderPuzzleSvg()` e verificare che il risultato sia pulito in Inkscape. Costo basso, payoff alto — sblocca download SVG, qualità vettoriale nel PDF e biglietto auguri.
