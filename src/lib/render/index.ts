@@ -1,3 +1,3 @@
-export { render, type PuzzleRenderOptions } from './renderPuzzle';
+export { renderPuzzle, type PuzzleRenderOptions } from './renderPuzzle';
 export { renderImage, type ImageRenderOptions } from './renderImage';
 export { downloadPuzzlePdf, renderPdfPreview } from './renderPdf';

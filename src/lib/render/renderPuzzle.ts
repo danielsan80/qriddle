@@ -17,7 +17,7 @@ const defaultOptions: PuzzleRenderOptions = {
   dotRadius: 0.3,
 };
 
-export function render(
+export function renderPuzzle(
   canvas: HTMLCanvasElement,
   puzzle: Puzzle,
   options: PuzzleRenderOptions = {},
