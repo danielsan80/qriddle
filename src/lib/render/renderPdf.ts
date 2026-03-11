@@ -1,4 +1,5 @@
 import { jsPDF } from 'jspdf';
+import { config } from '../config';
 import { Puzzle } from '../domain/puzzle';
 import { renderPuzzle } from './renderPuzzle';
 import innerSvgUrl from '../../assets/inner/inner.svg?url';
@@ -33,7 +34,7 @@ async function composePdf(
   ctx.drawImage(bg, 0, 0, widthPx, heightPx);
 
   const puzzleCanvas = document.createElement('canvas');
-  renderPuzzle(puzzleCanvas, puzzle, { cellSize: 12, dotRadius: 0.15 });
+  renderPuzzle(puzzleCanvas, puzzle, config.pdf);
 
   const puzzleW = widthPx * (PUZZLE_WIDTH_MM / A4_WIDTH_MM);
   const puzzleH = puzzleW * (puzzleCanvas.height / puzzleCanvas.width);

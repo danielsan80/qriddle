@@ -1,5 +1,5 @@
 import { Coord, Image } from '../image';
-import { type RandomFn } from '../util';
+import { type RandomFn } from '../../util';
 import { AreaStore } from './area';
 
 export function chooseDots(image: Image, random: RandomFn): Coord[] {

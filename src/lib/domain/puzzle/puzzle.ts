@@ -1,5 +1,5 @@
 import { Coord, Image, type Direction } from '../image';
-import { type RandomFn } from '../util';
+import { type RandomFn } from '../../util';
 import { AreaStore } from './area';
 import { chooseDots } from './dot';
 import { EdgeStore } from './edge';

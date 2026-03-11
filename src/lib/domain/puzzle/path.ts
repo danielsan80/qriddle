@@ -1,6 +1,6 @@
-import { config } from '../config';
+import { config } from '../../config';
 import { directions, Image, type Direction, type Pixel } from '../image';
-import { type RandomFn } from '../util';
+import { type RandomFn } from '../../util';
 import { Area, AreaStore } from './area';
 import { EdgeStore } from './edge';
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Coord, directions, Image } from '../image';
-import { createRandom } from '../util';
+import { createRandom } from '../../util';
 import { Puzzle } from './puzzle';
 
 describe('Puzzle', () => {

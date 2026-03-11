@@ -1,3 +1,4 @@
+import { config } from '../config';
 import { Image } from '../domain/image';
 
 export interface ImageRenderOptions {
@@ -6,11 +7,7 @@ export interface ImageRenderOptions {
   whiteColor?: string;
 }
 
-const defaultOptions: ImageRenderOptions = {
-  cellSize: 6,
-  blackColor: '#1a1a1a',
-  whiteColor: '#ffffff',
-};
+const defaultOptions: ImageRenderOptions = config.qr;
 
 export function renderImage(
   canvas: HTMLCanvasElement,

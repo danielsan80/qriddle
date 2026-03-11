@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Image } from '../image';
-import { createRandom } from '../util';
+import { createRandom } from '../../util';
 import { AreaStore } from './area';
 import { chooseDots } from './dot';
 

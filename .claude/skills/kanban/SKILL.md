@@ -51,10 +51,6 @@ Oltre al paint-by-area già implementato, esplorare altri stili: labirinto puro,
 
 Primo step della wizard: seed come parametro globale che influenza tutti i puzzle generati.
 
-#### Centralizzare la gestione dei parametri di configurazione
-
-I parametri come dimensione celle, bias direzionale, ecc. sono sparsi nel codice. Raccoglierli in un unico punto.
-
 #### [Spike] Download SVG modificabile
 
 Capire se ha senso e se è fattibile esportare il biglietto come SVG (oltre che PDF), in modo da poterlo aprire e modificare con Inkscape o simili. Valutare: il puzzle generato dinamicamente è rappresentabile in SVG? il testo dei campi della wizard si integra bene? Vedi anche la skill `svg-rendering` per opzioni tecniche già analizzate.
@@ -84,3 +80,7 @@ Aggiungere link al progetto qriddle nella pagina GitHub Pages personale, sezione
 ### Creare repo GitHub pubblico
 
 ### CI/CD con GitHub Actions per deploy su GitHub Pages
+
+### Centralizzare la gestione dei parametri di configurazione
+
+### Riorganizzare src/lib con macro-cartelle di contesto (domain, render, config, util)

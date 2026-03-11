@@ -1,3 +1,4 @@
+import { config } from '../config';
 import { Coord } from '../domain/image';
 import { Puzzle } from '../domain/puzzle';
 
@@ -9,13 +10,7 @@ export interface PuzzleRenderOptions {
   dotRadius?: number;
 }
 
-const defaultOptions: PuzzleRenderOptions = {
-  cellSize: 6,
-  backgroundColor: '#f8f5ed',
-  borderColor: '#c0c0c0',
-  dotColor: '#a0a0a0',
-  dotRadius: 0.3,
-};
+const defaultOptions: PuzzleRenderOptions = config.puzzle;
 
 export function renderPuzzle(
   canvas: HTMLCanvasElement,

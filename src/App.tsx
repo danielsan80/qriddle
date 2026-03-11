@@ -7,6 +7,7 @@ import { Image } from './lib/domain/image';
 import { Puzzle } from './lib/domain/puzzle';
 import { renderPdfPreview, renderImage, downloadPuzzlePdf } from './lib/render';
 import { createRandom, generateSeed, getQRMatrix } from './lib/util';
+import { config } from './lib/config';
 import './App.css';
 
 const DEBOUNCE_MS = 300;
@@ -51,7 +52,7 @@ function App() {
         const { matrix } = getQRMatrix(qrText);
         const qrImage = new Image(matrix);
 
-        renderImage(qrCanvasRef.current!, qrImage, { cellSize: 12 });
+        renderImage(qrCanvasRef.current!, qrImage, config.preview);
 
         const puzzleImage = qrImage.x2();
         const newPuzzle = Puzzle.create(puzzleImage, createRandom(seed));
