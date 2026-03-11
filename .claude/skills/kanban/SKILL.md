@@ -23,6 +23,7 @@ PDF 2 pagine A4 (fronte/retro da stampare su un unico foglio):
   - `[ centro-sx | centro-dx ]` — visibili aprendo a metà; la grafica invita ad aprire completamente
 
 Campi per facciata:
+
 - **fronte**: destinatario, titolo (es. "Buon compleanno Pinco")
 - **centro-sx**: data, dedica, mittente
 - **centro-dx**: testo libero / messaggio aggiuntivo
