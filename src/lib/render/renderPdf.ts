@@ -1,5 +1,5 @@
 import { jsPDF } from 'jspdf';
-import { Puzzle } from '../puzzle';
+import { Puzzle } from '../domain/puzzle';
 import { renderPuzzle } from './renderPuzzle';
 import innerSvgUrl from '../../assets/inner/inner.svg?url';
 

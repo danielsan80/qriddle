@@ -1,4 +1,4 @@
-import { Image } from '../image';
+import { Image } from '../domain/image';
 
 export interface ImageRenderOptions {
   cellSize?: number;

@@ -17,6 +17,7 @@ Regole sintetiche: scrivi il minimo necessario per essere compresi.
 - Librerie esterne: diffuse, ben supportate, componibili, stilizzabili. No monoliti.
 - Nomi variabili: evita nomi da una sola lettera, anche in scope locali (no `e` per edge, usa `edge`).
 - "il file" senza specificare quale = CLAUDE.md
+- "toshl-man" = progetto in `/home/danilo/www/projects/toshl-man`
 - Quando ti parlo in inglese e ti scrivo "eng?", dammi un breve feedback sulle frasi che ho scritto correggendo i miei errori.
 
 ## Kanban

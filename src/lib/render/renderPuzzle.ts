@@ -1,5 +1,5 @@
-import { Coord } from '../image';
-import { Puzzle } from '../puzzle';
+import { Coord } from '../domain/image';
+import { Puzzle } from '../domain/puzzle';
 
 export interface PuzzleRenderOptions {
   cellSize?: number;

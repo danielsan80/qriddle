@@ -1,5 +1,5 @@
 import QRCode from 'qrcode';
-import type { Matrix } from '../image';
+import type { Matrix } from '../domain/image';
 
 export interface QROptions {
   errorCorrectionLevel?: 'L' | 'M' | 'Q' | 'H';
