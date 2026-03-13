@@ -35,10 +35,6 @@ La wizard guida step per step (seed → fronte → centro → retro → QR/puzzl
 
 Animazione interattiva che simula l'apertura del biglietto nella wizard: fronte → apertura copertina → centro-sx/dx → apertura completa → inner col puzzle.
 
-#### SVG outer (4 facciate A6)
-
-Creare il secondo SVG A4 con le 4 facciate A6 (fronte, retro, centro-sx, centro-dx) con grafica pirata.
-
 #### Multipuzzle: QR diviso in 4 settori
 
 Dividere il QR code in 4 quadranti e generare un puzzle indipendente per ciascuno. Ogni quadrante può usare uno stile diverso (es. paint-by-area, labirinto, ecc.).
@@ -62,6 +58,18 @@ Capire se ha senso e se è fattibile esportare il biglietto come SVG (oltre che 
 Aggiungere link al progetto qriddle nella pagina GitHub Pages personale, sezione "Lab".
 
 ## DOING
+
+#### SVG outer (4 facciate A6)
+
+Creare il secondo SVG A4 con le 4 facciate A6 (fronte, retro, centro-sx, centro-dx) con grafica pirata.
+
+⚠️ File SVG da recuperare dal vecchio PC.
+
+Prossimi passi una volta disponibile il file:
+
+1. Embeddarlo come asset (come già fatto per `inner.svg`)
+2. Aggiungere `renderPdf` per la pagina outer
+3. Aggiornare `downloadPuzzlePdf` per produrre un PDF a 2 pagine
 
 ## DONE
 

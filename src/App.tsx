@@ -5,7 +5,11 @@ import { Controls } from './components/Controls';
 import { Workspace } from './components/Workspace';
 import { Image } from './lib/domain/image';
 import { Puzzle } from './lib/domain/puzzle';
-import { renderPdfPreview, renderImage, downloadPuzzlePdf } from './lib/render';
+import {
+  renderInnerPdfPreview,
+  renderImage,
+  downloadPuzzlePdf,
+} from './lib/render';
 import { createRandom, generateSeed, getQRMatrix } from './lib/util';
 import { config } from './lib/config';
 import './App.css';
@@ -56,7 +60,7 @@ function App() {
 
         const puzzleImage = qrImage.x2();
         const newPuzzle = Puzzle.create(puzzleImage, createRandom(seed));
-        await renderPdfPreview(puzzleCanvasRef.current!, newPuzzle);
+        await renderInnerPdfPreview(puzzleCanvasRef.current!, newPuzzle);
         setPuzzle(newPuzzle);
       })();
     }, DEBOUNCE_MS);

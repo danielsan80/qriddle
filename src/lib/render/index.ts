@@ -1,3 +1,7 @@
 export { renderPuzzle, type PuzzleRenderOptions } from './renderPuzzle';
 export { renderImage, type ImageRenderOptions } from './renderImage';
-export { downloadPuzzlePdf, renderPdfPreview } from './renderPdf';
+export {
+  downloadPuzzlePdf,
+  renderInnerPdfPreview,
+  renderOuterPdfPreview,
+} from './renderPdf';

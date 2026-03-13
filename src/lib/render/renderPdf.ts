@@ -3,6 +3,7 @@ import { config } from '../config';
 import { Puzzle } from '../domain/puzzle';
 import { renderPuzzle } from './renderPuzzle';
 import innerSvgUrl from '../../assets/inner/inner.svg?url';
+import outerSvgUrl from '../../assets/outer/outer.svg?url';
 
 const A4_WIDTH_MM = 210;
 const A4_HEIGHT_MM = 297;
@@ -20,7 +21,7 @@ function loadImage(url: string): Promise<HTMLImageElement> {
   });
 }
 
-async function composePdf(
+async function composeInnerPdf(
   puzzle: Puzzle,
   widthPx: number,
   heightPx: number,
@@ -49,14 +50,40 @@ async function composePdf(
   return canvas;
 }
 
-export async function renderPdfPreview(
+export async function renderInnerPdfPreview(
   canvas: HTMLCanvasElement,
   puzzle: Puzzle,
 ): Promise<void> {
   // ~75dpi (A4@300dpi / 4)
   const scale = 0.25;
-  const composed = await composePdf(
+  const composed = await composeInnerPdf(
     puzzle,
+    Math.round(A4_PX_W * scale),
+    Math.round(A4_PX_H * scale),
+  );
+  canvas.width = composed.width;
+  canvas.height = composed.height;
+  canvas.getContext('2d')!.drawImage(composed, 0, 0);
+}
+
+async function composeOuterPdf(
+  widthPx: number,
+  heightPx: number,
+): Promise<HTMLCanvasElement> {
+  const canvas = document.createElement('canvas');
+  canvas.width = widthPx;
+  canvas.height = heightPx;
+  const ctx = canvas.getContext('2d')!;
+  const bg = await loadImage(outerSvgUrl);
+  ctx.drawImage(bg, 0, 0, widthPx, heightPx);
+  return canvas;
+}
+
+export async function renderOuterPdfPreview(
+  canvas: HTMLCanvasElement,
+): Promise<void> {
+  const scale = 0.25;
+  const composed = await composeOuterPdf(
     Math.round(A4_PX_W * scale),
     Math.round(A4_PX_H * scale),
   );
@@ -69,13 +96,18 @@ export async function downloadPuzzlePdf(
   puzzle: Puzzle,
   filename = 'puzzle.pdf',
 ): Promise<void> {
-  const composed = await composePdf(puzzle, A4_PX_W, A4_PX_H);
+  const [inner, outer] = await Promise.all([
+    composeInnerPdf(puzzle, A4_PX_W, A4_PX_H),
+    composeOuterPdf(A4_PX_W, A4_PX_H),
+  ]);
 
   const pdf = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
     format: 'a4',
   });
-  pdf.addImage(composed, 'PNG', 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
+  pdf.addImage(outer, 'PNG', 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
+  pdf.addPage();
+  pdf.addImage(inner, 'PNG', 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
   pdf.save(filename);
 }
