@@ -1,0 +1,93 @@
+.nav {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.inner {
+  aspect-ratio: 210 / 297;
+  width: 100px;
+  border: 1.5px solid #555;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #888;
+  box-sizing: border-box;
+
+  &:hover {
+    background: oklch(0.95 0.02 250);
+  }
+
+  &.selected {
+    background: oklch(0.92 0.05 250);
+    border-color: oklch(0.5 0.2 250);
+    color: oklch(0.3 0.15 250);
+  }
+}
+
+.outer {
+  aspect-ratio: 210 / 297;
+  width: 100px;
+  border: 1.5px solid #555;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  box-sizing: border-box;
+}
+
+/* Centro group spans both columns and manages hover for 2+3 together */
+.center {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px dashed #aaa;
+  cursor: pointer;
+
+  &:hover .quadrant,
+  &.selected .quadrant {
+    background: oklch(0.95 0.02 250);
+  }
+
+  &.selected .quadrant {
+    background: oklch(0.92 0.05 250);
+    color: oklch(0.3 0.15 250);
+  }
+}
+
+.quadrant {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #888;
+  box-sizing: border-box;
+
+  &:hover {
+    background: oklch(0.95 0.02 250);
+  }
+
+  &.selected {
+    background: oklch(0.92 0.05 250);
+    color: oklch(0.3 0.15 250);
+  }
+
+  &.topLeft {
+    border-right: 1px dashed #aaa;
+  }
+
+  &.bottomLeft {
+    border-right: 1px dashed #aaa;
+    cursor: pointer;
+  }
+
+  &.bottomRight {
+    cursor: pointer;
+  }
+}
+
+.rotated {
+  display: inline-block;
+  transform: rotate(180deg);
+}

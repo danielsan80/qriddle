@@ -3,6 +3,8 @@ import { Layout } from './components/Layout';
 import { Header } from './components/Header';
 import { Controls } from './components/Controls';
 import { Workspace } from './components/Workspace';
+import { CardFaceNav, type Face } from './components/CardFaceNav';
+import { Panel } from './components/Panel';
 import { Image } from './lib/domain/image';
 import { Puzzle } from './lib/domain/puzzle';
 import {
@@ -38,6 +40,12 @@ function App() {
   const [qrText, setQrText] = useState(initial.qrText);
   const [seed, setSeed] = useState(initial.seed);
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
+  const [selectedFace, setSelectedFace] = useState<Face>('inner.map');
+
+  const handleFaceSelect = (face: Face) => {
+    setSelectedFace(face);
+    console.log('face selected:', face);
+  };
 
   useEffect(() => {
     updateURL(qrText, seed);
@@ -87,6 +95,9 @@ function App() {
           onSeedChange={setSeed}
           onSeedRegenerate={() => setSeed(generateSeed())}
         />
+        <Panel title="Biglietto" type="nav" showCanvas={true}>
+          <CardFaceNav selected={selectedFace} onSelect={handleFaceSelect} />
+        </Panel>
         <Workspace
           qrCanvasRef={qrCanvasRef}
           puzzleCanvasRef={puzzleCanvasRef}
