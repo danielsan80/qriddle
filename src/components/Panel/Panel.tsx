@@ -1,8 +1,6 @@
 import type { ReactNode } from 'react';
 import styles from './Panel.module.css';
 
-type PanelType = 'qrcode' | 'puzzle' | 'preview' | 'nav';
-
 interface PanelAction {
   icon: string;
   label: string;
@@ -12,23 +10,11 @@ interface PanelAction {
 
 interface PanelProps {
   title: string;
-  type: PanelType;
-  showCanvas: boolean;
   action?: PanelAction;
   children?: ReactNode;
 }
 
-export function Panel({
-  title,
-  type,
-  showCanvas,
-  action,
-  children,
-}: PanelProps) {
-  const classes = [styles.canvasContainer, styles[type]];
-  if (showCanvas) classes.push(styles.hasContent);
-  const containerClass = classes.join(' ');
-
+export function Panel({ title, action, children }: PanelProps) {
   return (
     <div className={styles.panel}>
       <div className={styles.header}>
@@ -45,7 +31,7 @@ export function Panel({
           </button>
         )}
       </div>
-      <div className={containerClass}>{children}</div>
+      <div className={styles.content}>{children}</div>
     </div>
   );
 }

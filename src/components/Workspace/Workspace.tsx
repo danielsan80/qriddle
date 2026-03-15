@@ -1,5 +1,8 @@
 import type { RefObject } from 'react';
 import { Panel } from '../Panel';
+import { CanvasStage } from './CanvasStage';
+import { QrcodeCanvas } from './QrcodeCanvas';
+import { PreviewCanvas } from './PreviewCanvas';
 import styles from './Workspace.module.css';
 
 interface WorkspaceProps {
@@ -19,14 +22,14 @@ export function Workspace({
 }: WorkspaceProps) {
   return (
     <div className={styles.workspace}>
-      <Panel title="QR Code" type="qrcode" showCanvas={showCanvas}>
-        <canvas ref={qrCanvasRef}></canvas>
+      <Panel title="QR Code">
+        <CanvasStage show={showCanvas}>
+          <QrcodeCanvas ref={qrCanvasRef} />
+        </CanvasStage>
       </Panel>
 
       <Panel
         title="Anteprima PDF"
-        type="preview"
-        showCanvas={showCanvas}
         action={{
           icon: '↓',
           label: 'Scarica PDF',
@@ -34,7 +37,9 @@ export function Workspace({
           disabled: !canDownload,
         }}
       >
-        <canvas ref={puzzleCanvasRef}></canvas>
+        <CanvasStage show={showCanvas}>
+          <PreviewCanvas ref={puzzleCanvasRef} />
+        </CanvasStage>
       </Panel>
     </div>
   );

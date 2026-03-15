@@ -95,7 +95,7 @@ function App() {
           onSeedChange={setSeed}
           onSeedRegenerate={() => setSeed(generateSeed())}
         />
-        <Panel title="Biglietto" type="nav" showCanvas={true}>
+        <Panel title="Biglietto">
           <CardFaceNav selected={selectedFace} onSelect={handleFaceSelect} />
         </Panel>
         <Workspace
