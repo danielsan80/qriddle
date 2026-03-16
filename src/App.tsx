@@ -3,7 +3,12 @@ import { Layout } from './components/Layout';
 import { Sidebar } from './components/Sidebar';
 import { Controls } from './components/Controls';
 import { Workspace } from './components/Workspace';
-import { CardFaceNav, type Face } from './components/CardFaceNav';
+import { CardFaceNav } from './components/CardFaceNav';
+import {
+  WizardNav,
+  type WizardStep,
+  WIZARD_STEPS,
+} from './components/WizardNav';
 import { Image } from './lib/domain/image';
 import { Puzzle } from './lib/domain/puzzle';
 import {
@@ -39,12 +44,11 @@ function App() {
   const [qrText, setQrText] = useState(initial.qrText);
   const [seed, setSeed] = useState(initial.seed);
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
-  const [selectedFace, setSelectedFace] = useState<Face>('inner.map');
+  const [wizardStep, setWizardStep] = useState<WizardStep>(
+    WIZARD_STEPS[0].step,
+  );
 
-  const handleFaceSelect = (face: Face) => {
-    setSelectedFace(face);
-    console.log('face selected:', face);
-  };
+  const selectedFace = wizardStep !== 'download' ? wizardStep : undefined;
 
   useEffect(() => {
     updateURL(qrText, seed);
@@ -86,7 +90,8 @@ function App() {
   return (
     <Layout>
       <Sidebar>
-        <CardFaceNav selected={selectedFace} onSelect={handleFaceSelect} />
+        <CardFaceNav selected={selectedFace} onSelect={setWizardStep} />
+        <WizardNav step={wizardStep} onStep={setWizardStep} />
       </Sidebar>
       <main>
         <Controls

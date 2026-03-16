@@ -4,13 +4,13 @@ import styles from './CardFaceNav.module.css';
 export type Face = 'inner.map' | 'outer.front' | 'outer.back' | 'outer.center';
 
 interface CardFaceNavProps {
-  selected: Face;
+  selected?: Face;
   onSelect: (face: Face) => void;
 }
 
 interface FaceButtonProps {
   face: Face;
-  selected: Face;
+  selected?: Face;
   onSelect: (face: Face) => void;
   className: string;
   children: ReactNode;
