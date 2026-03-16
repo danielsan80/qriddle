@@ -6,6 +6,7 @@
   flex-direction: column;
   gap: 2rem;
   border-right: 4px solid var(--accent);
+  overflow-y: auto;
 }
 
 .brand {
