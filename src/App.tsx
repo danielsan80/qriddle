@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Layout } from './components/Layout';
-import { Header } from './components/Header';
+import { Sidebar } from './components/Sidebar';
 import { Controls } from './components/Controls';
 import { Workspace } from './components/Workspace';
 import { CardFaceNav, type Face } from './components/CardFaceNav';
-import { Panel } from './components/Panel';
 import { Image } from './lib/domain/image';
 import { Puzzle } from './lib/domain/puzzle';
 import {
@@ -86,8 +85,7 @@ function App() {
 
   return (
     <Layout>
-      <Header />
-      <main>
+      <Sidebar>
         <Controls
           qrText={qrText}
           onQrTextChange={setQrText}
@@ -95,9 +93,9 @@ function App() {
           onSeedChange={setSeed}
           onSeedRegenerate={() => setSeed(generateSeed())}
         />
-        <Panel title="Biglietto">
-          <CardFaceNav selected={selectedFace} onSelect={handleFaceSelect} />
-        </Panel>
+        <CardFaceNav selected={selectedFace} onSelect={handleFaceSelect} />
+      </Sidebar>
+      <main>
         <Workspace
           qrCanvasRef={qrCanvasRef}
           puzzleCanvasRef={puzzleCanvasRef}
