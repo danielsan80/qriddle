@@ -17,12 +17,13 @@
 
 body {
   font-family: 'Courier Prime', monospace;
-  background: linear-gradient(135deg, #e8e4d9 0%, #f8f5ed 100%);
-  min-height: 100vh;
-  padding: 2rem;
+  background: var(--ink);
   color: var(--ink);
+  height: 100vh;
+  overflow: hidden;
 }
 
 #root {
   width: 100%;
+  height: 100%;
 }
