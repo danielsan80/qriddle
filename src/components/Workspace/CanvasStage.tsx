@@ -9,7 +9,7 @@ interface CanvasStageProps {
 export function CanvasStage({ show, children }: CanvasStageProps) {
   return (
     <div className={styles.stage}>
-      <div className={show ? undefined : styles.hidden}>{children}</div>
+      <div className={show ? styles.visible : styles.hidden}>{children}</div>
     </div>
   );
 }
