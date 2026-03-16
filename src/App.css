@@ -1,4 +1,6 @@
 main {
   padding: 3rem;
   overflow-y: auto;
+  background: var(--paper);
+  color: var(--ink);
 }

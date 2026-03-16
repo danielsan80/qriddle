@@ -86,6 +86,9 @@ function App() {
   return (
     <Layout>
       <Sidebar>
+        <CardFaceNav selected={selectedFace} onSelect={handleFaceSelect} />
+      </Sidebar>
+      <main>
         <Controls
           qrText={qrText}
           onQrTextChange={setQrText}
@@ -93,9 +96,6 @@ function App() {
           onSeedChange={setSeed}
           onSeedRegenerate={() => setSeed(generateSeed())}
         />
-        <CardFaceNav selected={selectedFace} onSelect={handleFaceSelect} />
-      </Sidebar>
-      <main>
         <Workspace
           qrCanvasRef={qrCanvasRef}
           puzzleCanvasRef={puzzleCanvasRef}
