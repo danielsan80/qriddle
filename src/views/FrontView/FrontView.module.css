@@ -1,5 +1,6 @@
 .preview {
-  width: 100%;
+  width: 50%;
+  margin: auto;
   aspect-ratio: 105 / 148.5;
   background-size: 200% 200%;
   background-position: 100% 100%;
