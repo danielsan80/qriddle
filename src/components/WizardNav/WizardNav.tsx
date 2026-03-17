@@ -82,7 +82,12 @@ export function WizardNav({ step, onStep }: WizardNavProps) {
           >
             <div className={styles.track}>
               {isLast ? <XMarker /> : <DotMarker done={done} />}
-              {!isLast && <div className={styles.segment} />}
+              {!isLast && (
+                <div
+                  className={styles.segment}
+                  data-done={i < index ? 'true' : undefined}
+                />
+              )}
             </div>
             <div className={styles.content}>
               <button

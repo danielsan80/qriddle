@@ -14,17 +14,19 @@
   &[data-state='future'] {
     opacity: 0.35;
   }
+
+  &[data-state='done'] .segment:not([data-done='true']) {
+    opacity: 0.35;
+  }
 }
 
-/* track: marker + vertical dashed line */
+/* track: marker on top, dashed segment fills remaining row height */
 .track {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 2px;
 }
 
-/* dashed segment between markers */
 .segment {
   flex: 1;
   min-height: 20px;
@@ -37,21 +39,16 @@
     transparent 7px
   );
 
-  .step[data-state='done'] + .step[data-state='done'] & {
-    /* thicker dashes for done-to-done segment */
+  &[data-done='true'] {
+    width: 3px;
+    background: repeating-linear-gradient(
+      to bottom,
+      currentColor 0,
+      currentColor 5px,
+      transparent 5px,
+      transparent 8px
+    );
   }
-}
-
-/* thicker dash for segments between reached steps */
-.step[data-state='done'] .segment {
-  width: 3px;
-  background: repeating-linear-gradient(
-    to bottom,
-    currentColor 0,
-    currentColor 5px,
-    transparent 5px,
-    transparent 8px
-  );
 }
 
 /* content: label + optional next button */
@@ -60,6 +57,7 @@
   align-items: center;
   gap: 0.5rem;
   padding-bottom: 16px;
+  padding-top: 0;
 }
 
 .label {
