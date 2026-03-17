@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Layout } from './components/Layout';
 import { Sidebar } from './components/Sidebar';
-import { Controls } from './components/Controls';
-import { Workspace } from './components/Workspace';
 import { CardFaceNav } from './components/CardFaceNav';
+import { StepView } from './views/StepView';
 import { TrackNav, type TrackStep, TRACK_STEPS } from './components/TrackNav';
 import { Image } from './lib/domain/image';
 import { Puzzle } from './lib/domain/puzzle';
@@ -88,14 +87,13 @@ function App() {
         <TrackNav step={trackStep} onStep={setTrackStep} />
       </Sidebar>
       <main>
-        <Controls
+        <StepView
+          step={trackStep}
           qrText={qrText}
           onQrTextChange={setQrText}
           seed={seed}
           onSeedChange={setSeed}
           onSeedRegenerate={() => setSeed(generateSeed())}
-        />
-        <Workspace
           qrCanvasRef={qrCanvasRef}
           puzzleCanvasRef={puzzleCanvasRef}
           showCanvas={showCanvas}
