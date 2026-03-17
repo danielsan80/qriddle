@@ -31,10 +31,6 @@ Campi per facciata:
 
 La wizard guida step per step (seed → fronte → centro → retro → QR/puzzle). Si naviga avanti/indietro. Il PDF è sempre scaricabile.
 
-#### Anteprima animata del biglietto
-
-Animazione interattiva che simula l'apertura del biglietto nella wizard: fronte → apertura copertina → centro-sx/dx → apertura completa → inner col puzzle.
-
 #### Multipuzzle: QR diviso in 4 settori
 
 Dividere il QR code in 4 quadranti e generare un puzzle indipendente per ciascuno. Ogni quadrante può usare uno stile diverso (es. paint-by-area, labirinto, ecc.).
@@ -63,7 +59,31 @@ Aggiungere link al progetto qriddle nella pagina GitHub Pages personale, sezione
 
 ## DOING
 
+### Wizard biglietto di auguri
+
+PDF 2 pagine A4 (fronte/retro da stampare su un unico foglio):
+
+- **inner** (già implementato): pagina interna — aperta completamente mostra l'A4 intero col puzzle
+- **outer** (da fare): pagina esterna — 4 facciate A6 disposte per la stampa:
+  - `[ retro | fronte ]` — visibili a biglietto chiuso
+  - `[ centro-sx | centro-dx ]` — visibili aprendo a metà; la grafica invita ad aprire completamente
+
+Campi per facciata:
+
+- **fronte**: destinatario, titolo (es. "Buon compleanno Pinco")
+- **centro-sx**: data, dedica, mittente
+- **centro-dx**: testo libero / messaggio aggiuntivo
+- **retro**: credits, QR code piccolo
+
+La wizard guida step per step (seed → fronte → centro → retro → QR/puzzle). Si naviga avanti/indietro. Il PDF è sempre scaricabile.
+
+WizardNav implementata (navigazione a percorso con marcatori SVG, nave pirata come next).
+
 ## DONE
+
+### Anteprima animata del biglietto
+
+Convertita in `CardFaceNav`: navigazione visuale interattiva delle 4 facciate del biglietto (mappa, fronte, centro, retro) con diagramma schematico cliccabile.
 
 ### SVG outer (4 facciate A6)
 
