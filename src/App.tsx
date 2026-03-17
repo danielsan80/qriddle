@@ -4,11 +4,7 @@ import { Sidebar } from './components/Sidebar';
 import { Controls } from './components/Controls';
 import { Workspace } from './components/Workspace';
 import { CardFaceNav } from './components/CardFaceNav';
-import {
-  WizardNav,
-  type WizardStep,
-  WIZARD_STEPS,
-} from './components/WizardNav';
+import { TrackNav, type TrackStep, TRACK_STEPS } from './components/TrackNav';
 import { Image } from './lib/domain/image';
 import { Puzzle } from './lib/domain/puzzle';
 import {
@@ -44,11 +40,9 @@ function App() {
   const [qrText, setQrText] = useState(initial.qrText);
   const [seed, setSeed] = useState(initial.seed);
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
-  const [wizardStep, setWizardStep] = useState<WizardStep>(
-    WIZARD_STEPS[0].step,
-  );
+  const [trackStep, setTrackStep] = useState<TrackStep>(TRACK_STEPS[0].step);
 
-  const selectedFace = wizardStep !== 'download' ? wizardStep : undefined;
+  const selectedFace = trackStep !== 'download' ? trackStep : undefined;
 
   useEffect(() => {
     updateURL(qrText, seed);
@@ -90,8 +84,8 @@ function App() {
   return (
     <Layout>
       <Sidebar>
-        <CardFaceNav selected={selectedFace} onSelect={setWizardStep} />
-        <WizardNav step={wizardStep} onStep={setWizardStep} />
+        <CardFaceNav selected={selectedFace} onSelect={setTrackStep} />
+        <TrackNav step={trackStep} onStep={setTrackStep} />
       </Sidebar>
       <main>
         <Controls

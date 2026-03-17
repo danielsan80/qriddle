@@ -1,8 +1,8 @@
 import type { Face } from '../CardFaceNav';
 
-export type WizardStep = Face | 'download';
+export type TrackStep = Face | 'download';
 
-export const WIZARD_STEPS: { step: WizardStep; label: string }[] = [
+export const TRACK_STEPS: { step: TrackStep; label: string }[] = [
   { step: 'inner.map', label: 'Map' },
   { step: 'outer.front', label: 'Front' },
   { step: 'outer.center', label: 'Center' },

@@ -1,11 +1,11 @@
-import { WIZARD_STEPS, type WizardStep } from './steps';
-import styles from './WizardNav.module.css';
+import { TRACK_STEPS, type TrackStep } from './steps';
+import styles from './TrackNav.module.css';
 
-export type { WizardStep };
+export type { TrackStep };
 
-interface WizardNavProps {
-  step: WizardStep;
-  onStep: (step: WizardStep) => void;
+interface TrackNavProps {
+  step: TrackStep;
+  onStep: (step: TrackStep) => void;
 }
 
 function DotMarker({ past }: { past: boolean }) {
@@ -63,13 +63,13 @@ function ShipIcon() {
   );
 }
 
-export function WizardNav({ step, onStep }: WizardNavProps) {
-  const index = WIZARD_STEPS.findIndex((s) => s.step === step);
-  const total = WIZARD_STEPS.length;
+export function TrackNav({ step, onStep }: TrackNavProps) {
+  const index = TRACK_STEPS.findIndex((s) => s.step === step);
+  const total = TRACK_STEPS.length;
 
   return (
     <ol className={styles.steps}>
-      {WIZARD_STEPS.map((s, i) => {
+      {TRACK_STEPS.map((s, i) => {
         const isLast = i === total - 1;
         const past = i <= index;
 
@@ -102,7 +102,7 @@ export function WizardNav({ step, onStep }: WizardNavProps) {
                   type="button"
                   aria-label="next"
                   className={styles.next}
-                  onClick={() => onStep(WIZARD_STEPS[index + 1].step)}
+                  onClick={() => onStep(TRACK_STEPS[index + 1].step)}
                 >
                   <ShipIcon />
                 </button>
