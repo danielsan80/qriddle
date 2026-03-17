@@ -1,25 +1,12 @@
-import type { RefObject } from 'react';
-import type { TrackStep } from '../../components/TrackNav';
+import { useWizard } from '../../context/useWizard';
 import { MapView } from '../MapView';
 
-interface StepViewProps {
-  step: TrackStep;
-  qrText: string;
-  onQrTextChange: (text: string) => void;
-  seed: string;
-  onSeedChange: (seed: string) => void;
-  onSeedRegenerate: () => void;
-  qrCanvasRef: RefObject<HTMLCanvasElement | null>;
-  puzzleCanvasRef: RefObject<HTMLCanvasElement | null>;
-  showCanvas: boolean;
-  onDownloadPdf: () => void;
-  canDownload: boolean;
-}
+export function StepView() {
+  const { trackStep } = useWizard();
 
-export function StepView({ step, ...props }: StepViewProps) {
-  switch (step) {
+  switch (trackStep) {
     case 'inner.map':
-      return <MapView {...props} />;
+      return <MapView />;
     case 'outer.front':
       return <p>Front — TODO</p>;
     case 'outer.center':
