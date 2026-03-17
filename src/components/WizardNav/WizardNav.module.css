@@ -4,17 +4,62 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
 }
 
 .step {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 0 0.75rem;
+
+  &[data-state='future'] {
+    opacity: 0.35;
+  }
 }
 
-.future {
-  opacity: 0.35;
+/* track: marker + vertical dashed line */
+.track {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2px;
+}
+
+/* dashed segment between markers */
+.segment {
+  flex: 1;
+  min-height: 20px;
+  width: 2px;
+  background: repeating-linear-gradient(
+    to bottom,
+    currentColor 0,
+    currentColor 4px,
+    transparent 4px,
+    transparent 7px
+  );
+
+  .step[data-state='done'] + .step[data-state='done'] & {
+    /* thicker dashes for done-to-done segment */
+  }
+}
+
+/* thicker dash for segments between reached steps */
+.step[data-state='done'] .segment {
+  width: 3px;
+  background: repeating-linear-gradient(
+    to bottom,
+    currentColor 0,
+    currentColor 5px,
+    transparent 5px,
+    transparent 8px
+  );
+}
+
+/* content: label + optional next button */
+.content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 16px;
 }
 
 .label {
@@ -34,10 +79,10 @@
   background: none;
   border: none;
   color: var(--accent);
-  font-family: 'Courier Prime', monospace;
-  font-size: 1rem;
-  padding: 0 0.25rem;
+  padding: 0;
   cursor: pointer;
+  display: flex;
+  align-items: center;
   transition: opacity 0.15s;
 
   &:hover {

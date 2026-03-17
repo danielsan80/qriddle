@@ -9,23 +9,41 @@ const last = WIZARD_STEPS[WIZARD_STEPS.length - 1];
 const middle = WIZARD_STEPS[2];
 
 describe('WizardNav', () => {
-  it('renders all steps with bullets and inline next on current', () => {
+  it('renders all step labels', () => {
     render(<WizardNav step={middle.step} onStep={vi.fn()} />);
-    expect(screen.getAllByRole('listitem').map((el) => el.textContent)).toEqual(
-      ['● Mappa', '● Fronte', '● Centro →', '○ Retro', '○ Download'],
-    );
+    const stepButtons = screen
+      .getAllByRole('button')
+      .filter((b) => !b.getAttribute('aria-label'));
+    expect(stepButtons.map((b) => b.textContent)).toEqual([
+      'Mappa',
+      'Fronte',
+      'Centro',
+      'Retro',
+      'Download',
+    ]);
+  });
+
+  it('marks done and future steps via data-state', () => {
+    render(<WizardNav step={middle.step} onStep={vi.fn()} />);
+    expect(
+      screen
+        .getAllByRole('listitem')
+        .map((el) => (el as HTMLElement).dataset.state),
+    ).toEqual(['done', 'done', 'done', 'future', 'future']);
   });
 
   it('marks current step with aria-current', () => {
     render(<WizardNav step={middle.step} onStep={vi.fn()} />);
-    const items = screen.getAllByRole('listitem');
-    expect(items.map((el) => el.getAttribute('aria-current'))).toEqual([
-      null,
-      null,
-      'step',
-      null,
-      null,
-    ]);
+    expect(
+      screen
+        .getAllByRole('listitem')
+        .map((el) => el.getAttribute('aria-current')),
+    ).toEqual([null, null, 'step', null, null]);
+  });
+
+  it('shows next button on non-last current step', () => {
+    render(<WizardNav step={middle.step} onStep={vi.fn()} />);
+    expect(screen.getByRole('button', { name: /next/i })).toBeDefined();
   });
 
   it('hides next button on last step', () => {
@@ -43,7 +61,7 @@ describe('WizardNav', () => {
   it('calls onStep when clicking a step label', async () => {
     const onStep = vi.fn();
     render(<WizardNav step={middle.step} onStep={onStep} />);
-    await userEvent.click(screen.getByRole('button', { name: '● Mappa' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Mappa' }));
     expect(onStep).toHaveBeenCalledWith(first.step);
   });
 });
