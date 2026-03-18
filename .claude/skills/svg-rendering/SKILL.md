@@ -109,3 +109,22 @@ SVG-first: puzzle (SVG) → compositing SVG → svg2pdf.js → .pdf
 ### Spike: renderPuzzleSvg()
 
 Scrivere `renderPuzzleSvg()` e verificare che il risultato sia pulito in Inkscape. Costo basso, payoff alto — sblocca download SVG, qualità vettoriale nel PDF e biglietto auguri.
+
+## Font nei file SVG: conclusione
+
+**Problema**: Inkscape non renderizza font embedded via `@font-face` con data URL base64 nel file SVG — né in coda al documento né dentro `<defs>`. Entrambe le soluzioni testate, entrambe fallite.
+
+**Opzioni scartate**:
+
+- `@font-face` + base64 in `<style>` → non funziona in Inkscape
+- Text-to-path (opentype.js) → il testo non è più editabile, inutile per SVG scaricabile
+
+**Soluzione adottata: ZIP con SVG + font + README**
+
+Distribuire un pacchetto zip contenente:
+
+- `front.svg` (o il file della facciata)
+- `EdwardianScriptITC.ttf`
+- `README.txt` con istruzioni: installare il font sul sistema per visualizzare/modificare correttamente l'SVG in Inkscape
+
+Questo permette all'utente di modificare testi e layout in Inkscape una volta installato il font.
