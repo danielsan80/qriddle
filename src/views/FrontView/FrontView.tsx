@@ -332,22 +332,24 @@ export function FrontView() {
                     stopEditing();
                 }}
               />
-              <button
-                type="button"
-                className={styles.sizeBtn}
-                onMouseDown={(event) => event.preventDefault()}
-                onClick={() => handleFontSize(editing.id, -1)}
-              >
-                −
-              </button>
-              <button
-                type="button"
-                className={styles.sizeBtn}
-                onMouseDown={(event) => event.preventDefault()}
-                onClick={() => handleFontSize(editing.id, +1)}
-              >
-                +
-              </button>
+              <div className={styles.sizeGroup}>
+                <button
+                  type="button"
+                  className={styles.sizeBtn}
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={() => handleFontSize(editing.id, -1)}
+                >
+                  −
+                </button>
+                <button
+                  type="button"
+                  className={styles.sizeBtn}
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={() => handleFontSize(editing.id, +1)}
+                >
+                  +
+                </button>
+              </div>
               <button
                 type="button"
                 className={styles.deleteBtn}

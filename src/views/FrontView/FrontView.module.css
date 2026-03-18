@@ -34,7 +34,7 @@
 }
 
 .editInput {
-  background: rgba(255, 255, 255, 0.95);
+  background: #fff;
   border: 1px dashed #666;
   font-size: 0.95rem;
   color: #333;
@@ -48,9 +48,15 @@
   }
 }
 
-.sizeBtn {
-  background: none;
+.sizeGroup {
+  display: flex;
   border: 1px solid #999;
+  flex-shrink: 0;
+}
+
+.sizeBtn {
+  background: #fff;
+  border: none;
   color: #555;
   width: 20px;
   height: 20px;
@@ -60,17 +66,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+
+  & + & {
+    border-left: 1px solid #999;
+  }
 
   &:hover {
     background: #eee;
-    border-color: #333;
     color: #333;
   }
 }
 
 .deleteBtn {
-  background: none;
+  background: #fff;
   border: 1px solid #999;
   color: #666;
   width: 20px;
