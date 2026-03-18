@@ -1,4 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=DM+Serif+Display&display=swap');
+
+@font-face {
+  font-family: 'Edwardian Script ITC';
+  src: url('./assets/fonts/EdwardianScriptITC.ttf') format('truetype');
+}
 @import './animations.css';
 
 * {

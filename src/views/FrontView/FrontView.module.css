@@ -1,0 +1,99 @@
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.previewContainer {
+  position: relative;
+}
+
+.preview {
+  width: 50%;
+  display: block;
+  margin: auto;
+  cursor: crosshair;
+}
+
+.textNode {
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.editOverlay {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  /* offset below the text baseline so it doesn't cover the preview */
+  transform: translate(-50%, 10px);
+  pointer-events: auto;
+}
+
+.editInput {
+  background: #fff;
+  border: 1px dashed #666;
+  font-size: 0.95rem;
+  color: #333;
+  text-align: center;
+  min-width: 80px;
+  padding: 2px 6px;
+
+  &:focus {
+    outline: none;
+    border-color: #333;
+  }
+}
+
+.sizeGroup {
+  display: flex;
+  border: 1px solid #999;
+  flex-shrink: 0;
+}
+
+.sizeBtn {
+  background: #fff;
+  border: none;
+  color: #555;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & + & {
+    border-left: 1px solid #999;
+  }
+
+  &:hover {
+    background: #eee;
+    color: #333;
+  }
+}
+
+.deleteBtn {
+  background: #fff;
+  border: 1px solid #999;
+  color: #666;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &:hover {
+    background: #fee;
+    border-color: #c00;
+    color: #c00;
+  }
+}
