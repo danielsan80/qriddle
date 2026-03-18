@@ -1,14 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { jsPDF } from 'jspdf';
 import { Panel } from '../../components/Panel';
 import outerSvgUrl from '../../assets/outer/outer.svg?url';
-import fontUrl from '../../assets/fonts/EdwardianScriptITC.ttf?url';
 import styles from './FrontView.module.css';
 
-const A4_W_MM = 210;
-const A4_H_MM = 297;
-const A4_PX_W = 2480;
-const A4_PX_H = 3508;
 const FONT_NAME = 'Edwardian Script ITC';
 const DRAG_THRESHOLD = 4;
 
@@ -33,75 +27,6 @@ interface DragState {
   startBoxX: number;
   startBoxY: number;
   moved: boolean;
-}
-
-async function loadImage(url: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = url;
-  });
-}
-
-async function fetchBase64(url: string): Promise<string> {
-  const buffer = await fetch(url).then((res) => res.arrayBuffer());
-  const bytes = new Uint8Array(buffer);
-  let binary = '';
-  for (const byte of bytes) binary += String.fromCharCode(byte);
-  return btoa(binary);
-}
-
-async function downloadFrontPdf(textBoxes: TextBox[]) {
-  const pxPerMm = A4_PX_W / A4_W_MM;
-
-  await document.fonts.load(`${8 * pxPerMm}px '${FONT_NAME}'`);
-
-  const canvas = document.createElement('canvas');
-  canvas.width = A4_PX_W;
-  canvas.height = A4_PX_H;
-  const ctx = canvas.getContext('2d')!;
-
-  ctx.drawImage(await loadImage(outerSvgUrl), 0, 0, A4_PX_W, A4_PX_H);
-
-  ctx.fillStyle = '#333333';
-  ctx.textAlign = 'center';
-
-  for (const tb of textBoxes) {
-    ctx.font = `${tb.fontSize * pxPerMm}px '${FONT_NAME}'`;
-    ctx.fillText(tb.text, tb.x * pxPerMm, tb.y * pxPerMm);
-  }
-
-  const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  pdf.addImage(canvas, 'PNG', 0, 0, A4_W_MM, A4_H_MM);
-  pdf.save('front.pdf');
-}
-
-async function downloadFrontSvg(textBoxes: TextBox[]) {
-  const [svgText, fontBase64] = await Promise.all([
-    fetch(outerSvgUrl).then((res) => res.text()),
-    fetchBase64(fontUrl),
-  ]);
-
-  const fontFace = `<style>@font-face { font-family: '${FONT_NAME}'; src: url('data:font/truetype;base64,${fontBase64}') format('truetype'); }</style>`;
-  const textElements = textBoxes
-    .map(
-      (tb) =>
-        `<text x="${tb.x}" y="${tb.y}" text-anchor="middle" font-size="${tb.fontSize}" font-family="'${FONT_NAME}'" fill="#333">${tb.text}</text>`,
-    )
-    .join('\n');
-
-  const result = svgText
-    .replace('</defs>', `${fontFace}</defs>`)
-    .replace('</svg>', `${textElements}\n</svg>`);
-
-  const blob = new Blob([result], { type: 'image/svg+xml' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'front.svg';
-  a.click();
-  URL.revokeObjectURL(url);
 }
 
 function svgToContainer(
@@ -266,102 +191,92 @@ export function FrontView() {
     : null;
 
   return (
-    <>
-      <div className={styles.actions}>
-        <button type="button" onClick={() => void downloadFrontPdf(textBoxes)}>
-          ↓ PDF
-        </button>
-        <button type="button" onClick={() => void downloadFrontSvg(textBoxes)}>
-          ↓ SVG
-        </button>
-      </div>
-      <Panel title="Fronte">
-        <div ref={containerRef} className={styles.previewContainer}>
-          <svg
-            ref={svgRef}
-            viewBox="105 148.5 105 148.5"
-            className={styles.preview}
-            onClick={handleSvgClick}
-          >
-            <image href={outerSvgUrl} x="0" y="0" width="210" height="297" />
-            {textBoxes.map((tb) => (
-              <text
-                key={tb.id}
-                x={tb.x}
-                y={tb.y}
-                textAnchor="middle"
-                fontSize={tb.fontSize}
-                fontFamily={`'${FONT_NAME}'`}
-                fill={editing?.id === tb.id ? 'rgba(51,51,51,0.3)' : '#333'}
-                onMouseDown={(event) => handleTextMouseDown(event, tb)}
-                className={styles.textNode}
-              >
-                {tb.text}
-              </text>
-            ))}
-            {textBoxes.length === 0 && (
-              <text
-                x="157.5"
-                y="222.75"
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fontSize="3.5"
-                fill="rgba(100,100,100,0.5)"
-                pointerEvents="none"
-              >
-                Clicca per aggiungere testo
-              </text>
-            )}
-          </svg>
-
-          {editing && editingBox && (
-            <div
-              className={styles.editOverlay}
-              style={{ left: editing.overlayX, top: editing.overlayY }}
+    <Panel title="Fronte">
+      <div ref={containerRef} className={styles.previewContainer}>
+        <svg
+          ref={svgRef}
+          viewBox="105 148.5 105 148.5"
+          className={styles.preview}
+          onClick={handleSvgClick}
+        >
+          <image href={outerSvgUrl} x="0" y="0" width="210" height="297" />
+          {textBoxes.map((tb) => (
+            <text
+              key={tb.id}
+              x={tb.x}
+              y={tb.y}
+              textAnchor="middle"
+              fontSize={tb.fontSize}
+              fontFamily={`'${FONT_NAME}'`}
+              fill={editing?.id === tb.id ? 'rgba(51,51,51,0.3)' : '#333'}
+              onMouseDown={(event) => handleTextMouseDown(event, tb)}
+              className={styles.textNode}
             >
-              <input
-                autoFocus
-                className={styles.editInput}
-                value={editingBox.text}
-                onChange={(event) =>
-                  handleTextChange(editing.id, event.target.value)
-                }
-                onBlur={stopEditing}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === 'Escape')
-                    stopEditing();
-                }}
-              />
-              <div className={styles.sizeGroup}>
-                <button
-                  type="button"
-                  className={styles.sizeBtn}
-                  onMouseDown={(event) => event.preventDefault()}
-                  onClick={() => handleFontSize(editing.id, -1)}
-                >
-                  −
-                </button>
-                <button
-                  type="button"
-                  className={styles.sizeBtn}
-                  onMouseDown={(event) => event.preventDefault()}
-                  onClick={() => handleFontSize(editing.id, +1)}
-                >
-                  +
-                </button>
-              </div>
+              {tb.text}
+            </text>
+          ))}
+          {textBoxes.length === 0 && (
+            <text
+              x="157.5"
+              y="222.75"
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fontSize="3.5"
+              fill="rgba(100,100,100,0.5)"
+              pointerEvents="none"
+            >
+              Clicca per aggiungere testo
+            </text>
+          )}
+        </svg>
+
+        {editing && editingBox && (
+          <div
+            className={styles.editOverlay}
+            style={{ left: editing.overlayX, top: editing.overlayY }}
+          >
+            <input
+              autoFocus
+              className={styles.editInput}
+              value={editingBox.text}
+              onChange={(event) =>
+                handleTextChange(editing.id, event.target.value)
+              }
+              onBlur={stopEditing}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === 'Escape')
+                  stopEditing();
+              }}
+            />
+            <div className={styles.sizeGroup}>
               <button
                 type="button"
-                className={styles.deleteBtn}
+                className={styles.sizeBtn}
                 onMouseDown={(event) => event.preventDefault()}
-                onClick={() => handleDelete(editing.id)}
+                onClick={() => handleFontSize(editing.id, -1)}
               >
-                ×
+                −
+              </button>
+              <button
+                type="button"
+                className={styles.sizeBtn}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => handleFontSize(editing.id, +1)}
+              >
+                +
               </button>
             </div>
-          )}
-        </div>
-      </Panel>
-    </>
+            <button
+              type="button"
+              className={styles.deleteBtn}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => handleDelete(editing.id)}
+            >
+              ×
+            </button>
+          </div>
+        )}
+      </div>
+    </Panel>
   );
 }

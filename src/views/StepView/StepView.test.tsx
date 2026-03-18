@@ -29,9 +29,9 @@ describe('StepView', () => {
     expect(screen.getByText('MapView')).toBeDefined();
   });
 
-  it('renders Front placeholder for outer.front', () => {
+  it('renders FrontView for outer.front', () => {
     renderWithStep('outer.front');
-    expect(screen.getByText('Front — TODO')).toBeDefined();
+    expect(screen.getByText('Fronte')).toBeDefined();
   });
 
   it('renders Center placeholder for outer.center', () => {
