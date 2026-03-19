@@ -39,9 +39,9 @@ describe('StepView', () => {
     expect(screen.getByText('Centro')).toBeDefined();
   });
 
-  it('renders Back placeholder for outer.back', () => {
+  it('renders BackView for outer.back', () => {
     renderWithStep('outer.back');
-    expect(screen.getByText('Back — TODO')).toBeDefined();
+    expect(screen.getByText('Retro')).toBeDefined();
   });
 
   it('renders Download placeholder for download', () => {
