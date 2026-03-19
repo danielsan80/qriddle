@@ -11,7 +11,7 @@ import {
 } from '../../lib/render';
 import { createRandom, generateSeed, getQRMatrix } from '../../lib/util';
 import { config } from '../../lib/config';
-import { readHash, writeHash } from '../../lib/urlState';
+import { readState, writeState } from '../../lib/browser/urlState';
 
 const DEBOUNCE_MS = 300;
 
@@ -21,7 +21,7 @@ interface MapState {
 }
 
 function getInitialState(): MapState {
-  return readHash<MapState>({ qrText: '', seed: generateSeed() });
+  return readState<MapState>({ qrText: '', seed: generateSeed() });
 }
 
 export function MapView() {
@@ -35,7 +35,7 @@ export function MapView() {
   const puzzleCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    writeHash({ qrText, seed });
+    writeState({ qrText, seed });
   }, [qrText, seed]);
 
   useEffect(() => {

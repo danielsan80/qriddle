@@ -15,15 +15,12 @@ export function decode<T>(str: string, fallback: T): T {
   }
 }
 
-const HASH_KEY = 'state';
-
-export function readHash<T>(fallback: T): T {
+export function readState<T>(fallback: T): T {
   const hash = window.location.hash;
-  const prefix = `#${HASH_KEY}=`;
-  if (!hash.startsWith(prefix)) return fallback;
-  return decode(hash.slice(prefix.length), fallback);
+  if (!hash || hash === '#') return fallback;
+  return decode(hash.slice(1), fallback);
 }
 
-export function writeHash(state: object): void {
-  window.history.replaceState(null, '', `#${HASH_KEY}=${encode(state)}`);
+export function writeState(state: object): void {
+  window.history.replaceState(null, '', `#${encode(state)}`);
 }
