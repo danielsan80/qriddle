@@ -1,0 +1,48 @@
+import { useEffect, useRef } from 'react';
+import { Panel } from '../../components/Panel';
+import { useWizard } from '../../context/useWizard';
+import {
+  downloadPuzzlePdf,
+  renderInnerPdfPreview,
+  renderOuterPdfPreview,
+} from '../../lib/render';
+import styles from './DownloadView.module.css';
+
+export function DownloadView() {
+  const { puzzle } = useWizard();
+  const innerCanvasRef = useRef<HTMLCanvasElement>(null);
+  const outerCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    if (puzzle && innerCanvasRef.current) {
+      void renderInnerPdfPreview(innerCanvasRef.current, puzzle);
+    }
+  }, [puzzle]);
+
+  useEffect(() => {
+    if (outerCanvasRef.current) {
+      void renderOuterPdfPreview(outerCanvasRef.current);
+    }
+  }, []);
+
+  function handleDownload() {
+    if (puzzle) void downloadPuzzlePdf(puzzle);
+  }
+
+  return (
+    <Panel
+      title="Anteprima PDF"
+      action={{
+        icon: '↓',
+        label: 'Scarica PDF',
+        onClick: handleDownload,
+        disabled: puzzle === null,
+      }}
+    >
+      <div className={styles.previews}>
+        <canvas ref={innerCanvasRef} className={styles.page} />
+        <canvas ref={outerCanvasRef} className={styles.page} />
+      </div>
+    </Panel>
+  );
+}

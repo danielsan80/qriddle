@@ -44,8 +44,8 @@ describe('StepView', () => {
     expect(screen.getByText('Retro')).toBeDefined();
   });
 
-  it('renders Download placeholder for download', () => {
+  it('renders DownloadView for download', () => {
     renderWithStep('download');
-    expect(screen.getByText('Download — TODO')).toBeDefined();
+    expect(screen.getByText('Anteprima PDF')).toBeDefined();
   });
 });
