@@ -34,9 +34,9 @@ describe('StepView', () => {
     expect(screen.getByText('Fronte')).toBeDefined();
   });
 
-  it('renders Center placeholder for outer.center', () => {
+  it('renders CenterView for outer.center', () => {
     renderWithStep('outer.center');
-    expect(screen.getByText('Center — TODO')).toBeDefined();
+    expect(screen.getByText('Centro')).toBeDefined();
   });
 
   it('renders Back placeholder for outer.back', () => {
