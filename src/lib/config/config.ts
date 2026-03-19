@@ -1,4 +1,7 @@
 export const config = {
+  // Default QR text (easter egg)
+  defaultQrText: 'My precioussss!!!',
+
   // Maze generation
   biasStraight: 0.7,
 

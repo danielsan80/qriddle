@@ -21,7 +21,10 @@ interface MapState {
 }
 
 function getInitialState(): MapState {
-  return readState<MapState>({ qrText: '', seed: generateSeed() });
+  return readState<MapState>({
+    qrText: config.defaultQrText,
+    seed: generateSeed(),
+  });
 }
 
 export function MapView() {
@@ -60,6 +63,10 @@ export function MapView() {
     return () => clearTimeout(timer);
   }, [qrText, seed, setPuzzle]);
 
+  const handleQrTextBlur = () => {
+    if (!qrText) setQrText(config.defaultQrText);
+  };
+
   const handleDownloadPdf = () => {
     if (puzzle) {
       void downloadPuzzlePdf(puzzle);
@@ -73,6 +80,7 @@ export function MapView() {
       <Controls
         qrText={qrText}
         onQrTextChange={setQrText}
+        onQrTextBlur={handleQrTextBlur}
         seed={seed}
         onSeedChange={setSeed}
         onSeedRegenerate={() => setSeed(generateSeed())}

@@ -3,6 +3,7 @@ import styles from './Controls.module.css';
 interface ControlsProps {
   qrText: string;
   onQrTextChange: (text: string) => void;
+  onQrTextBlur: () => void;
   seed: string;
   onSeedChange: (seed: string) => void;
   onSeedRegenerate: () => void;
@@ -11,6 +12,7 @@ interface ControlsProps {
 export function Controls({
   qrText,
   onQrTextChange,
+  onQrTextBlur,
   seed,
   onSeedChange,
   onSeedRegenerate,
@@ -24,6 +26,7 @@ export function Controls({
           id="qrText"
           value={qrText}
           onChange={(e) => onQrTextChange(e.target.value)}
+          onBlur={onQrTextBlur}
           placeholder="Inserisci testo o URL..."
         />
       </div>
