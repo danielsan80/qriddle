@@ -4,7 +4,7 @@ import styles from './SvgTextEditor.module.css';
 const FONT_NAME = 'Edwardian Script ITC';
 const DRAG_THRESHOLD = 4;
 
-interface TextBox {
+export interface TextBox {
   id: string;
   x: number;
   y: number;
@@ -31,6 +31,8 @@ interface Props {
   viewBox: string;
   className?: string;
   children?: React.ReactNode;
+  textBoxes?: TextBox[];
+  onTextBoxesChange?: (boxes: TextBox[]) => void;
 }
 
 function svgToContainer(
@@ -47,17 +49,37 @@ function svgToContainer(
   return { x: screen.x - rect.left, y: screen.y - rect.top };
 }
 
-export function SvgTextEditor({ viewBox, className, children }: Props) {
-  const [textBoxes, setTextBoxes] = useState<TextBox[]>([]);
+export function SvgTextEditor({
+  viewBox,
+  className,
+  children,
+  textBoxes: controlledBoxes,
+  onTextBoxesChange,
+}: Props) {
+  const [internalBoxes, setInternalBoxes] = useState<TextBox[]>([]);
+  const controlled = controlledBoxes !== undefined;
+  const textBoxes = controlled ? controlledBoxes : internalBoxes;
+
+  function setTextBoxes(updater: (prev: TextBox[]) => TextBox[]) {
+    const next = updater(textBoxes);
+    if (controlled) {
+      onTextBoxesChange?.(next);
+    } else {
+      setInternalBoxes(updater);
+    }
+  }
+
   const [editing, setEditing] = useState<EditingState | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<DragState | null>(null);
-  // Keep a ref to current textBoxes for use inside window event listeners
+  // Keep refs to current values for use inside window event listeners
   const textBoxesRef = useRef(textBoxes);
+  const setTextBoxesRef = useRef(setTextBoxes);
   useEffect(() => {
     textBoxesRef.current = textBoxes;
-  }, [textBoxes]);
+    setTextBoxesRef.current = setTextBoxes;
+  });
 
   const [vbX, vbY, vbW, vbH] = viewBox.split(' ').map(Number);
   const placeholderX = vbX + vbW / 2;
@@ -80,7 +102,7 @@ export function SvgTextEditor({ viewBox, className, children }: Props) {
       if (!drag.moved) return;
 
       const ctm = svgRef.current!.getScreenCTM()!;
-      setTextBoxes((prev) =>
+      setTextBoxesRef.current((prev) =>
         prev.map((tb) =>
           tb.id === drag.id
             ? {

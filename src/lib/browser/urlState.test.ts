@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { encode, decode } from './urlState';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { encode, decode, mergeState } from './urlState';
 
 describe('encode / decode', () => {
   it('roundtrips a simple object', () => {
@@ -43,5 +43,41 @@ describe('encode / decode', () => {
     });
 
     expect(encoded).toMatch(/^[A-Za-z0-9\-_.~]*$/);
+  });
+});
+
+describe('mergeState', () => {
+  afterEach(() => {
+    window.location.hash = '';
+    vi.restoreAllMocks();
+  });
+
+  it('merges partial state without clobbering other keys', () => {
+    window.location.hash = '#' + encode({ qrText: 'hello', seed: 'abc' });
+    const spy = vi.spyOn(window.history, 'replaceState');
+
+    mergeState({
+      frontTextBoxes: [{ id: '1', x: 0, y: 0, text: 'hi', fontSize: 8 }],
+    });
+
+    const writtenUrl = spy.mock.calls[0][2] as string;
+    expect(decode(writtenUrl.slice(1), null)).toEqual({
+      qrText: 'hello',
+      seed: 'abc',
+      frontTextBoxes: [{ id: '1', x: 0, y: 0, text: 'hi', fontSize: 8 }],
+    });
+  });
+
+  it('overwrites existing keys with new values', () => {
+    window.location.hash = '#' + encode({ qrText: 'old', seed: 'abc' });
+    const spy = vi.spyOn(window.history, 'replaceState');
+
+    mergeState({ qrText: 'new' });
+
+    const writtenUrl = spy.mock.calls[0][2] as string;
+    expect(decode(writtenUrl.slice(1), null)).toEqual({
+      qrText: 'new',
+      seed: 'abc',
+    });
   });
 });

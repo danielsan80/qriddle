@@ -24,3 +24,8 @@ export function readState<T>(fallback: T): T {
 export function writeState(state: object): void {
   window.history.replaceState(null, '', `#${encode(state)}`);
 }
+
+export function mergeState(partial: object): void {
+  const current = readState<Record<string, unknown>>({});
+  writeState({ ...current, ...partial });
+}

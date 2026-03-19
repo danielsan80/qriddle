@@ -22,7 +22,7 @@ function renderMapView() {
 describe('MapView', () => {
   beforeEach(() => {
     window.location.hash = '';
-    vi.spyOn(window.history, 'replaceState').mockImplementation(() => {});
+    vi.spyOn(window.history, 'replaceState').mockImplementation(() => {}); // used by mergeState
   });
 
   it('restores default text on blur when field is empty', async () => {
