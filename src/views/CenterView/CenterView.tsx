@@ -1,12 +1,21 @@
 import { Panel } from '../../components/Panel';
 import { SvgTextEditor } from '../../components/SvgTextEditor';
+import { useOuterTextBoxes } from '../useOuterTextBoxes';
 import outerSvgUrl from '../../assets/outer/outer.svg?url';
 import styles from './CenterView.module.css';
 
 export function CenterView() {
+  const [textBoxes, setTextBoxes] = useOuterTextBoxes('center');
+
   return (
     <Panel title="Centro">
-      <SvgTextEditor viewBox="0 0 210 148.5" className={styles.preview}>
+      <SvgTextEditor
+        viewBox="0 0 210 148.5"
+        className={styles.preview}
+        face="center"
+        textBoxes={textBoxes}
+        onTextBoxesChange={setTextBoxes}
+      >
         <g transform="rotate(180, 105, 74.25)">
           <image href={outerSvgUrl} x="0" y="0" width="210" height="297" />
         </g>
