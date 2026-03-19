@@ -4,12 +4,15 @@ import styles from './SvgTextEditor.module.css';
 const FONT_NAME = 'Edwardian Script ITC';
 const DRAG_THRESHOLD = 4;
 
+export type Face = 'front' | 'center' | 'back';
+
 export interface TextBox {
   id: string;
   x: number;
   y: number;
   text: string;
   fontSize: number;
+  face?: Face;
 }
 
 interface EditingState {
@@ -33,6 +36,7 @@ interface Props {
   children?: React.ReactNode;
   textBoxes?: TextBox[];
   onTextBoxesChange?: (boxes: TextBox[]) => void;
+  face?: Face;
 }
 
 function svgToContainer(
@@ -55,6 +59,7 @@ export function SvgTextEditor({
   children,
   textBoxes: controlledBoxes,
   onTextBoxesChange,
+  face,
 }: Props) {
   const [internalBoxes, setInternalBoxes] = useState<TextBox[]>([]);
   const controlled = controlledBoxes !== undefined;
@@ -168,6 +173,7 @@ export function SvgTextEditor({
       y: svgCoord.y,
       text: '',
       fontSize: 8,
+      ...(face !== undefined && { face }),
     };
 
     setTextBoxes((prev) => [...prev, newBox]);
