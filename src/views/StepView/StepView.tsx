@@ -1,6 +1,7 @@
 import { useWizard } from '../../context/useWizard';
 import { MapView } from '../MapView';
 import { FrontView } from '../FrontView';
+import { CenterView } from '../CenterView';
 
 export function StepView() {
   const { trackStep } = useWizard();
@@ -11,7 +12,7 @@ export function StepView() {
     case 'outer.front':
       return <FrontView />;
     case 'outer.center':
-      return <p>Center — TODO</p>;
+      return <CenterView />;
     case 'outer.back':
       return <p>Back — TODO</p>;
     case 'download':
