@@ -11,24 +11,17 @@ import {
 } from '../../lib/render';
 import { createRandom, generateSeed, getQRMatrix } from '../../lib/util';
 import { config } from '../../lib/config';
+import { readHash, writeHash } from '../../lib/urlState';
 
 const DEBOUNCE_MS = 300;
 
-function getInitialState() {
-  const params = new URLSearchParams(window.location.search);
-  return {
-    qrText: params.get('text') ?? '',
-    seed: params.get('seed') ?? generateSeed(),
-  };
+interface MapState {
+  qrText: string;
+  seed: string;
 }
 
-function updateURL(qrText: string, seed: string) {
-  const params = new URLSearchParams();
-  if (qrText) params.set('text', qrText);
-  if (seed) params.set('seed', seed);
-  const query = params.toString();
-  const url = query ? `?${query}` : window.location.pathname;
-  window.history.replaceState({}, '', url);
+function getInitialState(): MapState {
+  return readHash<MapState>({ qrText: '', seed: generateSeed() });
 }
 
 export function MapView() {
@@ -42,7 +35,7 @@ export function MapView() {
   const puzzleCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    updateURL(qrText, seed);
+    writeHash({ qrText, seed });
   }, [qrText, seed]);
 
   useEffect(() => {
