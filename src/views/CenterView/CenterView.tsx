@@ -1,11 +1,12 @@
 import { Panel } from '../../components/Panel';
+import { SvgTextEditor } from '../../components/SvgTextEditor';
 import outerSvgUrl from '../../assets/outer/outer.svg?url';
 import styles from './CenterView.module.css';
 
 export function CenterView() {
   return (
     <Panel title="Centro">
-      <svg viewBox="0 0 210 148.5" className={styles.preview}>
+      <SvgTextEditor viewBox="0 0 210 148.5" className={styles.preview}>
         <g transform="rotate(180, 105, 74.25)">
           <image href={outerSvgUrl} x="0" y="0" width="210" height="297" />
         </g>
@@ -19,7 +20,7 @@ export function CenterView() {
           strokeDasharray="3 2"
           pointerEvents="none"
         />
-      </svg>
+      </SvgTextEditor>
     </Panel>
   );
 }
