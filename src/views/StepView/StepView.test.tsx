@@ -31,21 +31,21 @@ describe('StepView', () => {
 
   it('renders FrontView for outer.front', () => {
     renderWithStep('outer.front');
-    expect(screen.getByText('Fronte')).toBeDefined();
+    expect(screen.getByText('Front')).toBeDefined();
   });
 
   it('renders CenterView for outer.center', () => {
     renderWithStep('outer.center');
-    expect(screen.getByText('Centro')).toBeDefined();
+    expect(screen.getByText('Center')).toBeDefined();
   });
 
   it('renders BackView for outer.back', () => {
     renderWithStep('outer.back');
-    expect(screen.getByText('Retro')).toBeDefined();
+    expect(screen.getByText('Back')).toBeDefined();
   });
 
   it('renders DownloadView for download', () => {
     renderWithStep('download');
-    expect(screen.getByText('Anteprima PDF')).toBeDefined();
+    expect(screen.getByText('Preview')).toBeDefined();
   });
 });

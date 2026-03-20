@@ -16,9 +16,7 @@ vi.mock('../../lib/render', () => ({
 
 function renderMapView() {
   render(<MapView />);
-  return screen.getByLabelText(
-    /inserisci il testo segreto/i,
-  ) as HTMLInputElement;
+  return screen.getByLabelText(/enter the secret text/i) as HTMLInputElement;
 }
 
 describe('MapView', () => {

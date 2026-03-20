@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { config } from '../../lib/config';
 import styles from './SvgTextEditor.module.css';
 
 const FONT_NAME = 'Edwardian Script ITC';
@@ -271,7 +272,11 @@ export function SvgTextEditor({
             textAnchor="middle"
             fontSize={tb.fontSize}
             fontFamily={`'${FONT_NAME}'`}
-            fill={editing?.id === tb.id ? 'rgba(51,51,51,0.3)' : '#333'}
+            fill={
+              editing?.id === tb.id
+                ? `${config.pdf.textColor}4d`
+                : config.pdf.textColor
+            }
             onMouseDown={(event) => handleTextMouseDown(event, tb)}
             className={styles.textNode}
           >
