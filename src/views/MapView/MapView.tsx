@@ -4,11 +4,7 @@ import { Workspace } from '../../components/Workspace';
 import { useWizard } from '../../context/useWizard';
 import { Image } from '../../lib/domain/image';
 import { Puzzle } from '../../lib/domain/puzzle';
-import {
-  renderInnerPdfPreview,
-  renderImage,
-  downloadPuzzlePdf,
-} from '../../lib/render';
+import { renderInnerPdfPreview, renderImage } from '../../lib/render';
 import { createRandom, generateSeed, getQRMatrix } from '../../lib/util';
 import { config } from '../../lib/config';
 import { readState, mergeState } from '../../lib/browser/urlState';
@@ -29,7 +25,7 @@ function getInitialState(): MapState {
 }
 
 export function MapView() {
-  const { setPuzzle, puzzle } = useWizard();
+  const { setPuzzle } = useWizard();
 
   const [initial] = useState(getInitialState);
   const [qrText, setQrText] = useState(initial.qrText);
@@ -68,12 +64,6 @@ export function MapView() {
     if (!qrText) setQrText(config.defaultQrText);
   };
 
-  const handleDownloadPdf = () => {
-    if (puzzle) {
-      void downloadPuzzlePdf(puzzle, []); //TODO remove the download feature from the map view
-    }
-  };
-
   const showCanvas = qrText.length > 0;
 
   return (
@@ -90,8 +80,6 @@ export function MapView() {
         qrCanvasRef={qrCanvasRef}
         puzzleCanvasRef={puzzleCanvasRef}
         showCanvas={showCanvas}
-        onDownloadPdf={handleDownloadPdf}
-        canDownload={puzzle !== null && qrText.length > 0}
       />
     </>
   );

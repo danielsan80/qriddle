@@ -23,9 +23,9 @@ function loadImage(url: string): Promise<HTMLImageElement> {
 }
 
 async function composeInnerPdf(
-  puzzle: Puzzle,
   widthPx: number,
   heightPx: number,
+  puzzle: Puzzle,
 ): Promise<HTMLCanvasElement> {
   const canvas = document.createElement('canvas');
   canvas.width = widthPx;
@@ -58,9 +58,9 @@ export async function renderInnerPdfPreview(
   // ~75dpi (A4@300dpi / 4)
   const scale = 0.25;
   const composed = await composeInnerPdf(
-    puzzle,
     Math.round(A4_PX_W * scale),
     Math.round(A4_PX_H * scale),
+    puzzle,
   );
   canvas.width = composed.width;
   canvas.height = composed.height;
@@ -145,7 +145,7 @@ export async function downloadPuzzlePdf(
   filename = 'puzzle.pdf',
 ): Promise<void> {
   const [inner, outer] = await Promise.all([
-    composeInnerPdf(puzzle, A4_PX_W, A4_PX_H), //TODO first w and h, then the other stuff, like composeOuterPdf
+    composeInnerPdf(A4_PX_W, A4_PX_H, puzzle),
     composeOuterPdf(A4_PX_W, A4_PX_H, textBoxes),
   ]);
 
