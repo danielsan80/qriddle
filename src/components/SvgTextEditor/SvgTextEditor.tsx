@@ -78,6 +78,7 @@ export function SvgTextEditor({
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<DragState | null>(null);
+  const justClosedRef = useRef(false);
   // Keep refs to current values for use inside window event listeners
   const textBoxesRef = useRef(textBoxes);
   const setTextBoxesRef = useRef(setTextBoxes);
@@ -150,8 +151,9 @@ export function SvgTextEditor({
     };
   }, []);
 
-  function stopEditing() {
+  function stopEditing({ suppressNextClick = false } = {}) {
     if (!editing) return;
+    if (suppressNextClick) justClosedRef.current = true;
     setTextBoxes((prev) =>
       prev.filter((tb) => tb.id !== editing.id || tb.text.trim() !== ''),
     );
@@ -159,6 +161,10 @@ export function SvgTextEditor({
   }
 
   function handleSvgClick(event: React.MouseEvent<SVGSVGElement>) {
+    if (justClosedRef.current) {
+      justClosedRef.current = false;
+      return;
+    }
     if ((event.target as Element).tagName === 'text') return;
 
     const svgEl = svgRef.current!;
@@ -277,7 +283,7 @@ export function SvgTextEditor({
             onChange={(event) =>
               handleTextChange(editing.id, event.target.value)
             }
-            onBlur={stopEditing}
+            onBlur={() => stopEditing({ suppressNextClick: true })}
             onKeyDown={(event) => {
               if (event.key === 'Enter' || event.key === 'Escape')
                 stopEditing();
