@@ -72,14 +72,14 @@ export function MapView() {
         qrText={qrText}
         onQrTextChange={setQrText}
         onQrTextBlur={handleQrTextBlur}
-        seed={seed}
-        onSeedChange={setSeed}
-        onSeedRegenerate={() => setSeed(generateSeed())}
       />
       <Workspace
         qrCanvasRef={qrCanvasRef}
         puzzleCanvasRef={puzzleCanvasRef}
         showCanvas={showCanvas}
+        seed={seed}
+        onSeedChange={setSeed}
+        onSeedRegenerate={() => setSeed(generateSeed())}
       />
     </>
   );

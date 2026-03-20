@@ -9,13 +9,39 @@ interface WorkspaceProps {
   qrCanvasRef: RefObject<HTMLCanvasElement | null>;
   puzzleCanvasRef: RefObject<HTMLCanvasElement | null>;
   showCanvas: boolean;
+  seed: string;
+  onSeedChange: (seed: string) => void;
+  onSeedRegenerate: () => void;
 }
 
 export function Workspace({
   qrCanvasRef,
   puzzleCanvasRef,
   showCanvas,
+  seed,
+  onSeedChange,
+  onSeedRegenerate,
 }: WorkspaceProps) {
+  const seedActions = (
+    <div className={styles.seedActions}>
+      <input
+        type="text"
+        className={styles.seedInput}
+        aria-label="Seed"
+        value={seed}
+        onChange={(event) => onSeedChange(event.target.value)}
+      />
+      <button
+        type="button"
+        className={styles.seedButton}
+        title="Rigenera seed"
+        onClick={onSeedRegenerate}
+      >
+        ↻
+      </button>
+    </div>
+  );
+
   return (
     <div className={styles.workspace}>
       <Panel title="QR Code">
@@ -24,7 +50,7 @@ export function Workspace({
         </CanvasStage>
       </Panel>
 
-      <Panel title="Anteprima PDF">
+      <Panel title="Anteprima PDF" headerActions={seedActions}>
         <CanvasStage show={showCanvas}>
           <PreviewCanvas ref={puzzleCanvasRef} />
         </CanvasStage>

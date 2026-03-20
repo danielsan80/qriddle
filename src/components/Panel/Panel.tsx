@@ -11,14 +11,16 @@ interface PanelAction {
 interface PanelProps {
   title: string;
   action?: PanelAction;
+  headerActions?: ReactNode;
   children?: ReactNode;
 }
 
-export function Panel({ title, action, children }: PanelProps) {
+export function Panel({ title, action, headerActions, children }: PanelProps) {
   return (
     <div className={styles.panel}>
       <div className={styles.header}>
         <h2>{title}</h2>
+        {headerActions}
         {action && (
           <button
             type="button"

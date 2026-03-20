@@ -10,9 +10,6 @@ function renderControls(
     qrText: 'hello',
     onQrTextChange: vi.fn(),
     onQrTextBlur: vi.fn(),
-    seed: 'abc',
-    onSeedChange: vi.fn(),
-    onSeedRegenerate: vi.fn(),
     ...overrides,
   };
   render(<Controls {...props} />);
