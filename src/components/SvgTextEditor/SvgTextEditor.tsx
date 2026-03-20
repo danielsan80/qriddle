@@ -288,7 +288,7 @@ export function SvgTextEditor({
             fill="rgba(100,100,100,0.5)"
             pointerEvents="none"
           >
-            Clicca per aggiungere testo
+            Click to add text
           </text>
         )}
       </svg>

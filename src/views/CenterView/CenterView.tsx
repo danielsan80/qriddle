@@ -10,7 +10,7 @@ export function CenterView() {
 
   return (
     <Panel>
-      <Panel.Title>Centro</Panel.Title>
+      <Panel.Title>Center</Panel.Title>
       <Panel.Body>
         <PreviewStage>
           <SvgTextEditor

@@ -10,7 +10,7 @@ export function FrontView() {
 
   return (
     <Panel>
-      <Panel.Title>Fronte</Panel.Title>
+      <Panel.Title>Front</Panel.Title>
       <Panel.Body>
         <PreviewStage>
           <SvgTextEditor

@@ -39,30 +39,30 @@ export function DownloadView() {
   return (
     <>
       <p className={styles.message}>
-        La tua <s>mappa del tesoro</s> biglietto d&apos;auguri è pronto!
+        Your <s>treasure map</s> greeting card is ready!
         <br />
-        Scarica il pdf, stampalo, piegalo in 4 e consegnalo al festeggiato.
+        Download the PDF, print it, fold it in 4 and hand it to the birthday person.
         <br />
-        (meglio usare un pennarello nero per risolverlo)
+        (a black marker works best to solve it)
         <br />
         <br />
-        Se ti va puoi{' '}
+        If you enjoyed it, you can{' '}
         <a
           href="https://ko-fi.com/danielsan80"
           target="_blank"
           rel="noopener noreferrer"
         >
-          offrirmi un caffè
+          buy me a coffee
         </a>{' '}
         <span className={styles.coffeeIcon}>☕</span>
       </p>
       <Panel>
-        <Panel.Title>Anteprima PDF</Panel.Title>
+        <Panel.Title>Preview</Panel.Title>
         <Panel.Actions>
           <Panel.ActionButton
             onClick={handleDownload}
             disabled={puzzle === null}
-            title="Scarica PDF"
+            title="Download PDF"
           >
             ↓
           </Panel.ActionButton>

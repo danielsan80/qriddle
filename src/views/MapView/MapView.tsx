@@ -73,10 +73,10 @@ export function MapView() {
     <div className={styles.layout}>
       <div className={styles.topPanels}>
         <Panel>
-          <Panel.Title>Il tesoro</Panel.Title>
+          <Panel.Title>The Treasure</Panel.Title>
           <Panel.Body>
             <label htmlFor="qrText" className={styles.treasureLabel}>
-              Inserisci il testo segreto che vuoi nascondere:
+              Enter the secret text you want to hide:
             </label>
             <input
               type="text"
@@ -85,16 +85,16 @@ export function MapView() {
               value={qrText}
               onChange={(e) => setQrText(e.target.value)}
               onBlur={handleQrTextBlur}
-              placeholder="link · codice segreto · regalo virtuale"
+              placeholder="link · secret code · virtual gift"
             />
-            <p className={styles.examplesLabel}>Alcuni esempi:</p>
+            <p className={styles.examplesLabel}>Some examples:</p>
             <ul className={styles.examples}>
               <li>
-                il link del video che mostra dove è nascosto il tuo regalo
+                the link to a video showing where your gift is hidden
               </li>
-              <li>il codice per aprire una cassaforte</li>
-              <li>il link a un regalo virtuale</li>
-              <li>la chiave per aprire uno scrigno</li>
+              <li>the combination to open a safe</li>
+              <li>the link to a virtual gift</li>
+              <li>the key to open a treasure chest</li>
             </ul>
           </Panel.Body>
         </Panel>
@@ -103,7 +103,7 @@ export function MapView() {
           <Panel.Title>QR Code</Panel.Title>
           <Panel.Body>
             <p className={styles.description}>
-              Chi risolve il puzzle trova questo codice.
+              Whoever solves the puzzle finds this code.
             </p>
             <CanvasStage show={showCanvas}>
               <QrcodeCanvas ref={qrCanvasRef} />
@@ -113,7 +113,7 @@ export function MapView() {
       </div>
 
       <Panel>
-        <Panel.Title>Anteprima PDF</Panel.Title>
+        <Panel.Title>Preview</Panel.Title>
         <Panel.Actions>
           <div className={styles.seedActions}>
             <input
@@ -126,7 +126,7 @@ export function MapView() {
             <button
               type="button"
               className={styles.seedButton}
-              title="Rigenera seed"
+              title="Regenerate seed"
               onClick={() => setSeed(generateSeed())}
             >
               ↻

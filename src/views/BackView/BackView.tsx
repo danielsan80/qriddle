@@ -10,7 +10,7 @@ export function BackView() {
 
   return (
     <Panel>
-      <Panel.Title>Retro</Panel.Title>
+      <Panel.Title>Back</Panel.Title>
       <Panel.Body>
         <PreviewStage>
           <SvgTextEditor
