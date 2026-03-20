@@ -7,17 +7,17 @@
 .inner {
   aspect-ratio: 210 / 297;
   width: 100px;
-  border: 1.5px solid var(--grid);
+  border: 1.5px solid var(--paper);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  color: var(--grid);
+  color: var(--paper);
   box-sizing: border-box;
 
   &:hover {
-    background: color-mix(in srgb, var(--grid) 25%, var(--paper));
+    background: color-mix(in srgb, var(--paper) 25%, var(--paper));
   }
 
   &.selected {
@@ -30,7 +30,7 @@
 .outer {
   aspect-ratio: 210 / 297;
   width: 100px;
-  border: 1.5px solid var(--grid);
+  border: 1.5px solid var(--paper);
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
@@ -46,7 +46,7 @@
   cursor: pointer;
 
   &:hover .quadrant {
-    background: color-mix(in srgb, var(--grid) 25%, var(--paper));
+    background: color-mix(in srgb, var(--paper) 25%, var(--paper));
   }
 
   &.selected .quadrant {
@@ -60,11 +60,11 @@
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  color: var(--grid);
+  color: var(--paper);
   box-sizing: border-box;
 
   &:hover {
-    background: color-mix(in srgb, var(--grid) 25%, var(--paper));
+    background: color-mix(in srgb, var(--paper) 25%, var(--paper));
   }
 
   &.selected {
