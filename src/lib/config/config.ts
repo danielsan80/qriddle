@@ -30,5 +30,6 @@ export const config = {
   pdf: {
     cellSize: 12,
     dotRadius: 0.15,
+    textColor: '#523c1b',
   },
 } as const;

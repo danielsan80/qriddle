@@ -103,7 +103,7 @@ function drawTextBoxes(
 ): void {
   const scale = widthPx / SVG_WIDTH;
   ctx.textAlign = 'center';
-  ctx.fillStyle = '#333';
+  ctx.fillStyle = config.pdf.textColor;
   for (const tb of textBoxes) {
     drawTextBox(ctx, tb, scale);
   }
