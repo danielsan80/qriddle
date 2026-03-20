@@ -1,39 +1,49 @@
 import type { ReactNode } from 'react';
 import styles from './Panel.module.css';
 
-interface PanelAction {
-  icon: string;
-  label: string;
+function Title({ children }: { children: ReactNode }) {
+  return <h2 className={styles.title}>{children}</h2>;
+}
+
+function Actions({ children }: { children: ReactNode }) {
+  return <div className={styles.actions}>{children}</div>;
+}
+
+function Body({ children }: { children: ReactNode }) {
+  return <div className={styles.body}>{children}</div>;
+}
+
+interface ActionButtonProps {
   onClick: () => void;
   disabled?: boolean;
+  title?: string;
+  children: ReactNode;
 }
 
-interface PanelProps {
-  title: string;
-  action?: PanelAction;
-  headerActions?: ReactNode;
-  children?: ReactNode;
-}
-
-export function Panel({ title, action, headerActions, children }: PanelProps) {
+function ActionButton({
+  onClick,
+  disabled,
+  title,
+  children,
+}: ActionButtonProps) {
   return (
-    <div className={styles.panel}>
-      <div className={styles.header}>
-        <h2>{title}</h2>
-        {headerActions}
-        {action && (
-          <button
-            type="button"
-            className={styles.actionButton}
-            onClick={action.onClick}
-            disabled={action.disabled}
-            title={action.label}
-          >
-            {action.icon}
-          </button>
-        )}
-      </div>
-      <div className={styles.content}>{children}</div>
-    </div>
+    <button
+      type="button"
+      className={styles.actionButton}
+      onClick={onClick}
+      disabled={disabled}
+      title={title}
+    >
+      {children}
+    </button>
   );
 }
+
+export function Panel({ children }: { children: ReactNode }) {
+  return <div className={styles.panel}>{children}</div>;
+}
+
+Panel.Title = Title;
+Panel.Actions = Actions;
+Panel.Body = Body;
+Panel.ActionButton = ActionButton;

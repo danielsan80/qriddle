@@ -22,38 +22,43 @@ export function Workspace({
   onSeedChange,
   onSeedRegenerate,
 }: WorkspaceProps) {
-  const seedActions = (
-    <div className={styles.seedActions}>
-      <input
-        type="text"
-        className={styles.seedInput}
-        aria-label="Seed"
-        value={seed}
-        onChange={(event) => onSeedChange(event.target.value)}
-      />
-      <button
-        type="button"
-        className={styles.seedButton}
-        title="Rigenera seed"
-        onClick={onSeedRegenerate}
-      >
-        ↻
-      </button>
-    </div>
-  );
-
   return (
     <div className={styles.workspace}>
-      <Panel title="QR Code">
-        <CanvasStage show={showCanvas}>
-          <QrcodeCanvas ref={qrCanvasRef} />
-        </CanvasStage>
+      <Panel>
+        <Panel.Title>QR Code</Panel.Title>
+        <Panel.Body>
+          <CanvasStage show={showCanvas}>
+            <QrcodeCanvas ref={qrCanvasRef} />
+          </CanvasStage>
+        </Panel.Body>
       </Panel>
 
-      <Panel title="Anteprima PDF" headerActions={seedActions}>
-        <CanvasStage show={showCanvas}>
-          <PreviewCanvas ref={puzzleCanvasRef} />
-        </CanvasStage>
+      <Panel>
+        <Panel.Title>Anteprima PDF</Panel.Title>
+        <Panel.Actions>
+          <div className={styles.seedActions}>
+            <input
+              type="text"
+              className={styles.seedInput}
+              aria-label="Seed"
+              value={seed}
+              onChange={(event) => onSeedChange(event.target.value)}
+            />
+            <button
+              type="button"
+              className={styles.seedButton}
+              title="Rigenera seed"
+              onClick={onSeedRegenerate}
+            >
+              ↻
+            </button>
+          </div>
+        </Panel.Actions>
+        <Panel.Body>
+          <CanvasStage show={showCanvas}>
+            <PreviewCanvas ref={puzzleCanvasRef} />
+          </CanvasStage>
+        </Panel.Body>
       </Panel>
     </div>
   );

@@ -37,21 +37,25 @@ export function DownloadView() {
   }
 
   return (
-    <Panel
-      title="Anteprima PDF"
-      action={{
-        icon: '↓',
-        label: 'Scarica PDF',
-        onClick: handleDownload,
-        disabled: puzzle === null,
-      }}
-    >
-      <PreviewStage>
-        <div className={styles.previews}>
-          <canvas ref={innerCanvasRef} className={styles.page} />
-          <canvas ref={outerCanvasRef} className={styles.page} />
-        </div>
-      </PreviewStage>
+    <Panel>
+      <Panel.Title>Anteprima PDF</Panel.Title>
+      <Panel.Actions>
+        <Panel.ActionButton
+          onClick={handleDownload}
+          disabled={puzzle === null}
+          title="Scarica PDF"
+        >
+          ↓
+        </Panel.ActionButton>
+      </Panel.Actions>
+      <Panel.Body>
+        <PreviewStage>
+          <div className={styles.previews}>
+            <canvas ref={innerCanvasRef} className={styles.page} />
+            <canvas ref={outerCanvasRef} className={styles.page} />
+          </div>
+        </PreviewStage>
+      </Panel.Body>
     </Panel>
   );
 }

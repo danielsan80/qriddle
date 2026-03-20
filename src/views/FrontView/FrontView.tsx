@@ -9,18 +9,21 @@ export function FrontView() {
   const [textBoxes, setTextBoxes] = useOuterTextBoxes('front');
 
   return (
-    <Panel title="Fronte">
-      <PreviewStage>
-        <SvgTextEditor
-          viewBox="105 148.5 105 148.5"
-          className={styles.preview}
-          face="front"
-          textBoxes={textBoxes}
-          onTextBoxesChange={setTextBoxes}
-        >
-          <image href={outerSvgUrl} x="0" y="0" width="210" height="297" />
-        </SvgTextEditor>
-      </PreviewStage>
+    <Panel>
+      <Panel.Title>Fronte</Panel.Title>
+      <Panel.Body>
+        <PreviewStage>
+          <SvgTextEditor
+            viewBox="105 148.5 105 148.5"
+            className={styles.preview}
+            face="front"
+            textBoxes={textBoxes}
+            onTextBoxesChange={setTextBoxes}
+          >
+            <image href={outerSvgUrl} x="0" y="0" width="210" height="297" />
+          </SvgTextEditor>
+        </PreviewStage>
+      </Panel.Body>
     </Panel>
   );
 }
