@@ -8,6 +8,44 @@ interface TrackNavProps {
   onStep: (step: TrackStep) => void;
 }
 
+// 8-pointed star in 100x100 space, center (50,50)
+// cardinal tips r=42, diagonal tips r=27, inner valleys r=15
+const COMPASS_POINTS = [
+  [50, 8], // N
+  [56, 36], // inner
+  [69, 31], // NE
+  [64, 44], // inner
+  [92, 50], // E
+  [64, 56], // inner
+  [69, 69], // SE
+  [56, 64], // inner
+  [50, 92], // S
+  [44, 64], // inner
+  [31, 69], // SW
+  [36, 56], // inner
+  [8, 50], // W
+  [36, 44], // inner
+  [31, 31], // NW
+  [44, 36], // inner
+]
+  .map((p) => p.join(','))
+  .join(' ');
+
+function CompassMarker({ past }: { past: boolean }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 100 100" aria-hidden="true">
+      <polygon
+        points={COMPASS_POINTS}
+        fill={past ? 'currentColor' : 'none'}
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinejoin="round"
+        transform="rotate(15, 50, 50)"
+      />
+    </svg>
+  );
+}
+
 function DotMarker({ past }: { past: boolean }) {
   return (
     <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
@@ -81,7 +119,13 @@ export function TrackNav({ step, onStep }: TrackNavProps) {
             aria-current={i === index ? 'step' : undefined}
           >
             <div className={styles.track}>
-              {isLast ? <XMarker /> : <DotMarker past={past} />}
+              {isLast ? (
+                <XMarker />
+              ) : i === 0 ? (
+                <CompassMarker past={past} />
+              ) : (
+                <DotMarker past={past} />
+              )}
               {!isLast && (
                 <div
                   className={styles.segment}
