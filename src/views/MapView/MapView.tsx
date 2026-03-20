@@ -70,7 +70,7 @@ export function MapView() {
 
   const handleDownloadPdf = () => {
     if (puzzle) {
-      void downloadPuzzlePdf(puzzle);
+      void downloadPuzzlePdf(puzzle, []); //TODO remove the download feature from the map view
     }
   };
 

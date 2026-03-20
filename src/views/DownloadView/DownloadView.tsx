@@ -6,7 +6,13 @@ import {
   renderInnerPdfPreview,
   renderOuterPdfPreview,
 } from '../../lib/render';
+import { readState } from '../../lib/browser/urlState';
+import type { TextBox } from '../../components/SvgTextEditor';
 import styles from './DownloadView.module.css';
+
+function getTextBoxes(): TextBox[] {
+  return readState<{ textBoxes?: TextBox[] }>({}).textBoxes ?? [];
+}
 
 export function DownloadView() {
   const { puzzle } = useWizard();
@@ -21,12 +27,12 @@ export function DownloadView() {
 
   useEffect(() => {
     if (outerCanvasRef.current) {
-      void renderOuterPdfPreview(outerCanvasRef.current);
+      void renderOuterPdfPreview(outerCanvasRef.current, getTextBoxes());
     }
   }, []);
 
   function handleDownload() {
-    if (puzzle) void downloadPuzzlePdf(puzzle);
+    if (puzzle) void downloadPuzzlePdf(puzzle, getTextBoxes());
   }
 
   return (
