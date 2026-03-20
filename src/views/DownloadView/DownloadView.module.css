@@ -1,3 +1,19 @@
+.message {
+  margin: 0 0 2rem;
+  font-size: 1.2rem;
+  line-height: 1.7;
+
+  & a {
+    color: inherit;
+    font-weight: bold;
+  }
+}
+
+.coffeeIcon {
+  font-size: 2rem;
+  vertical-align: middle;
+}
+
 .previews {
   display: flex;
   gap: 1rem;
