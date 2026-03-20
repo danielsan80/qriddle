@@ -1,0 +1,5 @@
+.stage {
+  background: var(--paper);
+  border: 2px dashed var(--grid);
+  padding: 1rem;
+}

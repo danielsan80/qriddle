@@ -6,6 +6,7 @@ import {
   renderInnerPdfPreview,
   renderOuterPdfPreview,
 } from '../../lib/render';
+import { PreviewStage } from '../../components/PreviewStage';
 import { readState } from '../../lib/browser/urlState';
 import type { TextBox } from '../../components/SvgTextEditor';
 import styles from './DownloadView.module.css';
@@ -45,10 +46,12 @@ export function DownloadView() {
         disabled: puzzle === null,
       }}
     >
-      <div className={styles.previews}>
-        <canvas ref={innerCanvasRef} className={styles.page} />
-        <canvas ref={outerCanvasRef} className={styles.page} />
-      </div>
+      <PreviewStage>
+        <div className={styles.previews}>
+          <canvas ref={innerCanvasRef} className={styles.page} />
+          <canvas ref={outerCanvasRef} className={styles.page} />
+        </div>
+      </PreviewStage>
     </Panel>
   );
 }
