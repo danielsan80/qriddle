@@ -88,6 +88,27 @@ export function SvgTextEditor({
   });
 
   const [vbX, vbY, vbW, vbH] = viewBox.split(' ').map(Number);
+
+  const [widthPx, setWidthPx] = useState<number | null>(null);
+  const widthPxRef = useRef(widthPx);
+  useEffect(() => {
+    widthPxRef.current = widthPx;
+  });
+
+  useEffect(() => {
+    const svgEl = svgRef.current!;
+
+    function onWheel(event: WheelEvent) {
+      event.preventDefault();
+      const factor = event.deltaY > 0 ? 1 / 1.1 : 1.1;
+      const current = widthPxRef.current ?? svgEl.getBoundingClientRect().width;
+      const maxWidth = containerRef.current!.getBoundingClientRect().width;
+      setWidthPx(Math.min(maxWidth, Math.max(100, current * factor)));
+    }
+
+    svgEl.addEventListener('wheel', onWheel, { passive: false });
+    return () => svgEl.removeEventListener('wheel', onWheel);
+  }, []);
   const placeholderX = vbX + vbW / 2;
   const placeholderY = vbY + vbH / 2;
 
@@ -237,6 +258,7 @@ export function SvgTextEditor({
       <svg
         ref={svgRef}
         viewBox={viewBox}
+        style={widthPx !== null ? { width: widthPx } : undefined}
         className={`${styles.svg} ${className ?? ''}`}
         onClick={handleSvgClick}
       >
