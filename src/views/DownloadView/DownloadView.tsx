@@ -9,6 +9,7 @@ import {
 import { PreviewStage } from '../../components/PreviewStage';
 import { readState } from '../../lib/browser/urlState';
 import type { TextBox } from '../../components/SvgTextEditor';
+import { config } from '../../lib/config';
 import styles from './DownloadView.module.css';
 
 function getTextBoxes(): TextBox[] {
@@ -41,17 +42,14 @@ export function DownloadView() {
       <p className={styles.message}>
         Your <s>treasure map</s> greeting card is ready!
         <br />
-        Download the PDF, print it, fold it in 4 and hand it to the birthday person.
+        Download the PDF, print it, fold it in 4 and hand it to the birthday
+        person.
         <br />
         (a black marker works best to solve it)
         <br />
         <br />
         If you enjoyed it, you can{' '}
-        <a
-          href="https://ko-fi.com/danielsan80"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href={config.kofi.url} target="_blank" rel="noopener noreferrer">
           buy me a coffee
         </a>{' '}
         <span className={styles.coffeeIcon}>☕</span>

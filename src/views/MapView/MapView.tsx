@@ -89,9 +89,7 @@ export function MapView() {
             />
             <p className={styles.examplesLabel}>Some examples:</p>
             <ul className={styles.examples}>
-              <li>
-                the link to a video showing where your gift is hidden
-              </li>
+              <li>the link to a video showing where your gift is hidden</li>
               <li>the combination to open a safe</li>
               <li>the link to a virtual gift</li>
               <li>the key to open a treasure chest</li>

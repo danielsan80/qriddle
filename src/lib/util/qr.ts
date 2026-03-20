@@ -15,6 +15,18 @@ const defaultOptions: QROptions = {
   errorCorrectionLevel: 'M',
 };
 
+export async function getQRDataUrl(
+  text: string,
+  dark = '#000000',
+  light = '#ffffff',
+): Promise<string> {
+  return QRCode.toDataURL(text, {
+    errorCorrectionLevel: 'M',
+    margin: 1,
+    color: { dark, light },
+  });
+}
+
 export function getQRMatrix(
   text: string,
   options: QROptions = {},

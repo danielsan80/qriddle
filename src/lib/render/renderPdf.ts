@@ -2,6 +2,7 @@ import { jsPDF } from 'jspdf';
 import { config } from '../config';
 import { Puzzle } from '../domain/puzzle';
 import { renderPuzzle } from './renderPuzzle';
+import { getQRDataUrl } from '../util';
 import type { TextBox } from '../../components/SvgTextEditor';
 import innerSvgUrl from '../../assets/inner/inner.svg?url';
 import outerSvgUrl from '../../assets/outer/outer.svg?url';
@@ -109,6 +110,33 @@ function drawTextBoxes(
   }
 }
 
+async function drawCredits(
+  ctx: CanvasRenderingContext2D,
+  widthPx: number,
+  heightPx: number,
+): Promise<void> {
+  const scaleX = widthPx / SVG_WIDTH;
+  const scaleY = heightPx / 297;
+  const { sizeMm, centerX, bottomY, textY } = config.creditsQr;
+  const qrDataUrl = await getQRDataUrl(
+    config.siteUrl,
+    config.pdf.textColor,
+    '#ffffff00',
+  );
+  const qrImg = await loadImage(qrDataUrl);
+  ctx.drawImage(
+    qrImg,
+    (centerX - sizeMm / 2) * scaleX,
+    (bottomY - sizeMm) * scaleY,
+    sizeMm * scaleX,
+    sizeMm * scaleX,
+  );
+  ctx.textAlign = 'center';
+  ctx.fillStyle = config.pdf.textColor;
+  ctx.font = `${2.5 * scaleX}px serif`;
+  ctx.fillText(config.siteUrl, centerX * scaleX, textY * scaleY);
+}
+
 async function composeOuterPdf(
   widthPx: number,
   heightPx: number,
@@ -121,6 +149,7 @@ async function composeOuterPdf(
   const bg = await loadImage(outerSvgUrl);
   ctx.drawImage(bg, 0, 0, widthPx, heightPx);
   drawTextBoxes(ctx, textBoxes, widthPx);
+  await drawCredits(ctx, widthPx, heightPx);
   return canvas;
 }
 
