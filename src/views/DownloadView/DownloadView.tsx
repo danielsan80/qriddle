@@ -34,7 +34,10 @@ export function DownloadView() {
   }, []);
 
   function handleDownload() {
-    if (puzzle) void downloadPuzzlePdf(puzzle, getTextBoxes());
+    if (puzzle) {
+      window.umami?.track('download');
+      void downloadPuzzlePdf(puzzle, getTextBoxes());
+    }
   }
 
   return (
