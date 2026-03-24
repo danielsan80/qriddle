@@ -56,6 +56,10 @@ Capire se ha senso e se è fattibile esportare il biglietto come SVG (oltre che 
 
 ### Infrastruttura
 
+#### Aggiungere og:image per anteprima social
+
+Scattare una foto del biglietto stampato (puzzle visibile) e aggiungerla al repository come immagine Open Graph (1200×630px). Aggiornare `index.html` con il tag `og:image` e `twitter:image`.
+
 #### Linkare il progetto dalla GitHub Pages principale (sezione "Lab")
 
 Aggiungere link al progetto qriddle nella pagina GitHub Pages personale, sezione "Lab".
