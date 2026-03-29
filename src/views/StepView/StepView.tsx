@@ -28,7 +28,7 @@ function currentView(step: ReturnType<typeof useWizard>['trackStep']) {
 
 export function StepView() {
   const { trackStep, setTrackStep } = useWizard();
-  const index = TRACK_STEPS.findIndex((s) => s.step === trackStep);
+  const index = TRACK_STEPS.findIndex((s) => s.code === trackStep);
   const nextStep = TRACK_STEPS[index + 1];
 
   return (
@@ -38,7 +38,7 @@ export function StepView() {
           <button
             type="button"
             className={styles.nextButton}
-            onClick={() => setTrackStep(nextStep.step)}
+            onClick={() => setTrackStep(nextStep.code)}
           >
             Next <ShipIcon />
           </button>

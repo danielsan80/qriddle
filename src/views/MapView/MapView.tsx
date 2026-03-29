@@ -8,6 +8,7 @@ import { Image } from '../../lib/domain/image';
 import { Puzzle } from '../../lib/domain/puzzle';
 import { renderInnerPdfPreview, renderImage } from '../../lib/render';
 import { createRandom, generateSeed, getQRMatrix } from '../../lib/util';
+import { ExampleLink } from '../../lib/util/ExampleLink';
 import { config } from '../../lib/config';
 import { readState, mergeState } from '../../lib/browser/urlState';
 import styles from './MapView.module.css';
@@ -93,6 +94,9 @@ export function MapView() {
               <li>the combination to open a safe</li>
               <li>the link to a virtual gift</li>
               <li>the key to open a treasure chest</li>
+              <li>
+                a funny <ExampleLink code="mario">phrase</ExampleLink>
+              </li>
             </ul>
           </Panel.Body>
         </Panel>

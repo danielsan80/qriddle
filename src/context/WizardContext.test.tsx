@@ -12,7 +12,7 @@ describe('WizardContext', () => {
   it('starts with the first track step and no puzzle', () => {
     const { result } = renderHook(() => useWizard(), { wrapper });
     expect(result.current).toMatchObject({
-      trackStep: TRACK_STEPS[0].step,
+      trackStep: TRACK_STEPS[0].code,
       puzzle: null,
     });
   });

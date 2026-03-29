@@ -2,11 +2,11 @@ import type { Face } from '../CardFaceNav';
 
 export type TrackStep = 'intro' | Face | 'download';
 
-export const TRACK_STEPS: { step: TrackStep; label: string }[] = [
-  { step: 'intro', label: 'Intro' },
-  { step: 'inner.map', label: 'Map' },
-  { step: 'outer.front', label: 'Front' },
-  { step: 'outer.center', label: 'Center' },
-  { step: 'outer.back', label: 'Back' },
-  { step: 'download', label: 'Download' },
+export const TRACK_STEPS: { code: TrackStep; label: string }[] = [
+  { code: 'intro', label: 'Intro' },
+  { code: 'inner.map', label: 'Map' },
+  { code: 'outer.front', label: 'Front' },
+  { code: 'outer.center', label: 'Center' },
+  { code: 'outer.back', label: 'Back' },
+  { code: 'download', label: 'Download' },
 ];

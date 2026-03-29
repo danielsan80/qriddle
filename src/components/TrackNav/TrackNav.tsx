@@ -86,7 +86,7 @@ function XMarker() {
 }
 
 export function TrackNav({ step, onStep }: TrackNavProps) {
-  const index = TRACK_STEPS.findIndex((s) => s.step === step);
+  const index = TRACK_STEPS.findIndex((s) => s.code === step);
   const total = TRACK_STEPS.length;
 
   return (
@@ -97,7 +97,7 @@ export function TrackNav({ step, onStep }: TrackNavProps) {
 
         return (
           <li
-            key={s.step}
+            key={s.code}
             className={styles.step}
             data-state={past ? 'past' : 'future'}
             aria-current={i === index ? 'step' : undefined}
@@ -121,7 +121,7 @@ export function TrackNav({ step, onStep }: TrackNavProps) {
               <button
                 type="button"
                 className={styles.label}
-                onClick={() => onStep(s.step)}
+                onClick={() => onStep(s.code)}
               >
                 {s.label}
               </button>
@@ -130,7 +130,7 @@ export function TrackNav({ step, onStep }: TrackNavProps) {
                   type="button"
                   aria-label="next"
                   className={styles.next}
-                  onClick={() => onStep(TRACK_STEPS[index + 1].step)}
+                  onClick={() => onStep(TRACK_STEPS[index + 1].code)}
                 >
                   <ShipIcon />
                 </button>
