@@ -1,5 +1,5 @@
 import { TRACK_STEPS, type TrackStep } from './steps';
-import { ShipIcon } from '../ShipIcon';
+import { ShipIcon } from '../../icon/ShipIcon';
 import styles from './TrackNav.module.css';
 
 export type { TrackStep };

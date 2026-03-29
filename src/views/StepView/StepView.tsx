@@ -1,6 +1,6 @@
 import { useWizard } from '../../context/useWizard';
-import { TRACK_STEPS } from '../../components/TrackNav';
-import { ShipIcon } from '../../components/ShipIcon';
+import { TRACK_STEPS } from '../../components/navigation/TrackNav';
+import { ShipIcon } from '../../components/icon/ShipIcon';
 import { IntroView } from '../IntroView';
 import { MapView } from '../MapView';
 import { FrontView } from '../FrontView';

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Panel } from '../../components/Panel';
-import { PreviewStage } from '../../components/PreviewStage';
+import { Panel } from '../../components/layout/Panel';
+import { PreviewStage } from '../../components/stages/PreviewStage';
 import { SvgTextEditor } from '../../components/SvgTextEditor';
 import { useOuterTextBoxes } from '../useOuterTextBoxes';
 import { getQRDataUrl } from '../../lib/util';

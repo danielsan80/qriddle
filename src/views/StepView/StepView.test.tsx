@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { WizardContext } from '../../context/WizardContext';
 import { StepView } from './StepView';
-import type { TrackStep } from '../../components/TrackNav';
+import type { TrackStep } from '../../components/navigation/TrackNav';
 
 vi.mock('../MapView', () => ({
   MapView: () => <div>MapView</div>,

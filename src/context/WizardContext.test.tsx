@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { WizardProvider } from './WizardContext';
 import { useWizard } from './useWizard';
-import { TRACK_STEPS } from '../components/TrackNav';
+import { TRACK_STEPS } from '../components/navigation/TrackNav';
 
 function wrapper({ children }: { children: React.ReactNode }) {
   return <WizardProvider>{children}</WizardProvider>;

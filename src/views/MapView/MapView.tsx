@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { Panel } from '../../components/Panel';
-import { CanvasStage } from '../../components/Workspace/CanvasStage';
-import { QrcodeCanvas } from '../../components/Workspace/QrcodeCanvas';
-import { PreviewCanvas } from '../../components/Workspace/PreviewCanvas';
+import { Panel } from '../../components/layout/Panel';
+import { CanvasStage } from '../../components/stages/CanvasStage';
+import { QrcodeCanvas } from '../../components/canvas/QrcodeCanvas';
+import { PreviewCanvas } from '../../components/canvas/PreviewCanvas';
 import { useWizard } from '../../context/useWizard';
 import { Image } from '../../lib/domain/image';
 import { Puzzle } from '../../lib/domain/puzzle';

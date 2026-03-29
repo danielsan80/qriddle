@@ -1,0 +1,1 @@
+export { ShipIcon } from './ShipIcon';

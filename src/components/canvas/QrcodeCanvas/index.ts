@@ -1,0 +1,1 @@
+export { QrcodeCanvas } from './QrcodeCanvas';

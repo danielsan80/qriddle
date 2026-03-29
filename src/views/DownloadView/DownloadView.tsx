@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
-import { Panel } from '../../components/Panel';
+import { Panel } from '../../components/layout/Panel';
 import { useWizard } from '../../context/useWizard';
 import {
   downloadPuzzlePdf,
   renderInnerPdfPreview,
   renderOuterPdfPreview,
 } from '../../lib/render';
-import { PreviewStage } from '../../components/PreviewStage';
+import { PreviewStage } from '../../components/stages/PreviewStage';
 import { readState } from '../../lib/browser/urlState';
 import type { TextBox } from '../../components/SvgTextEditor';
 import { config } from '../../lib/config';
@@ -46,7 +46,7 @@ export function DownloadView() {
         Your <s>treasure map</s> greeting card is ready!
         <br />
         Download the PDF, print it, fold it in 4 and hand it to the birthday
-        person.
+        star.
         <br />
         (a black marker works best to solve it)
         <br />

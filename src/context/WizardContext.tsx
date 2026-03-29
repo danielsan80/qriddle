@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from 'react';
 import type { Puzzle } from '../lib/domain/puzzle';
-import { type TrackStep, TRACK_STEPS } from '../components/TrackNav';
+import { type TrackStep, TRACK_STEPS } from '../components/navigation/TrackNav';
 import { readState, mergeState } from '../lib/browser/urlState';
 
 interface WizardContextValue {

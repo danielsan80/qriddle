@@ -1,7 +1,11 @@
-import { Layout } from './components/Layout';
-import { Sidebar } from './components/Sidebar';
-import { CardFaceNav, FACES, type Face } from './components/CardFaceNav';
-import { TrackNav } from './components/TrackNav';
+import { Layout } from './components/layout/Layout';
+import { Sidebar } from './components/layout/Sidebar';
+import {
+  CardFaceNav,
+  FACES,
+  type Face,
+} from './components/navigation/CardFaceNav';
+import { TrackNav } from './components/navigation/TrackNav';
 import { StepView } from './views/StepView';
 import { useWizard } from './context/useWizard';
 import './App.css';
