@@ -1,15 +1,15 @@
 import { useWizard } from '../../context/useWizard';
+import { TRACK_STEPS } from '../../components/TrackNav';
 import { IntroView } from '../IntroView';
 import { MapView } from '../MapView';
 import { FrontView } from '../FrontView';
 import { CenterView } from '../CenterView';
 import { BackView } from '../BackView';
 import { DownloadView } from '../DownloadView';
+import styles from './StepView.module.css';
 
-export function StepView() {
-  const { trackStep } = useWizard();
-
-  switch (trackStep) {
+function currentView(step: ReturnType<typeof useWizard>['trackStep']) {
+  switch (step) {
     case 'intro':
       return <IntroView />;
     case 'inner.map':
@@ -23,4 +23,27 @@ export function StepView() {
     case 'download':
       return <DownloadView />;
   }
+}
+
+export function StepView() {
+  const { trackStep, setTrackStep } = useWizard();
+  const index = TRACK_STEPS.findIndex((s) => s.step === trackStep);
+  const nextStep = TRACK_STEPS[index + 1];
+
+  return (
+    <>
+      {nextStep && (
+        <div className={styles.next}>
+          <button
+            type="button"
+            className={styles.nextButton}
+            onClick={() => setTrackStep(nextStep.step)}
+          >
+            Next →
+          </button>
+        </div>
+      )}
+      {currentView(trackStep)}
+    </>
+  );
 }

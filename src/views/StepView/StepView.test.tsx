@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { WizardContext } from '../../context/WizardContext';
 import { StepView } from './StepView';
@@ -8,12 +9,12 @@ vi.mock('../MapView', () => ({
   MapView: () => <div>MapView</div>,
 }));
 
-function renderWithStep(trackStep: TrackStep) {
+function renderWithStep(trackStep: TrackStep, setTrackStep = vi.fn()) {
   render(
     <WizardContext
       value={{
         trackStep,
-        setTrackStep: vi.fn(),
+        setTrackStep,
         puzzle: null,
         setPuzzle: vi.fn(),
       }}
@@ -21,9 +22,15 @@ function renderWithStep(trackStep: TrackStep) {
       <StepView />
     </WizardContext>,
   );
+  return { setTrackStep };
 }
 
 describe('StepView', () => {
+  it('renders IntroView for intro', () => {
+    renderWithStep('intro');
+    expect(screen.getByText('IntroView placeholder')).toBeDefined();
+  });
+
   it('renders MapView for inner.map', () => {
     renderWithStep('inner.map');
     expect(screen.getByText('MapView')).toBeDefined();
@@ -47,5 +54,21 @@ describe('StepView', () => {
   it('renders DownloadView for download', () => {
     renderWithStep('download');
     expect(screen.getByText('Preview')).toBeDefined();
+  });
+
+  it('shows next-step button on non-last steps', () => {
+    renderWithStep('intro');
+    expect(screen.getByRole('button', { name: /next/i })).toBeDefined();
+  });
+
+  it('hides next-step button on last step', () => {
+    renderWithStep('download');
+    expect(screen.queryByRole('button', { name: /next/i })).toBeNull();
+  });
+
+  it('calls setTrackStep with next step on next-step button click', async () => {
+    const { setTrackStep } = renderWithStep('intro');
+    await userEvent.click(screen.getByRole('button', { name: /next/i }));
+    expect(setTrackStep).toHaveBeenCalledWith('inner.map');
   });
 });
