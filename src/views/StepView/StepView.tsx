@@ -1,5 +1,6 @@
 import { useWizard } from '../../context/useWizard';
 import { TRACK_STEPS } from '../../components/TrackNav';
+import { ShipIcon } from '../../components/ShipIcon';
 import { IntroView } from '../IntroView';
 import { MapView } from '../MapView';
 import { FrontView } from '../FrontView';
@@ -39,7 +40,7 @@ export function StepView() {
             className={styles.nextButton}
             onClick={() => setTrackStep(nextStep.step)}
           >
-            Next →
+            Next <ShipIcon />
           </button>
         </div>
       )}

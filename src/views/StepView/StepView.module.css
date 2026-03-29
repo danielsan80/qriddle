@@ -8,6 +8,9 @@
 }
 
 .nextButton {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   background: var(--accent);
   color: white;
   border: 1px solid var(--ink);
