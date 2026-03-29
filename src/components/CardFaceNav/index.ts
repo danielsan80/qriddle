@@ -1,1 +1,1 @@
-export { CardFaceNav, type Face } from './CardFaceNav';
+export { CardFaceNav, FACES, type Face } from './CardFaceNav';

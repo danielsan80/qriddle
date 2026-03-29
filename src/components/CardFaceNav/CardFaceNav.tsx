@@ -1,7 +1,14 @@
 import { type ReactNode } from 'react';
 import styles from './CardFaceNav.module.css';
 
-export type Face = 'inner.map' | 'outer.front' | 'outer.back' | 'outer.center';
+export const FACES = [
+  'inner.map',
+  'outer.front',
+  'outer.back',
+  'outer.center',
+] as const;
+
+export type Face = (typeof FACES)[number];
 
 interface CardFaceNavProps {
   selected?: Face;

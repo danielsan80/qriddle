@@ -54,6 +54,16 @@ Sostituire il tipo stringa con punto (`'inner.map'`, `'outer.front'`…) con un 
 
 Capire se ha senso e se è fattibile esportare il biglietto come SVG (oltre che PDF), in modo da poterlo aprire e modificare con Inkscape o simili. Valutare: il puzzle generato dinamicamente è rappresentabile in SVG? il testo dei campi della wizard si integra bene? Vedi anche la skill `svg-rendering` per opzioni tecniche già analizzate.
 
+#### Esperienza mobile: blocco + redirect al desktop
+
+Il sito non è usabile su mobile (drag & drop non supportato). Obiettivo: rilevare mobile e guidare l'utente ad aprirlo su PC.
+
+Opzioni (da implementare insieme o in parte):
+
+- **Banner mobile** — rileva `navigator.maxTouchPoints > 0` e mostra un overlay/banner "For the best experience, open on desktop" con pulsante copia link
+- **Condividi link** — Web Share API o "Copy link" per mandarsi il link via email/messaggio
+- **"Open on desktop" QR** — mostra un QR code della pagina stessa (con stato URL) da scansionare col PC — ironica e tematica
+
 ### Infrastruttura
 
 #### Aggiungere og:image per anteprima social

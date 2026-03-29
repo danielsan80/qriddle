@@ -1,6 +1,6 @@
 import { Layout } from './components/Layout';
 import { Sidebar } from './components/Sidebar';
-import { CardFaceNav } from './components/CardFaceNav';
+import { CardFaceNav, FACES, type Face } from './components/CardFaceNav';
 import { TrackNav } from './components/TrackNav';
 import { StepView } from './views/StepView';
 import { useWizard } from './context/useWizard';
@@ -8,7 +8,9 @@ import './App.css';
 
 function App() {
   const { trackStep, setTrackStep } = useWizard();
-  const selectedFace = trackStep !== 'download' ? trackStep : undefined;
+  const selectedFace = (FACES as readonly string[]).includes(trackStep)
+    ? (trackStep as Face)
+    : undefined;
 
   return (
     <Layout>

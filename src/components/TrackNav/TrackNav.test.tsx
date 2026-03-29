@@ -15,6 +15,7 @@ describe('TrackNav', () => {
       .getAllByRole('button')
       .filter((b) => !b.getAttribute('aria-label'));
     expect(stepButtons.map((b) => b.textContent)).toEqual([
+      'Intro',
       'Map',
       'Front',
       'Center',
@@ -29,7 +30,7 @@ describe('TrackNav', () => {
       screen
         .getAllByRole('listitem')
         .map((el) => (el as HTMLElement).dataset.state),
-    ).toEqual(['past', 'past', 'past', 'future', 'future']);
+    ).toEqual(['past', 'past', 'past', 'future', 'future', 'future']);
   });
 
   it('marks current step with aria-current', () => {
@@ -38,7 +39,7 @@ describe('TrackNav', () => {
       screen
         .getAllByRole('listitem')
         .map((el) => el.getAttribute('aria-current')),
-    ).toEqual([null, null, 'step', null, null]);
+    ).toEqual([null, null, 'step', null, null, null]);
   });
 
   it('shows next button on non-last current step', () => {
@@ -61,7 +62,7 @@ describe('TrackNav', () => {
   it('calls onStep when clicking a step label', async () => {
     const onStep = vi.fn();
     render(<TrackNav step={middle.step} onStep={onStep} />);
-    await userEvent.click(screen.getByRole('button', { name: 'Map' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Intro' }));
     expect(onStep).toHaveBeenCalledWith(first.step);
   });
 });
