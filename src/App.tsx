@@ -1,3 +1,4 @@
+import { MobileBlock } from './components/MobileBlock';
 import { Layout } from './components/layout/Layout';
 import { Sidebar } from './components/layout/Sidebar';
 import {
@@ -17,15 +18,18 @@ function App() {
     : undefined;
 
   return (
-    <Layout>
-      <Sidebar>
-        <CardFaceNav selected={selectedFace} onSelect={setTrackStep} />
-        <TrackNav step={trackStep} onStep={setTrackStep} />
-      </Sidebar>
-      <main>
-        <StepView />
-      </main>
-    </Layout>
+    <>
+      <MobileBlock />
+      <Layout>
+        <Sidebar>
+          <CardFaceNav selected={selectedFace} onSelect={setTrackStep} />
+          <TrackNav step={trackStep} onStep={setTrackStep} />
+        </Sidebar>
+        <main>
+          <StepView />
+        </main>
+      </Layout>
+    </>
   );
 }
 
