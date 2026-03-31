@@ -28,7 +28,7 @@ function renderWithStep(trackStep: TrackStep, setTrackStep = vi.fn()) {
 describe('StepView', () => {
   it('renders IntroView for intro', () => {
     renderWithStep('intro');
-    expect(screen.getByText('IntroView placeholder')).toBeDefined();
+    expect(screen.getByText('How it works')).toBeDefined();
   });
 
   it('renders MapView for inner.map', () => {
