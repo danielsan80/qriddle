@@ -100,4 +100,4 @@ Scattare una foto del biglietto stampato (puzzle visibile) e aggiungerla al repo
 
 ### Esperienza mobile: blocco + redirect al desktop
 
-Overlay fullscreen su dispositivi touch (`pointer: coarse` + `hover: none`). Messaggio chiaro per utenti non-dev con pulsante "Condividi il link" (Web Share API → share sheet nativo) e "Copia il link" (fallback clipboard).
+Overlay fullscreen su dispositivi touch (`navigator.maxTouchPoints > 0`). Messaggio chiaro per utenti non-dev con pulsante "Share the link" (Web Share API → share sheet nativo, visibile solo se disponibile) e "Copy the link" (clipboard fallback con feedback "Link copied!").
