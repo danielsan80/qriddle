@@ -95,12 +95,15 @@ export function MapView() {
               <li>the link to a virtual gift</li>
               <li>the key to open a treasure chest</li>
               <li>
-                the{' '}
-                <ExampleLink code="rose">coordinates</ExampleLink>
-                {' '}of an &ldquo;island&rdquo;
+                the <ExampleLink code="rose">coordinates</ExampleLink> of an
+                &ldquo;island&rdquo;
               </li>
               <li>
                 a funny <ExampleLink code="mario">phrase</ExampleLink>
+              </li>
+              <li>
+                the <ExampleLink code="qriddle">path</ExampleLink> to your next
+                quest
               </li>
             </ul>
           </Panel.Body>
