@@ -16,8 +16,8 @@ export function ExampleLink({ code, children }: ExampleLinkProps) {
       className={styles.link}
       onClick={(e) => {
         e.preventDefault();
-        location.replace(`#${hash}`);
-        location.reload();
+        history.pushState(null, '', `#${hash}`);
+        window.dispatchEvent(new PopStateEvent('popstate'));
       }}
     >
       {children}

@@ -45,7 +45,10 @@ describe('useOuterTextBoxes', () => {
 
     act(() => result.current[1]([frontBox]));
 
-    expect(mergeState).toHaveBeenCalledWith({ textBoxes: [frontBox] });
+    expect(mergeState).toHaveBeenCalledWith(
+      { textBoxes: [frontBox] },
+      'replace',
+    );
   });
 
   it('preserves boxes from other faces when updating', () => {
@@ -55,8 +58,9 @@ describe('useOuterTextBoxes', () => {
 
     act(() => result.current[1]([frontBox]));
 
-    expect(mergeState).toHaveBeenCalledWith({
-      textBoxes: [centerBox, frontBox],
-    });
+    expect(mergeState).toHaveBeenCalledWith(
+      { textBoxes: [centerBox, frontBox] },
+      'replace',
+    );
   });
 });

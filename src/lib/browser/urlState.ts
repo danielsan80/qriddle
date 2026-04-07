@@ -1,6 +1,8 @@
 import LZString from 'lz-string';
 
-export function encode(state: object): string {
+export type UrlState = Record<string, unknown>;
+
+export function encode(state: UrlState): string {
   return LZString.compressToEncodedURIComponent(JSON.stringify(state));
 }
 
@@ -21,11 +23,23 @@ export function readState<T>(fallback: T): T {
   return decode(hash.slice(1), fallback);
 }
 
-export function writeState(state: object): void {
-  window.history.replaceState(null, '', `#${encode(state)}`);
+export type HistoryMode = 'push' | 'replace';
+
+export function writeState(state: UrlState, mode: HistoryMode): void {
+  const url = `#${encode(state)}`;
+  switch (mode) {
+    case 'push':
+      window.history.pushState(null, '', url);
+      break;
+    case 'replace':
+      window.history.replaceState(null, '', url);
+      break;
+    default:
+      throw new Error(`Unexpected HistoryMode: ${mode satisfies never}`);
+  }
 }
 
-export function mergeState(partial: object): void {
-  const current = readState<Record<string, unknown>>({});
-  writeState({ ...current, ...partial });
+export function mergeState(partial: UrlState, mode: HistoryMode): void {
+  const current = readState<UrlState>({});
+  writeState({ ...current, ...partial }, mode);
 }

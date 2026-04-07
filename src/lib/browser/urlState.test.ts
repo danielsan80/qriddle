@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { encode, decode, mergeState } from './urlState';
+import { encode, decode, mergeState, type UrlState } from './urlState';
 
 describe('encode / decode', () => {
   it('roundtrips a simple object', () => {
@@ -31,7 +31,7 @@ describe('encode / decode', () => {
   });
 
   it('returns fallback for valid base string that is not JSON', () => {
-    const notJson = encode('just a string' as unknown as object);
+    const notJson = encode('just a string' as unknown as UrlState);
 
     expect(decode(notJson, { seed: 'default' })).toEqual('just a string');
   });
@@ -46,6 +46,11 @@ describe('encode / decode', () => {
   });
 });
 
+function lastWrittenState(spy: ReturnType<typeof vi.spyOn>): UrlState | null {
+  const [, , url] = spy.mock.calls[0] as [unknown, unknown, string];
+  return decode(url.slice(1), null);
+}
+
 describe('mergeState', () => {
   afterEach(() => {
     window.location.hash = '';
@@ -56,12 +61,12 @@ describe('mergeState', () => {
     window.location.hash = '#' + encode({ qrText: 'hello', seed: 'abc' });
     const spy = vi.spyOn(window.history, 'replaceState');
 
-    mergeState({
-      frontTextBoxes: [{ id: '1', x: 0, y: 0, text: 'hi', fontSize: 8 }],
-    });
+    mergeState(
+      { frontTextBoxes: [{ id: '1', x: 0, y: 0, text: 'hi', fontSize: 8 }] },
+      'replace',
+    );
 
-    const writtenUrl = spy.mock.calls[0][2] as string;
-    expect(decode(writtenUrl.slice(1), null)).toEqual({
+    expect(lastWrittenState(spy)).toEqual({
       qrText: 'hello',
       seed: 'abc',
       frontTextBoxes: [{ id: '1', x: 0, y: 0, text: 'hi', fontSize: 8 }],
@@ -72,12 +77,17 @@ describe('mergeState', () => {
     window.location.hash = '#' + encode({ qrText: 'old', seed: 'abc' });
     const spy = vi.spyOn(window.history, 'replaceState');
 
-    mergeState({ qrText: 'new' });
+    mergeState({ qrText: 'new' }, 'replace');
 
-    const writtenUrl = spy.mock.calls[0][2] as string;
-    expect(decode(writtenUrl.slice(1), null)).toEqual({
-      qrText: 'new',
-      seed: 'abc',
-    });
+    expect(lastWrittenState(spy)).toEqual({ qrText: 'new', seed: 'abc' });
+  });
+
+  it('uses pushState when mode is push', () => {
+    window.location.hash = '#' + encode({ step: 'map' });
+    const spy = vi.spyOn(window.history, 'pushState');
+
+    mergeState({ step: 'front' }, 'push');
+
+    expect(lastWrittenState(spy)).toEqual({ step: 'front' });
   });
 });

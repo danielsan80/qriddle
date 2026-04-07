@@ -33,12 +33,16 @@ const decoded = JSON.parse(LZString.decompressFromEncodedURIComponent(encoded));
 
 Molto più compatto di base64 puro su JSON.
 
-### `replaceState`, non `pushState`
+### `replaceState` vs `pushState`
 
-Ogni modifica di stato non deve aggiungere entry alla history del browser:
+- **Navigazione tra step**: usare `'push'` → permette back/forward del browser
+- **Modifiche a testo e config**: usare `'replace'` (default) → evita di riempire la history con ogni carattere digitato
+
+`mergeState` e `writeState` accettano un `HistoryMode = 'push' | 'replace'` (default `'replace'`):
 
 ```ts
-window.history.replaceState(null, '', `#state=${encoded}`);
+mergeState({ step: 'front' }, 'push'); // pushState
+mergeState({ textBoxes }); // replaceState
 ```
 
 ### Cosa storare

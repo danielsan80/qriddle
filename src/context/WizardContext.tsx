@@ -25,12 +25,32 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
   const [trackStep, setTrackStep] = useState<TrackStep>(getInitialStep);
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
 
+  function handleSetTrackStep(step: TrackStep) {
+    mergeState({ step }, 'push');
+    setTrackStep(step);
+  }
+
   useEffect(() => {
-    mergeState({ step: trackStep });
-  }, [trackStep]);
+    function handlePopState() {
+      const { step } = readState<{ step: string }>({ step: getInitialStep() });
+      if (!VALID_STEPS.has(step)) {
+        return;
+      }
+      setTrackStep(step as TrackStep);
+    }
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   return (
-    <WizardContext value={{ trackStep, setTrackStep, puzzle, setPuzzle }}>
+    <WizardContext
+      value={{
+        trackStep,
+        setTrackStep: handleSetTrackStep,
+        puzzle,
+        setPuzzle,
+      }}
+    >
       {children}
     </WizardContext>
   );

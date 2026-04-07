@@ -16,7 +16,7 @@ export function useOuterTextBoxes(
   const [textBoxes, setTextBoxes] = useState<TextBox[]>(getInitialTextBoxes);
 
   useEffect(() => {
-    mergeState({ textBoxes });
+    mergeState({ textBoxes }, 'replace');
   }, [textBoxes]);
 
   const faceBoxes = textBoxes.filter((tb) => tb.face === face);

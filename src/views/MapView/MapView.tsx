@@ -39,8 +39,18 @@ export function MapView() {
   const puzzleCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    mergeState({ qrText, seed });
+    mergeState({ qrText, seed }, 'replace');
   }, [qrText, seed]);
+
+  useEffect(() => {
+    function handlePopState() {
+      const state = readState<Partial<MapState>>({});
+      if (state.qrText !== undefined) setQrText(state.qrText);
+      if (state.seed !== undefined) setSeed(state.seed);
+    }
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   useEffect(() => {
     if (!qrText || !qrCanvasRef.current || !puzzleCanvasRef.current) {
