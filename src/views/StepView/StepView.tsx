@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useWizard } from '../../context/useWizard';
 import { TRACK_STEPS } from '../../components/navigation/TrackNav';
 import { ShipIcon } from '../../components/icon/ShipIcon';
@@ -30,6 +31,10 @@ export function StepView() {
   const { trackStep, setTrackStep } = useWizard();
   const index = TRACK_STEPS.findIndex((s) => s.code === trackStep);
   const nextStep = TRACK_STEPS[index + 1];
+
+  useEffect(() => {
+    document.querySelector('main')?.scrollTo(0, 0);
+  }, [trackStep]);
 
   return (
     <>

@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { WizardContext } from '../../context/WizardContext';
 import { StepView } from './StepView';
 import type { TrackStep } from '../../components/navigation/TrackNav';
@@ -70,5 +70,58 @@ describe('StepView', () => {
     const { setTrackStep } = renderWithStep('intro');
     await userEvent.click(screen.getByRole('button', { name: /next/i }));
     expect(setTrackStep).toHaveBeenCalledWith('inner.map');
+  });
+});
+
+describe('StepView scroll behavior', () => {
+  let scrollTo: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    scrollTo = vi.fn();
+    Object.defineProperty(HTMLElement.prototype, 'scrollTo', {
+      configurable: true,
+      value: scrollTo,
+    });
+  });
+
+  afterEach(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (HTMLElement.prototype as any).scrollTo;
+  });
+
+  it('scrolls main to top when step changes', () => {
+    const { rerender } = render(
+      <main>
+        <WizardContext
+          value={{
+            trackStep: 'intro',
+            setTrackStep: vi.fn(),
+            puzzle: null,
+            setPuzzle: vi.fn(),
+          }}
+        >
+          <StepView />
+        </WizardContext>
+      </main>,
+    );
+
+    scrollTo.mockClear();
+
+    rerender(
+      <main>
+        <WizardContext
+          value={{
+            trackStep: 'inner.map',
+            setTrackStep: vi.fn(),
+            puzzle: null,
+            setPuzzle: vi.fn(),
+          }}
+        >
+          <StepView />
+        </WizardContext>
+      </main>,
+    );
+
+    expect(scrollTo).toHaveBeenCalledWith(0, 0);
   });
 });
