@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { config } from '../../lib/config';
+import { useFontReady } from '../../lib/util';
 import styles from './SvgTextEditor.module.css';
 
 const FONT_NAME = 'Edwardian Script ITC';
@@ -76,6 +77,7 @@ export function SvgTextEditor({
   }
 
   const [editing, setEditing] = useState<EditingState | null>(null);
+  const fontReady = useFontReady();
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<DragState | null>(null);
@@ -264,25 +266,26 @@ export function SvgTextEditor({
         onClick={handleSvgClick}
       >
         {children}
-        {textBoxes.map((tb) => (
-          <text
-            key={tb.id}
-            x={tb.x}
-            y={tb.y}
-            textAnchor="middle"
-            fontSize={tb.fontSize}
-            fontFamily={`'${FONT_NAME}'`}
-            fill={
-              editing?.id === tb.id
-                ? `${config.pdf.textColor}4d`
-                : config.pdf.textColor
-            }
-            onMouseDown={(event) => handleTextMouseDown(event, tb)}
-            className={styles.textNode}
-          >
-            {tb.text}
-          </text>
-        ))}
+        {fontReady &&
+          textBoxes.map((tb) => (
+            <text
+              key={tb.id}
+              x={tb.x}
+              y={tb.y}
+              textAnchor="middle"
+              fontSize={tb.fontSize}
+              fontFamily={`'${FONT_NAME}'`}
+              fill={
+                editing?.id === tb.id
+                  ? `${config.pdf.textColor}4d`
+                  : config.pdf.textColor
+              }
+              onMouseDown={(event) => handleTextMouseDown(event, tb)}
+              className={styles.textNode}
+            >
+              {tb.text}
+            </text>
+          ))}
         {textBoxes.length === 0 && (
           <text
             x={placeholderX}
