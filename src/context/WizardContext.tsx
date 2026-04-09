@@ -1,7 +1,10 @@
 import { createContext, useEffect, useState } from 'react';
 import type { Puzzle } from '../lib/domain/puzzle';
+import { Image } from '../lib/domain/image';
+import { Puzzle as PuzzleClass } from '../lib/domain/puzzle';
 import { type TrackStep, TRACK_STEPS } from '../components/navigation/TrackNav';
 import { readState, mergeState } from '../lib/browser/urlState';
+import { createRandom, getQRMatrix } from '../lib/util';
 
 interface WizardContextValue {
   trackStep: TrackStep;
@@ -21,9 +24,21 @@ function getInitialStep(): TrackStep {
     : TRACK_STEPS[0].code;
 }
 
+function buildPuzzle(qrText: string, seed: string): Puzzle {
+  const { matrix } = getQRMatrix(qrText);
+  const qrImage = new Image(matrix);
+  return PuzzleClass.create(qrImage.x2(), createRandom(seed));
+}
+
+function getInitialPuzzle(): Puzzle | null {
+  const { qrText, seed } = readState<{ qrText?: string; seed?: string }>({});
+  if (!qrText || !seed) return null;
+  return buildPuzzle(qrText, seed);
+}
+
 export function WizardProvider({ children }: { children: React.ReactNode }) {
   const [trackStep, setTrackStep] = useState<TrackStep>(getInitialStep);
-  const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
+  const [puzzle, setPuzzle] = useState<Puzzle | null>(getInitialPuzzle);
 
   function handleSetTrackStep(step: TrackStep) {
     mergeState({ step }, 'push');
