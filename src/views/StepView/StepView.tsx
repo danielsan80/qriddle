@@ -30,6 +30,7 @@ function currentView(step: ReturnType<typeof useWizard>['trackStep']) {
 export function StepView() {
   const { trackStep, setTrackStep } = useWizard();
   const index = TRACK_STEPS.findIndex((s) => s.code === trackStep);
+  const prevStep = TRACK_STEPS[index - 1];
   const nextStep = TRACK_STEPS[index + 1];
 
   useEffect(() => {
@@ -38,15 +39,28 @@ export function StepView() {
 
   return (
     <>
-      {nextStep && (
-        <div className={styles.next}>
-          <button
-            type="button"
-            className={styles.nextButton}
-            onClick={() => setTrackStep(nextStep.code)}
-          >
-            Next <ShipIcon />
-          </button>
+      {(prevStep || nextStep) && (
+        <div className={styles.stepNav}>
+          {prevStep ? (
+            <button
+              type="button"
+              className={styles.stepNavButton}
+              onClick={() => history.back()}
+            >
+              <ShipIcon mirrored /> Previous
+            </button>
+          ) : (
+            <span className={styles.stepNavSpacer} />
+          )}
+          {nextStep && (
+            <button
+              type="button"
+              className={styles.stepNavButton}
+              onClick={() => setTrackStep(nextStep.code)}
+            >
+              Next <ShipIcon />
+            </button>
+          )}
         </div>
       )}
       {currentView(trackStep)}

@@ -1,13 +1,13 @@
-.next {
+.stepNav {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: 0.75rem 1rem;
   border-bottom: 2px solid var(--ink);
   background: var(--paper);
   margin-bottom: 2rem;
 }
 
-.nextButton {
+.stepNavButton {
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -31,4 +31,8 @@
     transform: translate(1px, 1px);
     box-shadow: 0 0 0 var(--ink);
   }
+}
+
+.stepNavSpacer {
+  flex: 1;
 }

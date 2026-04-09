@@ -66,10 +66,30 @@ describe('StepView', () => {
     expect(screen.queryByRole('button', { name: /next/i })).toBeNull();
   });
 
+  it('hides previous-step button on first step', () => {
+    renderWithStep('intro');
+    expect(screen.queryByRole('button', { name: /previous/i })).toBeNull();
+  });
+
+  it('shows previous-step button on non-first steps', () => {
+    renderWithStep('inner.map');
+    expect(screen.getByRole('button', { name: /previous/i })).toBeDefined();
+  });
+
   it('calls setTrackStep with next step on next-step button click', async () => {
     const { setTrackStep } = renderWithStep('intro');
     await userEvent.click(screen.getByRole('button', { name: /next/i }));
     expect(setTrackStep).toHaveBeenCalledWith('inner.map');
+  });
+
+  it('calls history.back on previous-step button click', async () => {
+    const historyBack = vi
+      .spyOn(window.history, 'back')
+      .mockImplementation(() => {});
+    renderWithStep('inner.map');
+    await userEvent.click(screen.getByRole('button', { name: /previous/i }));
+    expect(historyBack).toHaveBeenCalledOnce();
+    historyBack.mockRestore();
   });
 });
 
