@@ -5,6 +5,13 @@
   border-bottom: 2px solid var(--ink);
   background: var(--paper);
   margin-bottom: 2rem;
+
+  &:last-child {
+    border-bottom: none;
+    border-top: 2px solid var(--ink);
+    margin-bottom: 0;
+    margin-top: 2rem;
+  }
 }
 
 .stepNavButton {

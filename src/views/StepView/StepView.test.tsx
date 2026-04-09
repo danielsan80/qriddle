@@ -58,7 +58,7 @@ describe('StepView', () => {
 
   it('shows next-step button on non-last steps', () => {
     renderWithStep('intro');
-    expect(screen.getByRole('button', { name: /next/i })).toBeDefined();
+    expect(screen.getAllByRole('button', { name: /next/i })).toHaveLength(2);
   });
 
   it('hides next-step button on last step', () => {
@@ -73,12 +73,14 @@ describe('StepView', () => {
 
   it('shows previous-step button on non-first steps', () => {
     renderWithStep('inner.map');
-    expect(screen.getByRole('button', { name: /previous/i })).toBeDefined();
+    expect(screen.getAllByRole('button', { name: /previous/i })).toHaveLength(
+      2,
+    );
   });
 
   it('calls setTrackStep with next step on next-step button click', async () => {
     const { setTrackStep } = renderWithStep('intro');
-    await userEvent.click(screen.getByRole('button', { name: /next/i }));
+    await userEvent.click(screen.getAllByRole('button', { name: /next/i })[0]);
     expect(setTrackStep).toHaveBeenCalledWith('inner.map');
   });
 
@@ -87,7 +89,9 @@ describe('StepView', () => {
       .spyOn(window.history, 'back')
       .mockImplementation(() => {});
     renderWithStep('inner.map');
-    await userEvent.click(screen.getByRole('button', { name: /previous/i }));
+    await userEvent.click(
+      screen.getAllByRole('button', { name: /previous/i })[0],
+    );
     expect(historyBack).toHaveBeenCalledOnce();
     historyBack.mockRestore();
   });

@@ -27,6 +27,36 @@ function currentView(step: ReturnType<typeof useWizard>['trackStep']) {
   }
 }
 
+interface StepNavBarProps {
+  prevStep: (typeof TRACK_STEPS)[number] | undefined;
+  nextStep: (typeof TRACK_STEPS)[number] | undefined;
+  onNext: () => void;
+}
+
+function StepNavBar({ prevStep, nextStep, onNext }: StepNavBarProps) {
+  if (!prevStep && !nextStep) return null;
+  return (
+    <div className={styles.stepNav}>
+      {prevStep ? (
+        <button
+          type="button"
+          className={styles.stepNavButton}
+          onClick={() => history.back()}
+        >
+          <ShipIcon mirrored /> Previous
+        </button>
+      ) : (
+        <span className={styles.stepNavSpacer} />
+      )}
+      {nextStep && (
+        <button type="button" className={styles.stepNavButton} onClick={onNext}>
+          Next <ShipIcon />
+        </button>
+      )}
+    </div>
+  );
+}
+
 export function StepView() {
   const { trackStep, setTrackStep } = useWizard();
   const index = TRACK_STEPS.findIndex((s) => s.code === trackStep);
@@ -37,33 +67,15 @@ export function StepView() {
     document.querySelector('main')?.scrollTo(0, 0);
   }, [trackStep]);
 
+  function handleNext() {
+    setTrackStep(nextStep!.code);
+  }
+
   return (
     <>
-      {(prevStep || nextStep) && (
-        <div className={styles.stepNav}>
-          {prevStep ? (
-            <button
-              type="button"
-              className={styles.stepNavButton}
-              onClick={() => history.back()}
-            >
-              <ShipIcon mirrored /> Previous
-            </button>
-          ) : (
-            <span className={styles.stepNavSpacer} />
-          )}
-          {nextStep && (
-            <button
-              type="button"
-              className={styles.stepNavButton}
-              onClick={() => setTrackStep(nextStep.code)}
-            >
-              Next <ShipIcon />
-            </button>
-          )}
-        </div>
-      )}
+      <StepNavBar prevStep={prevStep} nextStep={nextStep} onNext={handleNext} />
       {currentView(trackStep)}
+      <StepNavBar prevStep={prevStep} nextStep={nextStep} onNext={handleNext} />
     </>
   );
 }
