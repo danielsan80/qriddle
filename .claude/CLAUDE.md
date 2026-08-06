@@ -23,7 +23,8 @@ Regole sintetiche: scrivi il minimo necessario per essere compresi.
 
 ## Kanban
 
-Board in `doc/kanban/README.md`. Regole d'uso nella skill `/kanban`.
+Board in `doc/kanban/README.md`, card in `doc/kanban/cards/`, archivio in
+`doc/kanban/DONE.md`. Regole d'uso nella skill `/kanban`.
 
 ## Domain Model
 

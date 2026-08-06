@@ -16,10 +16,6 @@ progetto, non dentro questa skill:
 Se l'indice non esiste, crealo copiando `templates/board.md` (accanto a questo
 file). In un progetto con una struttura diversa, cambia i tre percorsi qui sopra.
 
-**Stato attuale in questo progetto:** le voci stanno ancora inline nell'indice,
-`cards/` e `DONE.md` non esistono. Finché è così, aggiungi e aggiorna le voci
-direttamente nell'indice; lo split in card è una migrazione a parte.
-
 Regole d'uso:
 
 - Per presentare la board o rispondere a "che abbiamo in programma?" basta l'indice: non leggere i file delle card.
