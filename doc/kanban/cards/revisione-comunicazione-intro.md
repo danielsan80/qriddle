@@ -1,3 +1,4 @@
-# Revisione della comunizazione della prima vista (Intro)
+# Revisione della comunicazione della prima vista (Intro)
 
-Vedi Skill
+Materiale e proposta nella skill `review-communication`
+(`.claude/skills/review-communication/SKILL.md`).
