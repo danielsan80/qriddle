@@ -13,6 +13,7 @@ Regole sintetiche: scrivi il minimo necessario per essere compresi.
   - NO: `toHaveLength(n)` seguito da asserzioni sui singoli elementi
   - NO: asserzioni separate su parti di un risultato
 - Dopo modifiche, esegui `npm run check` (lint + format + test).
+- Git: non committare né pushare di tua iniziativa, solo su mia richiesta esplicita. Quando dico "committa", scegli tu il messaggio e committa subito — non propormi di committare né chiedermi di revisionare prima (la diff la guardo da solo; se il messaggio non mi piace lo riscrivo io). Messaggi in inglese, con prefisso in stile conventional commit (`feat:`, `fix:`, `docs:`, `test:`, `build:`, `chore:`, `refactor:`… — la lista non è chiusa, scegli quello che descrive il commit). Niente trailer `Co-Authored-By`.
 - Piccoli passi: implementa una cosa alla volta.
 - Librerie esterne: diffuse, ben supportate, componibili, stilizzabili. No monoliti.
 - Nomi variabili: evita nomi da una sola lettera, anche in scope locali (no `e` per edge, usa `edge`).
