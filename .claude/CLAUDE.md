@@ -23,7 +23,7 @@ Regole sintetiche: scrivi il minimo necessario per essere compresi.
 
 ## Kanban
 
-Vedi `/kanban` per la board di progetto.
+Board in `doc/kanban/README.md`. Regole d'uso nella skill `/kanban`.
 
 ## Domain Model
 
