@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { loadFont } from './loadFont';
-import { cardFontDescriptor, cardFontFamily } from './cardFont';
+import { cardFontDescriptor } from './cardFont';
 
 export function useFontReady(): boolean {
   // Start as ready when FontFaceSet API is not available (e.g. jsdom in tests)
@@ -9,7 +9,7 @@ export function useFontReady(): boolean {
   useEffect(() => {
     if (!document.fonts) return;
     let cancelled = false;
-    loadFont(cardFontDescriptor(cardFontFamily)).then(() => {
+    loadFont(cardFontDescriptor).then(() => {
       if (!cancelled) setReady(true);
     });
     return () => {

@@ -6,11 +6,6 @@
   src: url('./assets/fonts/Corinthia.woff2') format('woff2');
 }
 
-@font-face {
-  font-family: 'Pinyon Script';
-  src: url('./assets/fonts/PinyonScript.woff2') format('woff2');
-}
-
 * {
   margin: 0;
   padding: 0;

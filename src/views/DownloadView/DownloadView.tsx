@@ -10,7 +10,7 @@ import { PreviewStage } from '../../components/stages/PreviewStage';
 import { readState } from '../../lib/browser/urlState';
 import type { TextBox } from '../../components/SvgTextEditor';
 import { config } from '../../lib/config';
-import { cardFontDescriptor, cardFontFamily, loadFont } from '../../lib/util';
+import { cardFontDescriptor, loadFont } from '../../lib/util';
 import styles from './DownloadView.module.css';
 
 function getTextBoxes(): TextBox[] {
@@ -25,7 +25,7 @@ export function DownloadView() {
   useEffect(() => {
     if (puzzle && innerCanvasRef.current) {
       const canvas = innerCanvasRef.current;
-      void loadFont(cardFontDescriptor(cardFontFamily)).then(() =>
+      void loadFont(cardFontDescriptor).then(() =>
         renderInnerPdfPreview(canvas, puzzle),
       );
     }
@@ -34,7 +34,7 @@ export function DownloadView() {
   useEffect(() => {
     const canvas = outerCanvasRef.current;
     if (canvas) {
-      void loadFont(cardFontDescriptor(cardFontFamily)).then(() =>
+      void loadFont(cardFontDescriptor).then(() =>
         renderOuterPdfPreview(canvas, getTextBoxes()),
       );
     }
