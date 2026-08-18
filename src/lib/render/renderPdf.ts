@@ -2,7 +2,7 @@ import { jsPDF } from 'jspdf';
 import { config } from '../config';
 import { Puzzle } from '../domain/puzzle';
 import { renderPuzzle } from './renderPuzzle';
-import { getQRDataUrl } from '../util';
+import { cardFontFamily, getQRDataUrl } from '../util';
 import type { TextBox } from '../../components/SvgTextEditor';
 import innerSvgUrl from '../../assets/inner/inner.svg?url';
 import outerSvgUrl from '../../assets/outer/outer.svg?url';
@@ -68,7 +68,6 @@ export async function renderInnerPdfPreview(
   canvas.getContext('2d')!.drawImage(composed, 0, 0);
 }
 
-const FONT_NAME = 'Edwardian Script ITC';
 // outer.svg coordinate space is 210 x 297 units (A4 mm)
 const SVG_WIDTH = 210;
 // center view shows the top half of outer.svg (0..148.5) rotated 180° around (105, 74.25)
@@ -82,7 +81,7 @@ function drawTextBox(
   scale: number,
 ): void {
   if (!tb.text.trim()) return;
-  ctx.font = `${tb.fontSize * scale}px '${FONT_NAME}', serif`;
+  ctx.font = `${tb.fontSize * scale}px '${cardFontFamily}', serif`;
 
   if (tb.face === 'center') {
     const ox = (SVG_WIDTH - tb.x) * scale;

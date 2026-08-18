@@ -10,10 +10,8 @@ import { PreviewStage } from '../../components/stages/PreviewStage';
 import { readState } from '../../lib/browser/urlState';
 import type { TextBox } from '../../components/SvgTextEditor';
 import { config } from '../../lib/config';
-import { loadFont } from '../../lib/util';
+import { cardFontDescriptor, cardFontFamily, loadFont } from '../../lib/util';
 import styles from './DownloadView.module.css';
-
-const EDWARDIAN_DESCRIPTOR = `1px 'Edwardian Script ITC'`;
 
 function getTextBoxes(): TextBox[] {
   return readState<{ textBoxes?: TextBox[] }>({}).textBoxes ?? [];
@@ -27,7 +25,7 @@ export function DownloadView() {
   useEffect(() => {
     if (puzzle && innerCanvasRef.current) {
       const canvas = innerCanvasRef.current;
-      void loadFont(EDWARDIAN_DESCRIPTOR).then(() =>
+      void loadFont(cardFontDescriptor(cardFontFamily)).then(() =>
         renderInnerPdfPreview(canvas, puzzle),
       );
     }
@@ -36,7 +34,7 @@ export function DownloadView() {
   useEffect(() => {
     const canvas = outerCanvasRef.current;
     if (canvas) {
-      void loadFont(EDWARDIAN_DESCRIPTOR).then(() =>
+      void loadFont(cardFontDescriptor(cardFontFamily)).then(() =>
         renderOuterPdfPreview(canvas, getTextBoxes()),
       );
     }

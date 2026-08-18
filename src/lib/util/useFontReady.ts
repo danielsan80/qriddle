@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { loadFont } from './loadFont';
-
-const EDWARDIAN_DESCRIPTOR = `1px 'Edwardian Script ITC'`;
+import { cardFontDescriptor, cardFontFamily } from './cardFont';
 
 export function useFontReady(): boolean {
   // Start as ready when FontFaceSet API is not available (e.g. jsdom in tests)
@@ -10,7 +9,7 @@ export function useFontReady(): boolean {
   useEffect(() => {
     if (!document.fonts) return;
     let cancelled = false;
-    loadFont(EDWARDIAN_DESCRIPTOR).then(() => {
+    loadFont(cardFontDescriptor(cardFontFamily)).then(() => {
       if (!cancelled) setReady(true);
     });
     return () => {

@@ -2,8 +2,13 @@
 @import './animations.css';
 
 @font-face {
-  font-family: 'Edwardian Script ITC';
-  src: url('./assets/fonts/EdwardianScriptITC.ttf') format('truetype');
+  font-family: 'Corinthia';
+  src: url('./assets/fonts/Corinthia.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Pinyon Script';
+  src: url('./assets/fonts/PinyonScript.woff2') format('woff2');
 }
 
 * {

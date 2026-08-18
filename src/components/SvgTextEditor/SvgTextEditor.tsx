@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { config } from '../../lib/config';
-import { useFontReady } from '../../lib/util';
+import { cardFontFamily, useFontReady } from '../../lib/util';
 import styles from './SvgTextEditor.module.css';
 
-const FONT_NAME = 'Edwardian Script ITC';
 const DRAG_THRESHOLD = 4;
 
 export type Face = 'front' | 'center' | 'back';
@@ -274,7 +273,7 @@ export function SvgTextEditor({
               y={tb.y}
               textAnchor="middle"
               fontSize={tb.fontSize}
-              fontFamily={`'${FONT_NAME}'`}
+              fontFamily={`'${cardFontFamily}'`}
               fill={
                 editing?.id === tb.id
                   ? `${config.pdf.textColor}4d`
