@@ -21,6 +21,7 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 ### Infrastruttura
 
 - [Linkare il progetto dalla GitHub Pages principale (sezione "Lab")](cards/link-github-pages-lab.md)
+- [Ripulire il repo come vetrina (asset di terzi + presentazione)](cards/repo-vetrina-e-asset.md)
 
 ## DOING
 

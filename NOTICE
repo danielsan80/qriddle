@@ -1,0 +1,44 @@
+Third-party material in qriddle
+===============================
+
+The CC BY-NC-SA 4.0 license in LICENSE covers the original work in this
+repository. It does NOT cover the third-party material listed below, which
+remains under its own terms. Anyone reusing this repository must comply with
+those terms separately, or replace the material.
+
+
+Fonts
+-----
+
+DM Serif Display, Courier Prime
+  Loaded at runtime from Google Fonts (src/index.css), not redistributed here.
+  SIL Open Font License 1.1.
+  https://fonts.google.com/specimen/DM+Serif+Display
+  https://fonts.google.com/specimen/Courier+Prime
+
+Edwardian Script ITC -- src/assets/fonts/EdwardianScriptITC.ttf
+  Copyright (c) International Typeface Corporation 1997.
+  Portions Copyright (c) Microsoft Corporation 1997. All rights reserved.
+  Proprietary font, redistribution not permitted. NOT covered by LICENSE and
+  not licensed for reuse. Replace it before redistributing this repository.
+
+
+Images
+------
+
+"Aged paper parchment sheet for writing" by zikku.creative, via Vecteezy
+  Files: src/assets/inner/images/bg.jpg
+         src/assets/inner/images/bg_original.jpg
+         also embedded as base64 in src/assets/inner/inner.svg
+         and src/assets/outer/outer.svg
+  Vecteezy License -- https://www.vecteezy.com/licensing
+  https://www.vecteezy.com/-/49346576-aged-paper-parchment-sheet-for-writing
+  Attribution required; the asset may not be redistributed on its own or
+  sublicensed. NOT covered by LICENSE.
+
+
+Dependencies
+------------
+
+npm dependencies are not vendored in this repository; each keeps its own
+license, declared in package-lock.json.
