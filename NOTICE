@@ -16,11 +16,12 @@ DM Serif Display, Courier Prime
   https://fonts.google.com/specimen/DM+Serif+Display
   https://fonts.google.com/specimen/Courier+Prime
 
-Edwardian Script ITC -- src/assets/fonts/EdwardianScriptITC.ttf
-  Copyright (c) International Typeface Corporation 1997.
-  Portions Copyright (c) Microsoft Corporation 1997. All rights reserved.
-  Proprietary font, redistribution not permitted. NOT covered by LICENSE and
-  not licensed for reuse. Replace it before redistributing this repository.
+Corinthia -- src/assets/fonts/Corinthia.woff2
+  Copyright 2010 The Corinthia Project Authors
+  (https://github.com/googlefonts/corinthia).
+  SIL Open Font License 1.1 -- full text in src/assets/fonts/OFL.txt
+  Redistributed here in WOFF2 format, converted from the TTF served by Google
+  Fonts. Not modified otherwise.
 
 
 Images
