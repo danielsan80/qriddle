@@ -10,18 +10,25 @@ those terms separately, or replace the material.
 Fonts
 -----
 
-DM Serif Display, Courier Prime
-  Loaded at runtime from Google Fonts (src/index.css), not redistributed here.
-  SIL Open Font License 1.1.
-  https://fonts.google.com/specimen/DM+Serif+Display
-  https://fonts.google.com/specimen/Courier+Prime
+All fonts are self-hosted in src/assets/fonts/ and self-hosting is the only
+change made to them: each was converted from the TTF served by Google Fonts to
+WOFF2, with no other modification. The SIL Open Font License 1.1 applies to all
+three; the full text accompanies each font in the same directory.
 
-Corinthia -- src/assets/fonts/Corinthia.woff2
+Corinthia -- Corinthia.woff2
   Copyright 2010 The Corinthia Project Authors
   (https://github.com/googlefonts/corinthia).
-  SIL Open Font License 1.1 -- full text in src/assets/fonts/OFL.txt
-  Redistributed here in WOFF2 format, converted from the TTF served by Google
-  Fonts. Not modified otherwise.
+  License: src/assets/fonts/Corinthia-OFL.txt
+
+Courier Prime -- CourierPrime-Regular.woff2, CourierPrime-Bold.woff2
+  Copyright 2015 The Courier Prime Project Authors
+  (https://github.com/quoteunquoteapps/CourierPrime).
+  License: src/assets/fonts/CourierPrime-OFL.txt
+
+DM Serif Display -- DMSerifDisplay-Regular.woff2
+  Copyright 2014-2018 Adobe (http://www.adobe.com/), with Reserved Font Name
+  'Source'. Copyright 2019 Google LLC.
+  License: src/assets/fonts/DMSerifDisplay-OFL.txt
 
 
 Images
