@@ -52,10 +52,31 @@ EDGE_REACH = 0.10
 
 # Size of the folds, as the finest detail their noise is allowed to carry, in
 # pixels. This is the knob for how big the creases come out: raise it for long
-# sweeping folds, lower it for a fine crumpled web. The hairline cracks over
-# the whole surface have their own, finer setting.
-FOLD_SIZE_PX = 5
-HAIRLINE_SIZE_PX = 3.0
+# sweeping folds, lower it for a fine crumpled web. It also widens the band of
+# light and shade across each fold, since that is measured over a fraction of
+# this. The hairline cracks over the whole surface have their own setting.
+FOLD_SIZE_PX = 3.0
+HAIRLINE_SIZE_PX = 5.0
+
+# How high the folds stand: the gain on the light running across their flanks.
+# Size decides how wide the shading is, this decides how deep.
+FOLD_HEIGHT = 0.22
+HAIRLINE_HEIGHT = 0.05
+
+# Fraction of a fold's size the light samples across to find its slope.
+SLOPE_SPAN = 0.6
+
+# How thin each crease is drawn. Higher leaves a sharp line, lower swells it
+# into a ridge, and too low turns the folds into blisters.
+FOLD_SHARPNESS = 5.0
+
+# How much detail each layer keeps at every finer octave. High values branch a
+# crease into smaller ones and those into smaller ones again, which is what
+# makes a surface read as a fractal rather than as paper. Lower values leave
+# each line whole. This does not change the number of octaves, so it is the one
+# knob here that can be turned without reshuffling the sheet.
+FOLD_ROUGHNESS = 0.62
+HAIRLINE_ROUGHNESS = 0.45
 
 # Every so often the shading runs further in than that, as a tongue rather than
 # a wider frame. This is the multiplier those tongues reach at their deepest;
@@ -135,24 +156,32 @@ def creases(
     sharpness: float,
     finest_cell_px: float = FINEST_CELL_PX,
     stretch: float = 1.0,
+    roughness: float = 0.62,
 ) -> np.ndarray:
     """Fold lines: noise folded around its midpoint creases where it crosses
     the midpoint, and raising that to a power narrows the creases to lines.
 
     A crease appears at every crossing, so it is `finest_cell_px` -- not
     `cells` -- that decides how big the folds come out: the finest octave sets
-    how often the field crosses the midpoint.
+    how often the field crosses the midpoint. `roughness` decides whether each
+    crease stays one line or branches into smaller ones.
     """
     folded = 1.0 - np.abs(
-        2.0 * fbm(rng, cells, finest_cell_px, falloff=0.62, stretch=stretch) - 1.0
+        2.0 * fbm(rng, cells, finest_cell_px, falloff=roughness, stretch=stretch) - 1.0
     )
     return folded**sharpness
 
 
-def relief(field: np.ndarray, strength: float) -> np.ndarray:
+def relief(field: np.ndarray, strength: float, offset_px: float = 1.0) -> np.ndarray:
     """Light a field from the top left, so every ridge in it gets a bright side
-    and a shaded one. Without this a crease reads as a stain, not as a fold."""
-    lit = np.roll(np.roll(field, -1, axis=0), -1, axis=1)
+    and a shaded one. Without this a crease reads as a stain, not as a fold.
+
+    The slope is measured across `offset_px`, which has to grow with the
+    feature: a wide fold has a wide flank, and sampling it one pixel apart
+    leaves a hairline of shading however big the fold itself is.
+    """
+    offset = max(1, round(offset_px))
+    lit = np.roll(np.roll(field, -offset, axis=0), -offset, axis=1)
     return strength * (lit - field)
 
 
@@ -235,12 +264,25 @@ def generate() -> Image.Image:
     # Creases at two scales: long folds running down the sheet, then a sparse
     # web of hairline cracks over all of it. Both are lit rather than merely
     # darkened, so they sit in the surface instead of on top of it.
-    folds = creases(rng, cells=3, sharpness=7.0, finest_cell_px=FOLD_SIZE_PX, stretch=0.4)
-    luminance += relief(folds, strength=0.22)
+    folds = creases(
+        rng,
+        cells=3,
+        sharpness=FOLD_SHARPNESS,
+        finest_cell_px=FOLD_SIZE_PX,
+        stretch=0.4,
+        roughness=FOLD_ROUGHNESS,
+    )
+    luminance += relief(folds, FOLD_HEIGHT, FOLD_SIZE_PX * SLOPE_SPAN)
     luminance -= 0.055 * folds
 
-    hairlines = creases(rng, cells=7, sharpness=18.0, finest_cell_px=HAIRLINE_SIZE_PX)
-    luminance += relief(hairlines, strength=0.10)
+    hairlines = creases(
+        rng,
+        cells=7,
+        sharpness=18.0,
+        finest_cell_px=HAIRLINE_SIZE_PX,
+        roughness=HAIRLINE_ROUGHNESS,
+    )
+    luminance += relief(hairlines, HAIRLINE_HEIGHT, HAIRLINE_SIZE_PX * SLOPE_SPAN)
     luminance -= 0.030 * hairlines
 
     # A worn border, darkened rather than cut away. Three fields keep it from

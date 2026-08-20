@@ -28,5 +28,9 @@ Thumbs.db
 # Test coverage
 coverage
 
+# Python bytecode (tools/)
+__pycache__/
+*.py[cod]
+
 # Vite
 *.local
