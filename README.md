@@ -1,73 +1,86 @@
-# React + TypeScript + Vite
+# qriddle
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Hide a message inside a printable greeting card. The card opens into a treasure
+map, the map is a puzzle, and solving the puzzle draws a QR code that decodes back to
+your message.
 
-Currently, two official plugins are available:
+**Try it: [danilosanchi.net/qriddle](https://danilosanchi.net/qriddle/)**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<p>
+  <img src="src/assets/photos/front.webp" alt="The card, closed" width="24%">
+  <img src="src/assets/photos/center.webp" alt="The card, open on the message" width="24%">
+  <img src="src/assets/photos/map.webp" alt="The card, fully unfolded on the map" width="24%">
+  <img src="src/assets/photos/solve_puzzle.webp" alt="Solving the maze with a marker" width="24%">
+</p>
 
-## React Compiler
+## How the puzzle works
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Your message is encoded into a QR code, which is just a grid of black and white
+squares. Group the adjacent squares of the same colour and you get a set of
+monochrome areas.
 
-## Expanding the ESLint configuration
+Each area is then carved into a maze: start from all walls up, and dig a spanning
+tree through the area with a depth-first walk that is biased towards going
+straight. A spanning tree means every cell in the area is reachable from every
+other one, with exactly one route between them — no loops. The bias towards
+straight moves (`biasStraight` in `src/lib/config`) is what turns an even sprawl
+into long, winding corridors.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Since walls only ever fall between cells of the same colour, the corridors never
+cross the boundary between a black area and a white one. So a single dot placed
+in each black area is enough to define the whole solution: whatever you can reach
+from a dot without crossing a wall is black, everything else is white. Fill it in
+and the QR code appears.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+The corridors stay one cell wide, so the maze never opens into an ambiguous blob
+and the player always has a path to follow rather than a region to shade.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+The maze is generated from a seed, and the seed lives in the URL along with the
+rest of the card — so a card is a link, and the same link always produces the
+same maze.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+## Running it
+
+```sh
+npm install
+npm run dev      # http://localhost:5173
+npm run check    # format + lint + typecheck + tests
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Requires Node 20+. There is no backend: everything — QR encoding, maze
+generation, PDF composition — happens in the browser.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
+## How the code is laid out
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
 ```
+src/lib/domain/image     Coord, Direction, Image — the QR grid as a value object
+src/lib/domain/puzzle    Areas, edges, dots, and the maze carving (path.ts)
+src/lib/render           Canvas rendering and the two-page A4 PDF
+src/lib/browser          Card state serialised into the URL hash (lz-string)
+src/views                One view per step of the wizard
+src/components           Layout, navigation, canvas stages, the SVG text editor
+```
+
+The domain layer under `src/lib/domain` has no React and no DOM in it, which is
+why it carries most of the test suite.
+
+The card itself is an SVG spread — `src/assets/outer` for the printed outside,
+`src/assets/inner` for the inside — composed with the puzzle and the handwritten
+text into a two-page A4 PDF you print double-sided and fold.
+
+## Built with
+
+React 19, TypeScript, Vite, Vitest, plus `qrcode` for encoding, `jspdf` for the
+printable output and `lz-string` to squeeze the card state into a URL.
+
+Deployed to GitHub Pages on every push to `master`
+(`.github/workflows/deploy.yml`).
+
+## License
+
+[CC BY-NC-SA 4.0](LICENSE) — use it, read it, copy it, modify it, but not
+commercially without asking me first.
+
+Some material in this repository is not mine and is not covered by that license:
+see [NOTICE](NOTICE) for the fonts and the parchment texture.
