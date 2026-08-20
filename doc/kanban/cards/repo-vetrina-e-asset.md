@@ -6,31 +6,28 @@ restano aperti questi punti.
 
 ## Asset di terzi ancora nel repo
 
-- ~~**`src/assets/fonts/EdwardianScriptITC.ttf`**~~ — fatto: sostituito da
-  Corinthia (OFL), self-hostato. Anche DM Serif Display e Courier Prime non
-  arrivano più da Google Fonts. Pinyon Script era il finalista alternativo,
-  recuperabile da `3a0be78`.
-- **`src/assets/inner/images/bg.jpg`** e **`bg_original.jpg`** — texture pergamena
-  di zikku.creative da Vecteezy. La Vecteezy License chiede attribuzione e vieta
-  di ridistribuire l'asset da solo o di sublicenziarlo. Alternative libere:
-  texture CC0 da Unsplash/Pexels, oppure generarla in GIMP/procedurale.
-  Lo stesso JPEG è embeddato in base64 dentro `inner.svg` e `outer.svg`: vanno
-  rigenerati insieme al file.
+Nessuno: la sezione è chiusa.
 
-Finché lo sfondo resta, il `NOTICE` lo esclude dalla licenza del repo: chi clona
-non può riusarlo. È l'ultimo asset di terzi rimasto.
+- ~~**`src/assets/fonts/EdwardianScriptITC.ttf`**~~ — sostituito da Corinthia
+  (OFL), self-hostato. Anche DM Serif Display e Courier Prime non arrivano più
+  da Google Fonts. Pinyon Script era il finalista alternativo, recuperabile da
+  `3a0be78`.
+- ~~**`src/assets/inner/images/bg.jpg`**~~ — la pergamena di Vecteezy è
+  sostituita da una texture generata da `tools/generate-parchment.py`, che
+  scrive il JPEG e riscrive il base64 dentro `inner.svg` e `outer.svg` così i
+  tre non divergono. `bg_original.jpg` è cancellato.
 
-Le icone (`compass.png`, `palm.png`, `ship.png`, `vulcan.png`,
-`doc/data/map-icons.svg`) sono opera originale: nessun vincolo, coperte dalla
-licenza del repo. Verificato con l'autore, non serve rifarle.
+Il `NOTICE` ora dichiara che tutte le immagini sono opera originale. Le icone
+(`compass.png`, `palm.png`, `ship.png`, `vulcan.png`, `doc/data/map-icons.svg`)
+lo erano già: verificato con l'autore, non serve rifarle.
 
 ## Presentazione
 
-- **`README.md` è ancora il boilerplate di Vite.** È la prima cosa che si legge
-  arrivando sul repo e non dice nulla di qriddle. Riscriverlo: cos'è, screenshot,
-  link a https://danilosanchi.net/qriddle/, come funziona l'algoritmo, come
-  girarlo in locale, licenza.
-- **`package.json` si chiama ancora `vite-temp`.** Rinominare in `qriddle`.
+- ~~**`README.md` è ancora il boilerplate di Vite.**~~ — riscritto: cos'è, foto
+  del biglietto, link al sito, come funziona l'algoritmo, come girarlo,
+  licenza.
+- ~~**`package.json` si chiama ancora `vite-temp`.**~~ — rinominato in
+  `qriddle`.
 - **`doc/tmp/`** contiene materiale di scarto (webp di lavorazione, il prototipo
   `qr-puzzle-generator-fixed.html`). Decidere se archiviarlo o toglierlo dal repo.
 
