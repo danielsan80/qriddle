@@ -6,11 +6,10 @@ restano aperti questi punti.
 
 ## Asset di terzi ancora nel repo
 
-- **`src/assets/fonts/EdwardianScriptITC.ttf`** — font proprietario ITC/Microsoft
-  1997, "All rights reserved". È servito pubblicamente dal sito via `@font-face`
-  in `src/index.css:4`, quindi lo stiamo ridistribuendo. Sostituirlo con un
-  corsivo inglese sotto OFL (candidati: Great Vibes, Tangerine, Pinyon Script,
-  Mrs Saint Delafield) e togliere il file.
+- ~~**`src/assets/fonts/EdwardianScriptITC.ttf`**~~ — fatto: sostituito da
+  Corinthia (OFL), self-hostato. Anche DM Serif Display e Courier Prime non
+  arrivano più da Google Fonts. Pinyon Script era il finalista alternativo,
+  recuperabile da `3a0be78`.
 - **`src/assets/inner/images/bg.jpg`** e **`bg_original.jpg`** — texture pergamena
   di zikku.creative da Vecteezy. La Vecteezy License chiede attribuzione e vieta
   di ridistribuire l'asset da solo o di sublicenziarlo. Alternative libere:
@@ -18,8 +17,8 @@ restano aperti questi punti.
   Lo stesso JPEG è embeddato in base64 dentro `inner.svg` e `outer.svg`: vanno
   rigenerati insieme al file.
 
-Finché questi due restano, il `NOTICE` li esclude dalla licenza del repo: chi
-clona non può riusarli.
+Finché lo sfondo resta, il `NOTICE` lo esclude dalla licenza del repo: chi clona
+non può riusarlo. È l'ultimo asset di terzi rimasto.
 
 Le icone (`compass.png`, `palm.png`, `ship.png`, `vulcan.png`,
 `doc/data/map-icons.svg`) sono opera originale: nessun vincolo, coperte dalla
@@ -70,6 +69,6 @@ rischioso.
 
 ## Nota tecnica emersa
 
-`src/index.css:1` importa DM Serif Display e Courier Prime da Google Fonts: OK
-come licenza (OFL), ma è una richiesta a un dominio terzo a ogni caricamento.
-Valutare se self-hostare i font, anche per privacy/GDPR.
+~~Self-hostare i font caricati da Google Fonts~~ — fatto: tutti i font sono in
+`src/assets/fonts/` in WOFF2, con il testo OFL accanto a ciascuno. Resta una
+richiesta a terzi: lo script di Umami (`cloud.umami.is`) in `index.html:73`.
