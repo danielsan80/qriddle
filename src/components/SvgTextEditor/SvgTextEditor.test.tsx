@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SvgTextEditor, type TextBox } from './SvgTextEditor';
@@ -11,7 +12,12 @@ const SCALE = 2;
 function stubSvgGeometry() {
   // a and d are the horizontal and vertical scale of the affine matrix; the
   // editor reads no other field.
-  const matrix = { a: SCALE, d: SCALE } as DOMMatrix;
+  const matrix = {
+    a: SCALE,
+    d: SCALE,
+    // Screen pixels back to viewBox units, for the click that creates a box.
+    inverse: () => ({ a: 1 / SCALE, d: 1 / SCALE }) as DOMMatrix,
+  } as DOMMatrix;
   SVGSVGElement.prototype.getScreenCTM = () => matrix;
   SVGSVGElement.prototype.createSVGPoint = function createSVGPoint() {
     return {
@@ -83,5 +89,131 @@ describe('SvgTextEditor drag threshold', () => {
 
     fireEvent.mouseUp(window);
     expect(document.body.style.cursor).toBe('');
+  });
+});
+
+// The views own the boxes and feed them back in as a prop, so a stateful parent
+// is what the editor actually runs against.
+function Harness({ initial }: { initial: TextBox[] }) {
+  const [boxes, setBoxes] = useState(initial);
+  return (
+    <>
+      <SvgTextEditor
+        viewBox="0 0 100 100"
+        textBoxes={boxes}
+        onTextBoxesChange={setBoxes}
+      />
+      <output data-testid="boxes">{JSON.stringify(boxes)}</output>
+    </>
+  );
+}
+
+function renderHarness(initial: TextBox[] = []) {
+  vi.spyOn(crypto, 'randomUUID').mockReturnValue(
+    'box-1' as ReturnType<typeof crypto.randomUUID>,
+  );
+  const { container } = render(<Harness initial={initial} />);
+  return {
+    svg: container.querySelector('svg')!,
+    boxes: () =>
+      JSON.parse(screen.getByTestId('boxes').textContent!) as TextBox[],
+  };
+}
+
+// A press and release with no travel: the click path of the drag handler.
+function openEditorOn(element: Element) {
+  fireEvent.mouseDown(element, { clientX: 100, clientY: 100 });
+  fireEvent.mouseUp(window);
+}
+
+describe('SvgTextEditor box lifecycle', () => {
+  beforeEach(stubSvgGeometry);
+
+  it('creates an empty box where the click lands and opens its editor', () => {
+    const { svg, boxes } = renderHarness();
+
+    fireEvent.click(svg, { clientX: 60, clientY: 40 });
+
+    expect(boxes()).toEqual([
+      { id: 'box-1', x: 60 / SCALE, y: 40 / SCALE, text: '', fontSize: 8 },
+    ]);
+    expect(screen.getByRole('textbox')).toHaveValue('');
+  });
+
+  it('creates nothing when the click lands on an existing box', () => {
+    const { boxes } = renderHarness([box]);
+
+    fireEvent.click(screen.getByText('ciao'));
+
+    expect(boxes()).toEqual([box]);
+  });
+
+  it('discards a box that is still empty when its editor closes', () => {
+    const { svg, boxes } = renderHarness();
+    fireEvent.click(svg, { clientX: 60, clientY: 40 });
+
+    fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' });
+
+    expect(boxes()).toEqual([]);
+  });
+
+  // Escape closes the editor exactly like Enter: the text typed so far is kept,
+  // not rolled back. Both keys are pinned so a future Escape-cancels change is
+  // a deliberate one.
+  it.each(['Enter', 'Escape'])(
+    'closes the editor on %s, keeping the text that was typed',
+    (key) => {
+      const { svg, boxes } = renderHarness();
+      fireEvent.click(svg, { clientX: 60, clientY: 40 });
+
+      fireEvent.change(screen.getByRole('textbox'), {
+        target: { value: 'auguri' },
+      });
+      fireEvent.keyDown(screen.getByRole('textbox'), { key });
+
+      expect(boxes()).toEqual([
+        {
+          id: 'box-1',
+          x: 60 / SCALE,
+          y: 40 / SCALE,
+          text: 'auguri',
+          fontSize: 8,
+        },
+      ]);
+      expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    },
+  );
+
+  it('removes the box from the delete button', () => {
+    const { boxes } = renderHarness([box]);
+    openEditorOn(screen.getByText('ciao'));
+
+    fireEvent.click(screen.getByRole('button', { name: '×' }));
+
+    expect(boxes()).toEqual([]);
+  });
+
+  it('grows the font one step at a time and stops at 24', () => {
+    const { boxes } = renderHarness([{ ...box, fontSize: 23 }]);
+    openEditorOn(screen.getByText('ciao'));
+    const grow = screen.getByRole('button', { name: '+' });
+
+    fireEvent.click(grow);
+    expect(boxes()).toEqual([{ ...box, fontSize: 24 }]);
+
+    fireEvent.click(grow);
+    expect(boxes()).toEqual([{ ...box, fontSize: 24 }]);
+  });
+
+  it('shrinks the font one step at a time and stops at 3', () => {
+    const { boxes } = renderHarness([{ ...box, fontSize: 4 }]);
+    openEditorOn(screen.getByText('ciao'));
+    const shrink = screen.getByRole('button', { name: '−' });
+
+    fireEvent.click(shrink);
+    expect(boxes()).toEqual([{ ...box, fontSize: 3 }]);
+
+    fireEvent.click(shrink);
+    expect(boxes()).toEqual([{ ...box, fontSize: 3 }]);
   });
 });
