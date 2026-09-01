@@ -61,7 +61,7 @@ Separazione in componenti: `CanvasStage`, `QrcodeCanvas`, `PreviewCanvas`, `Pane
 
 ### Riorganizzare src/lib con macro-cartelle di contesto (domain, render, config, util)
 
-## Infrastruttura
+## Tech
 
 ### Creare repo GitHub pubblico
 
