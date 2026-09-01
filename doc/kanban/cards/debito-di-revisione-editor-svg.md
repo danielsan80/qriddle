@@ -26,8 +26,26 @@ Non è coperto niente di quello che l'editor fa davvero:
 - tutto l'overlay di editing e la sua toolbar (270-343).
 
 L'indiretto quindi non basta: i test attuali dimostrano che il componente si monta, non
-che funziona. Da qui il debito di verifica è quantificato — e la lettura guidata resta
-comunque da fare, perché i due debiti sono distinti.
+che funziona. Correzione allo stato rilevato sopra: `FrontView.test.tsx` non lo esercita
+affatto, lo sostituisce con `vi.mock`, e `useOuterTextBoxes.test.ts` ne importa solo il
+tipo `TextBox`. Quel 27% arriva tutto da `StepView.test.tsx`, che rende per davvero
+`CenterView`, `BackView` e `DownloadView`.
+
+## Fatto
+
+- **Soglia di drag** (2026-09-01, `SvgTextEditor.test.tsx`): tre test sul confine fra
+  click e trascinamento — a 4px di spostamento è un click e apre l'editor senza muovere
+  la casella, a 5px è un drag, sposta la casella dividendo per la scala della CTM e non
+  apre l'editor; più il cursore `grabbing` messo e rimesso a posto. Verificato che hanno
+  presa: portando `DRAG_THRESHOLD` da 4 a 40 ne falliscono due.
+  Copertura del componente **27,55% → 59,05%** statement, 14,28% → 46,03% branch,
+  16,66% → 42,85% funzioni.
+
+Restano scoperti `handleSvgClick`, l'overlay di editing con la sua toolbar
+(`handleTextChange`, `handleFontSize`, `handleDelete`), `stopEditing` col flag
+`justClosedRef`, e `onWheel`.
+
+La lettura guidata del componente resta da fare: i due debiti sono distinti.
 
 Ripagare significa due cose distinte:
 
