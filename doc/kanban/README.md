@@ -18,6 +18,10 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [Rivedere il tipo `Face` in `CardFaceNav`](cards/tipo-face-cardfacenav.md)
 - [\[Spike\] Download SVG modificabile](cards/spike-download-svg-modificabile.md)
 
+### Refactoring
+
+- [Debito di revisione: policy e copertura dell'editor SVG](cards/debito-di-revisione-editor-svg.md)
+
 ### Infrastruttura
 
 - [Linkare il progetto dalla GitHub Pages principale (sezione "Lab")](cards/link-github-pages-lab.md)
