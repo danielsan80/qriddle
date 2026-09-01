@@ -10,6 +10,10 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 ## BACKLOG
 
+### Bug
+
+- [Escape non annulla la modifica del testo](cards/escape-non-annulla-la-modifica.md)
+
 ### Refactoring
 
 - [Debito di revisione: policy e copertura dell'editor SVG](cards/debito-di-revisione-editor-svg.md)
