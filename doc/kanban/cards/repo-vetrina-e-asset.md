@@ -28,8 +28,11 @@ lo erano già: verificato con l'autore, non serve rifarle.
   licenza.
 - ~~**`package.json` si chiama ancora `vite-temp`.**~~ — rinominato in
   `qriddle`.
-- **`doc/tmp/`** contiene materiale di scarto (webp di lavorazione, il prototipo
-  `qr-puzzle-generator-fixed.html`). Decidere se archiviarlo o toglierlo dal repo.
+- ~~**`doc/tmp/`** contiene materiale di scarto.~~ — sciolta. I quattro webp
+  erano copie byte per byte di `src/assets/photos/`, cancellati. Il prototipo è
+  diventato `doc/prototype/`, con un README che dice cos'è e cosa è cambiato
+  dell'algoritmo. Carica ancora `qrcode.js` da CDN e i font da Google, ma è
+  materiale d'archivio: non viene servito né buildato.
 
 ## Dove vivono `.claude/` e il kanban
 
