@@ -4,7 +4,13 @@
       "Bash(npm run check)",
       "Bash(npm run check:*)",
       "Bash(npx prettier *)",
-      "Bash(npx vitest *)"
+      "Bash(npx vitest *)",
+      "Bash(npm run lint)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run test)",
+      "Bash(npm run test *)",
+      "Bash(npm run format:check)",
+      "Bash(identify *)"
     ],
     "deny": [
       "Bash(git push *--force*)",
