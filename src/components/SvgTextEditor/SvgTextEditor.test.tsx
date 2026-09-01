@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { SvgTextEditor, type TextBox } from './SvgTextEditor';
+
+afterEach(() => vi.restoreAllMocks());
 
 // jsdom implements no SVG geometry, so the two calls the editor makes on the
 // <svg> element are stubbed with a 2x scale: one SVG unit is two screen pixels.
@@ -60,7 +62,7 @@ describe('SvgTextEditor drag threshold', () => {
     fireEvent.mouseUp(window);
 
     expect(onTextBoxesChange.mock.calls).toEqual([]);
-    expect(screen.getByDisplayValue('ciao')).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toHaveValue('ciao');
   });
 
   it('moves the box and opens no editor once the pointer passes the threshold', () => {
@@ -74,7 +76,7 @@ describe('SvgTextEditor drag threshold', () => {
     expect(onTextBoxesChange.mock.calls).toEqual([
       [[{ ...box, x: 10 + 3 / SCALE, y: 20 + 2 / SCALE }]],
     ]);
-    expect(screen.queryByDisplayValue('ciao')).not.toBeInTheDocument();
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
   });
 
   it('leaves the body cursor untouched on a click and restores it after a drag', () => {
@@ -215,5 +217,132 @@ describe('SvgTextEditor box lifecycle', () => {
 
     fireEvent.click(shrink);
     expect(boxes()).toEqual([{ ...box, fontSize: 3 }]);
+  });
+});
+
+describe('SvgTextEditor closing by blur', () => {
+  beforeEach(stubSvgGeometry);
+
+  it('closes the editor and swallows the click that caused the blur', () => {
+    const { svg, boxes } = renderHarness([box]);
+    openEditorOn(screen.getByText('ciao'));
+
+    // One physical gesture, pressing outside the input, reaches the page as a
+    // sequence: the browser moves the focus and fires blur, then fires click on
+    // whatever was under the pointer. jsdom moves no focus on its own, so the
+    // two halves are fired by hand, in that order. The test therefore proves
+    // the editor handles the sequence, not that a browser produces it.
+    fireEvent.blur(screen.getByRole('textbox'));
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+
+    // Without the guard this second half would open a box under the pointer.
+    fireEvent.click(svg, { clientX: 60, clientY: 40 });
+    expect(boxes()).toEqual([box]);
+
+    // The guard lasts one click only.
+    fireEvent.click(svg, { clientX: 60, clientY: 40 });
+    expect(boxes()).toEqual([
+      box,
+      { id: 'box-1', x: 60 / SCALE, y: 40 / SCALE, text: '', fontSize: 8 },
+    ]);
+  });
+
+  it('closes the editor when another box is grabbed', () => {
+    const second: TextBox = { ...box, id: 'b', text: 'auguri', x: 40 };
+    renderHarness([box, second]);
+    openEditorOn(screen.getByText('ciao'));
+
+    fireEvent.mouseDown(screen.getByText('auguri'), {
+      clientX: 100,
+      clientY: 100,
+    });
+
+    // Only the overlay is gone; both boxes are still drawn in the svg.
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    expect(screen.getByText('ciao')).toBeInTheDocument();
+  });
+
+  // Every toolbar button carries the same guard, so every one of them is
+  // checked. jsdom moves no focus on mousedown, so the guard is asserted
+  // directly: fireEvent returns false when the handler called preventDefault,
+  // which is what stops a browser from blurring the input and closing the
+  // overlay before the button's own click can run.
+  it.each(['−', '+', '×'])(
+    'keeps the input alive when the %s button is pressed',
+    (name) => {
+      renderHarness([box]);
+      openEditorOn(screen.getByText('ciao'));
+
+      const pressed = fireEvent.mouseDown(screen.getByRole('button', { name }));
+
+      expect(pressed).toBe(false);
+    },
+  );
+});
+
+// Zoom runs between a floor of 100px, hard-coded in the editor, and a ceiling:
+// the width of the <div> wrapping the svg, since the sheet is never drawn wider
+// than what holds it. The two numbers below are arbitrary; what the tests need
+// is that the starting width sits strictly between the floor and the ceiling,
+// so the wheel has somewhere to go in both directions before it hits a limit.
+const FLOOR_WIDTH = 100;
+const CONTAINER_WIDTH = 500;
+const INITIAL_WIDTH = 200;
+
+describe('SvgTextEditor zoom', () => {
+  beforeEach(() => {
+    stubSvgGeometry();
+    // jsdom lays nothing out, so both widths read 0 until they are stubbed.
+    vi.spyOn(HTMLDivElement.prototype, 'getBoundingClientRect').mockReturnValue(
+      { width: CONTAINER_WIDTH, left: 0, top: 0 } as DOMRect,
+    );
+    vi.spyOn(SVGSVGElement.prototype, 'getBoundingClientRect').mockReturnValue({
+      width: INITIAL_WIDTH,
+      left: 0,
+      top: 0,
+    } as DOMRect);
+  });
+
+  it('grows the svg on a wheel up and shrinks it on a wheel down', () => {
+    const { svg } = renderHarness([box]);
+
+    fireEvent.wheel(svg, { deltaY: -1 });
+    expect(parseFloat(svg.style.width)).toBeCloseTo(INITIAL_WIDTH * 1.1, 5);
+
+    fireEvent.wheel(svg, { deltaY: 1 });
+    expect(parseFloat(svg.style.width)).toBeCloseTo(INITIAL_WIDTH, 5);
+  });
+
+  it('never shrinks below the floor nor grows past the container', () => {
+    const { svg } = renderHarness([box]);
+
+    for (let step = 0; step < 20; step++) {
+      fireEvent.wheel(svg, { deltaY: 1 });
+    }
+    expect(svg.style.width).toBe(`${FLOOR_WIDTH}px`);
+
+    for (let step = 0; step < 40; step++) {
+      fireEvent.wheel(svg, { deltaY: -1 });
+    }
+    expect(svg.style.width).toBe(`${CONTAINER_WIDTH}px`);
+  });
+});
+
+describe('SvgTextEditor without a parent holding the boxes', () => {
+  beforeEach(stubSvgGeometry);
+
+  it('keeps the boxes in its own state', () => {
+    const { container } = render(<SvgTextEditor viewBox="0 0 100 100" />);
+    const svg = container.querySelector('svg')!;
+    expect(screen.getByText('Click to add text')).toBeInTheDocument();
+
+    fireEvent.click(svg, { clientX: 60, clientY: 40 });
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: 'auguri' },
+    });
+    fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' });
+
+    expect(screen.getByText('auguri')).toBeInTheDocument();
+    expect(screen.queryByText('Click to add text')).not.toBeInTheDocument();
   });
 });
