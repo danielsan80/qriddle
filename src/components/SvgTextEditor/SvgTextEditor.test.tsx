@@ -38,14 +38,14 @@ const box: TextBox = { id: 'a', x: 10, y: 20, text: 'ciao', fontSize: 8 };
 
 function renderEditor() {
   const onTextBoxesChange = vi.fn();
-  render(
+  const { unmount } = render(
     <SvgTextEditor
       viewBox="0 0 100 100"
       textBoxes={[box]}
       onTextBoxesChange={onTextBoxesChange}
     />,
   );
-  return { onTextBoxesChange, text: screen.getByText('ciao') };
+  return { onTextBoxesChange, text: screen.getByText('ciao'), unmount };
 }
 
 describe('SvgTextEditor drag threshold', () => {
@@ -91,6 +91,23 @@ describe('SvgTextEditor drag threshold', () => {
 
     fireEvent.mouseUp(window);
     expect(document.body.style.cursor).toBe('');
+  });
+
+  // Both properties are written on the body, which outlives the editor, so
+  // unmounting mid-drag has to hand them back: no mouseup will ever arrive to
+  // do it.
+  it('restores the body styles when it unmounts during a drag', () => {
+    const { text, unmount } = renderEditor();
+
+    fireEvent.mouseDown(text, { clientX: 100, clientY: 100 });
+    fireEvent.mouseMove(window, { clientX: 103, clientY: 102 });
+
+    unmount();
+
+    expect({
+      cursor: document.body.style.cursor,
+      userSelect: document.body.style.userSelect,
+    }).toEqual({ cursor: '', userSelect: '' });
   });
 });
 
@@ -325,6 +342,19 @@ describe('SvgTextEditor zoom', () => {
       fireEvent.wheel(svg, { deltaY: -1 });
     }
     expect(svg.style.width).toBe(`${CONTAINER_WIDTH}px`);
+  });
+
+  // A sideways wheel — a tilt wheel, a trackpad, shift+wheel — carries deltaY
+  // zero. It is not a zoom in either direction, and it must stay a scroll:
+  // fireEvent returns false when the handler called preventDefault.
+  it('ignores a sideways wheel instead of zooming on it', () => {
+    const { svg } = renderHarness([box]);
+
+    const scrolled = fireEvent.wheel(svg, { deltaY: 0, deltaX: 10 });
+
+    // Untouched: the editor never set a width, so the CSS one still applies.
+    expect(svg.style.width).toBe('');
+    expect(scrolled).toBe(true);
   });
 });
 

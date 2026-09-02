@@ -101,6 +101,8 @@ export function SvgTextEditor({
     const svgEl = svgRef.current!;
 
     function onWheel(event: WheelEvent) {
+      // A sideways wheel carries deltaY zero: not a zoom, and left to scroll.
+      if (event.deltaY === 0) return;
       event.preventDefault();
       const factor = event.deltaY > 0 ? 1 / 1.1 : 1.1;
       const current = widthPxRef.current ?? svgEl.getBoundingClientRect().width;
@@ -115,6 +117,13 @@ export function SvgTextEditor({
   const placeholderY = vbY + vbH / 2;
 
   useEffect(() => {
+    // Set on the body, which outlives this component, so every way out of a
+    // drag has to hand them back.
+    function releaseBodyStyles() {
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+
     function onMouseMove(event: MouseEvent) {
       const drag = dragRef.current;
       if (!drag) return;
@@ -148,8 +157,7 @@ export function SvgTextEditor({
       const drag = dragRef.current;
       if (!drag) return;
       dragRef.current = null;
-      document.body.style.cursor = '';
-      document.body.style.userSelect = '';
+      releaseBodyStyles();
 
       if (!drag.moved) {
         // Treat as click: open editor
@@ -171,6 +179,8 @@ export function SvgTextEditor({
     return () => {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
+      // Unmounting mid-drag: no mouseup will ever arrive to clean up.
+      if (dragRef.current) releaseBodyStyles();
     };
   }, []);
 

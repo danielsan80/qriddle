@@ -82,18 +82,28 @@ Entrambe le regole hanno prodotto una card: la prima
 [L'overlay non segue lo zoom](overlay-non-segue-lo-zoom.md), la seconda
 [Un click perso dopo aver chiuso l'editor](click-perso-dopo-blur-editor.md).
 
-### Anomalie minori, da correggere quando si passa di lì
+### Anomalie minori
 
-Tre righe di correzione ciascuna, nessuna merita una card a sé.
+Tre righe di correzione ciascuna, nessuna meritava una card a sé.
 
-- **`document.body.style` non viene ripristinato allo smontaggio.** Il trascinamento scrive
-  `cursor: grabbing` e `userSelect: none` sul body (127-128) e li ripulisce nel `mouseup`
-  (151-152), ma la pulizia dell'effetto (171-174) toglie solo i listener. Se il componente
-  si smonta a trascinamento in corso, la pagina resta con il cursore sbagliato e il testo
-  non selezionabile. Poco raggiungibile, ma è un effetto globale senza ripristino.
-- **Lo scorrimento orizzontale ingrandisce.** `event.deltaY > 0` (105) è falso anche per
-  `deltaY === 0`, quindi una rotella laterale o shift+rotella finisce nel ramo "ingrandisci"
-  — e il `preventDefault` le impedisce pure di scorrere.
+**Corrette il 2026-09-03**, con un test rosso prima e la correzione nello stesso commit,
+entrambi verificati per mutazione:
+
+- ~~**`document.body.style` non viene ripristinato allo smontaggio.**~~ Il trascinamento
+  scrive `cursor: grabbing` e `userSelect: none` sul body e li ripuliva solo nel `mouseup`;
+  la pulizia dell'effetto toglieva i soli listener, quindi smontandosi a trascinamento in
+  corso la pagina restava con il cursore sbagliato e il testo non selezionabile. Il
+  ripristino è ora in una funzione sola, chiamata dal `mouseup` e dalla pulizia.
+- ~~**Lo scorrimento orizzontale ingrandisce.**~~ `event.deltaY > 0` è falso anche per
+  `deltaY === 0`, quindi una rotella laterale o shift+rotella finiva nel ramo "ingrandisci",
+  e il `preventDefault` le impediva pure di scorrere. Ora quel caso esce subito, prima del
+  `preventDefault`.
+
+Nello stesso passaggio: `coverage` è finita fra i `globalIgnores` di eslint, che la
+analizzava pur essendo in `.gitignore`.
+
+Resta aperta:
+
 - **La prima rotellata congela la responsività.** Finché `widthPx` è `null` la larghezza
   viene da `.preview { width: 25% }` e segue il contenitore; al primo colpo di rotella lo
   stile in linea (263) la fissa in pixel per sempre. Il limite superiore è applicato solo
