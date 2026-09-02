@@ -19,7 +19,6 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 ### Refactoring
 
 - [Debito di revisione: policy e copertura dell'editor SVG](cards/debito-di-revisione-editor-svg.md)
-- [Chiarire l'API di `SvgTextEditor`: nome, prop obbligatorie, `face`](cards/api-svgtexteditor.md)
 - [Scomporre `SvgTextEditor` in comportamenti isolati](cards/scomporre-svgtexteditor.md)
 
 ### Feature
@@ -39,5 +38,7 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [Download SVG modificabile](cards/spike-download-svg-modificabile.md)
 
 ## DOING
+
+- [Chiarire l'API di `SvgTextEditor`: nome, prop obbligatorie, `face`](cards/api-svgtexteditor.md)
 
 ## DONE

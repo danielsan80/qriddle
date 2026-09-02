@@ -13,7 +13,7 @@ la dichiara.
 `SvgTextEditor` suona come un componente riusabile. Un nome che dica di cosa si occupa
 toglie l'ambiguità senza toccare una riga di logica.
 
-Candidato: **`CardFaceEditor`**. Sta accanto a `CardFaceNav`, che esiste già, e usa il
+Deciso (2026-09-03): **`CardFaceEditor`**. Sta accanto a `CardFaceNav`, che esiste già, e usa il
 vocabolario del dominio.
 
 Attenzione a una collisione che questa rinomina rende più visibile: nel progetto ci sono
@@ -102,3 +102,21 @@ nel tipo, controllando chi lo legge — `renderPdf.ts` e `DownloadView.tsx`.
 Prima questa card, che riduce la superficie, poi
 [Scomporre `SvgTextEditor`](scomporre-svgtexteditor.md), che lavora sull'interno: c'è meno
 roba da spostare.
+
+## Da dove ripartire
+
+In DOING dal 2026-09-03, non ancora cominciata: nessuna riga di codice toccata. I tre
+punti qui sopra sono separabili e vanno in tre commit distinti, in quest'ordine — dal più
+meccanico al più invasivo:
+
+1. **rinomina** in `CardFaceEditor` — cartella, file, componente, `index.ts`, e i punti che
+   lo importano: `FrontView`, `CenterView`, `BackView`, `FrontView.test.tsx`,
+   `SvgTextEditor.test.tsx`. Il tipo `TextBox` è importato anche da `renderPdf.ts`,
+   `DownloadView.tsx` e `useOuterTextBoxes.ts`: quelli seguono il cambio di percorso ma non
+   di nome.
+2. **prop obbligatorie** — via il ramo non controllato, e con esso il test
+   `without a parent holding the boxes`.
+3. **`face` al genitore** — il timbro passa a `useOuterTextBoxes.setFaceBoxes`, poi si
+   verifica se `TextBox.face` possa diventare obbligatorio.
+
+La rete è la suite: 126 test, tutti verdi prima di cominciare.
