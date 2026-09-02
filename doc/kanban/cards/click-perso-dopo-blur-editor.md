@@ -1,7 +1,7 @@
 # Un click sull'anteprima va perso dopo aver chiuso l'editor cliccando altrove
 
 Sintomo: si clicca sull'anteprima per creare una casella di testo e **non succede niente**.
-Si clicca una seconda volta e funziona.
+Si clicca una seconda volta e funziona. Dimostrato, non ipotizzato: vedi in fondo.
 
 Come riprodurlo:
 
@@ -56,18 +56,39 @@ Il criterio è quello: **la soppressione deve scadere con il gesto che l'ha rich
 `event.relatedTarget` del blur **non** aiuta: l'SVG non è focalizzabile, quindi arriva
 `null` sia quando il fuoco va lì sia quando va fuori pagina.
 
-## Test
+## Verificato (2026-09-03)
 
-Non è ancora dimostrato da un test — è dedotto leggendo. La prova è breve, in
-`SvgTextEditor.test.tsx` con l'infrastruttura già presente:
+Non è più una deduzione. Provato con un test usa e getta, poi cancellato: **si perde
+esattamente un click.** Con un solo click sull'SVG dopo il blur non nasce niente; con due,
+la casella nasce al secondo.
+
+Il metodo conta, perché il modo ovvio non dimostra niente. Non basta chiamare
+`fireEvent.blur(input)`: quell'evento è identico a quello che il browser emette quando il
+blur _è_ causato da un click sull'SVG, cioè il caso in cui la soppressione è corretta. Il
+test esistente `closes the editor and swallows the click that caused the blur` (righe
+226-248) fa già esattamente quella sequenza e ne legge il click mangiato come legittimo —
+**è la stessa sequenza, ed è il punto: il codice non ha modo di distinguere i due casi.**
+
+Per distinguerli serve spostare il fuoco davvero, su un elemento fuori dall'editor, così
+che jsdom emetta un blur genuino senza che nessun click raggiunga l'SVG:
 
 ```tsx
-const { svg, boxes } = renderHarness([box]);
-openEditorOn(svg.querySelector('text')!);
-fireEvent.blur(screen.getByRole('textbox')); // il fuoco se ne va, non sull'SVG
-fireEvent.click(svg, { clientX: 100, clientY: 100 });
-expect(boxes()).toEqual([box, { ...nuovaCasella }]); // oggi la nuova casella non c'è
+// nell'harness, accanto all'editor:
+<button type="button">altrove</button>;
+
+// nel test:
+openEditorOn(screen.getByText('ciao'));
+expect(document.activeElement).toBe(screen.getByRole('textbox')); // il fuoco c'è davvero
+act(() => screen.getByRole('button', { name: 'altrove' }).focus()); // blur vero
+fireEvent.click(svg, { clientX: 60, clientY: 40 }); // click legittimo, va perso
 ```
 
-Scriverlo **prima** di aprire la correzione: se la deduzione è sbagliata, questa card si
-chiude senza toccare niente.
+Due trappole incontrate costruendo la prova, da ricordare a chi scrive il test definitivo:
+
+- `element.focus()` va avvolto in `act()`, altrimenti React non scarica il render e
+  l'overlay sembra ancora aperto quando invece si è già chiuso;
+- l'asserzione su `document.activeElement` non è decorativa: senza, non si sta dimostrando
+  che il blur è reale e si ricade nel caso indistinguibile di sopra.
+
+Il test definitivo va scritto **al momento della correzione**, nel verso giusto: adesso
+sarebbe rosso, e un test rosso in suite non è la stessa cosa di un difetto documentato.
