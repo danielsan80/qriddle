@@ -13,10 +13,14 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 ### Bug
 
 - [Escape non annulla la modifica del testo](cards/escape-non-annulla-la-modifica.md)
+- [Un click sull'anteprima va perso dopo aver chiuso l'editor cliccando altrove](cards/click-perso-dopo-blur-editor.md)
+- [L'overlay di modifica non segue lo zoom](cards/overlay-non-segue-lo-zoom.md)
 
 ### Refactoring
 
 - [Debito di revisione: policy e copertura dell'editor SVG](cards/debito-di-revisione-editor-svg.md)
+- [Chiarire l'API di `SvgTextEditor`: nome, prop obbligatorie, `face`](cards/api-svgtexteditor.md)
+- [Scomporre `SvgTextEditor` in comportamenti isolati](cards/scomporre-svgtexteditor.md)
 
 ### Feature
 

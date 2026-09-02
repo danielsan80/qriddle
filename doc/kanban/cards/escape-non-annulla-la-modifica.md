@@ -40,6 +40,20 @@ Da decidere anche cosa fa il **blur**, che oggi chiude e tiene (con `suppressNex
 se Escape annulla, cliccare fuori è un salvataggio o un annullamento? Le due cose devono
 essere coerenti fra loro, non decise una alla volta.
 
+Nota dalla lettura guidata del 2026-09-02, come argomento a favore di **lasciare il blur
+com'è**: oggi ci sono tre modi per confermare (Enter, Escape, blur) e zero per annullare.
+Ma il blur è l'unico dei tre che non esprime una volontà — l'utente ha guardato altrove,
+non ha detto cosa voleva di quel testo. Un'azione distruttiva non dovrebbe stare dietro il
+gesto ambiguo: il blur resta un salvataggio, l'annullamento richiede un atto esplicito.
+
+## Card collegate
+
+- [L'overlay di modifica non segue lo zoom](overlay-non-segue-lo-zoom.md) lavora sulla
+  stessa struttura: toglie due campi a `EditingState`, questa card ne aggiunge uno (il
+  testo di partenza). Meglio farla prima.
+- [Un click perso dopo aver chiuso l'editor](click-perso-dopo-blur-editor.md) tocca lo
+  stesso percorso di chiusura per blur.
+
 ## Test
 
 Il comportamento attuale è fissato da `SvgTextEditor.test.tsx`, in

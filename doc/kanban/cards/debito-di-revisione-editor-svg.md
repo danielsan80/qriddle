@@ -45,9 +45,83 @@ Restano scoperti `handleSvgClick`, l'overlay di editing con la sua toolbar
 (`handleTextChange`, `handleFontSize`, `handleDelete`), `stopEditing` col flag
 `justClosedRef`, e `onWheel`.
 
-La lettura guidata del componente resta da fare: i due debiti sono distinti.
+- **Copertura completata** (2026-09-01, `SvgTextEditor.test.tsx`): ciclo di vita delle
+  caselle, chiusura per blur con la guardia del click, `preventDefault` su tutti e tre i
+  bottoni della toolbar, zoom fra i suoi due limiti, ramo non controllato. 19 test in 5
+  gruppi. Copertura del componente **97,63% statement, 85,71% branch, 100% funzioni, 100%
+  righe**. Lasciate scoperte di proposito le due guardie `if (!drag) return` (119, 148) e
+  il ramo `face !== undefined`: sono difensive, un test lì dimostrerebbe soprattutto che il
+  test funziona.
 
-Ripagare significa due cose distinte:
+Ripagare significa due cose distinte: test dedicati sul comportamento dell'editor (il
+debito di _verifica_) e una lettura guidata del componente (il debito di _conoscenza_). Il
+primo è ripagato. Il secondo no — vedi sotto.
 
-- test dedicati sul comportamento dell'editor (il debito di _verifica_);
-- una lettura guidata del componente con Claude (il debito di _conoscenza_).
+## Lettura guidata (2026-09-02): fatta, debito non chiuso
+
+Percorso in sette tappe: identità e chiamanti, topologia dello stato, sistemi di
+coordinate, macchina del drag, chiusura dell'editor, zoom, sintesi.
+
+**Il debito di conoscenza resta aperto.** Le tappe dalla quarta in poi poggiano sul modello
+degli eventi del browser (ordine di `mousedown`/`blur`/`click`, listener passivi, bersaglio
+del click dopo un trascinamento) e su geometria affine. Non è materiale che si assorba in
+una lettura, e approfondirlo non è l'obiettivo attuale. La scommessa è che scomporre il
+componente renda i pezzi leggibili anche senza dominare quel modello: card
+[Scomporre `SvgTextEditor`](scomporre-svgtexteditor.md).
+
+### Le due regole non scritte del componente
+
+- **Non memorizzare mai una coordinata, derivala al momento dell'uso.** `getScreenCTM()` e
+  `getBoundingClientRect()` sono richiamate a ogni uso; è per questo che lo zoom funziona
+  ovunque senza che nessuno lo propaghi. Unica violazione: `editing.overlayX/overlayY`.
+- **Un gesto dell'utente non deve produrre due effetti.** Difeso da tre meccanismi
+  indipendenti e mai nominati come una cosa sola: `justClosedRef`, la guardia
+  `tagName === 'text'` (191), i `preventDefault` sul mousedown dei bottoni.
+
+Entrambe le regole hanno prodotto una card: la prima
+[L'overlay non segue lo zoom](overlay-non-segue-lo-zoom.md), la seconda
+[Un click perso dopo aver chiuso l'editor](click-perso-dopo-blur-editor.md).
+
+### Anomalie minori, da correggere quando si passa di lì
+
+Tre righe di correzione ciascuna, nessuna merita una card a sé.
+
+- **`document.body.style` non viene ripristinato allo smontaggio.** Il trascinamento scrive
+  `cursor: grabbing` e `userSelect: none` sul body (127-128) e li ripulisce nel `mouseup`
+  (151-152), ma la pulizia dell'effetto (171-174) toglie solo i listener. Se il componente
+  si smonta a trascinamento in corso, la pagina resta con il cursore sbagliato e il testo
+  non selezionabile. Poco raggiungibile, ma è un effetto globale senza ripristino.
+- **Lo scorrimento orizzontale ingrandisce.** `event.deltaY > 0` (105) è falso anche per
+  `deltaY === 0`, quindi una rotella laterale o shift+rotella finisce nel ramo "ingrandisci"
+  — e il `preventDefault` le impedisce pure di scorrere.
+- **La prima rotellata congela la responsività.** Finché `widthPx` è `null` la larghezza
+  viene da `.preview { width: 25% }` e segue il contenitore; al primo colpo di rotella lo
+  stile in linea (263) la fissa in pixel per sempre. Il limite superiore è applicato solo
+  nel momento della rotellata, quindi restringendo poi la finestra l'SVG può eccedere il
+  contenitore.
+
+### Ipotesi non dimostrabile in jsdom
+
+Dopo un trascinamento il browser emette il `click` sul primo antenato comune di mousedown e
+mouseup. Funziona perché il testo insegue il cursore, quindi il bersaglio resta il `<text>`
+e la guardia alla riga 191 lo ferma. Con un movimento abbastanza rapido perché il render
+resti indietro, il rilascio potrebbe cadere a fianco del glifo e far nascere una casella
+fantasma. Serve un browser vero per verificarlo: jsdom non fa hit testing.
+
+### Osservazioni strutturali confluite in altre card
+
+Nome che promette genericità, prop opzionali sempre passate, `face` timbrato dall'editor e
+letto solo dal genitore: [Chiarire l'API di `SvgTextEditor`](api-svgtexteditor.md).
+Duplicazione della conversione client↔contenitore: assorbita da
+[L'overlay non segue lo zoom](overlay-non-segue-lo-zoom.md).
+
+Restano senza casa, come note di lettura e basta:
+
+- il drag assume `b = c = 0` nella CTM (scala pura, niente rotazione) e nessun commento lo
+  dice;
+- "cancella svuotando" è una funzionalità non dichiarata, nata come effetto collaterale del
+  filtro sulle caselle vuote in `stopEditing` (180-182), e vale anche per le caselle
+  esistenti;
+- il doppio `stopEditing` scatenato dal mousedown su un'altra casella mentre se ne modifica
+  una funziona sotto due ordinamenti di eventi diversi, per due motivi diversi, e non
+  sappiamo quale dei due avvenga davvero.
