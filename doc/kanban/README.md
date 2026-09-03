@@ -32,10 +32,12 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 - [Linkare il progetto dalla GitHub Pages principale (sezione "Lab")](cards/link-github-pages-lab.md)
 - [Ripulire il repo come vetrina (asset di terzi + presentazione)](cards/repo-vetrina-e-asset.md)
+- [Potare i commenti nei test dell'editor](cards/potare-i-commenti-nei-test.md)
 
 ### Spike
 
 - [Download SVG modificabile](cards/spike-download-svg-modificabile.md)
+- [Un PageObject per i test dei componenti?](cards/spike-pageobject-nei-test.md)
 
 ## DOING
 
