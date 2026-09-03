@@ -1,4 +1,4 @@
-# Chiarire l'API di `SvgTextEditor`: nome, prop obbligatorie, `face`
+# Chiarire l'API di `CardFaceEditor`: nome, prop obbligatorie, `face`
 
 Il componente ha una superficie che promette più di quello che serve, e le tre cose sotto
 sono la stessa decisione detta tre volte: **smettere di far finta che sia generico.**
@@ -100,23 +100,35 @@ nel tipo, controllando chi lo legge — `renderPdf.ts` e `DownloadView.tsx`.
 ## Ordine
 
 Prima questa card, che riduce la superficie, poi
-[Scomporre `SvgTextEditor`](scomporre-svgtexteditor.md), che lavora sull'interno: c'è meno
+[Scomporre `CardFaceEditor`](scomporre-cardfaceeditor.md), che lavora sull'interno: c'è meno
 roba da spostare.
 
-## Da dove ripartire
+## Fatto (2026-09-03)
 
-In DOING dal 2026-09-03, non ancora cominciata: nessuna riga di codice toccata. I tre
-punti qui sopra sono separabili e vanno in tre commit distinti, in quest'ordine — dal più
-meccanico al più invasivo:
+Tutti e tre i punti, un commit ciascuno, dal più meccanico al più invasivo. Più un quarto
+che è nato dalla verifica del terzo.
 
-1. **rinomina** in `CardFaceEditor` — cartella, file, componente, `index.ts`, e i punti che
-   lo importano: `FrontView`, `CenterView`, `BackView`, `FrontView.test.tsx`,
-   `SvgTextEditor.test.tsx`. Il tipo `TextBox` è importato anche da `renderPdf.ts`,
-   `DownloadView.tsx` e `useOuterTextBoxes.ts`: quelli seguono il cambio di percorso ma non
-   di nome.
-2. **prop obbligatorie** — via il ramo non controllato, e con esso il test
-   `without a parent holding the boxes`.
-3. **`face` al genitore** — il timbro passa a `useOuterTextBoxes.setFaceBoxes`, poi si
-   verifica se `TextBox.face` possa diventare obbligatorio.
+1. `7d8d4fe` **rinomina** in `CardFaceEditor` — cartella, file, componente e i sette punti
+   che lo importano. Fatta con `git mv`, così la storia segue i file. Suite invariata.
+2. `ecdc3fe` **prop obbligatorie** — via `internalBoxes`, `controlled` e il ternario;
+   `setTextBoxes` resta una riga. Con il ramo se n'è andato il test che lo copriva, che
+   però ospitava anche l'unica verifica dell'invito `Click to add text`: rimessa fra i test
+   del ciclo di vita, e con il viaggio di ritorno (l'invito ricompare cancellando
+   l'ultima casella).
+3. `d6588e4` **`face` al genitore** — il timbro è in `useOuterTextBoxes.setFaceBoxes`.
+4. `f47dae5` **due tipi** — la verifica del punto 3 ha dato risposta **negativa**:
+   `TextBox.face` non poteva diventare obbligatorio, perché l'editor ora crea caselle senza
+   facciata per costruzione. I due obiettivi si escludevano, e li riconcilia una coppia di
+   tipi: `TextBox` (l'editor, senza facciata) e `FacedTextBox` (l'archivio, facciata
+   obbligatoria). Chiamato così e non `OuterTextBox` perché `outer` in questo progetto è il
+   lato del foglio, mentre ciò che distingue il tipo è avere una facciata.
 
-La rete è la suite: 126 test, tutti verdi prima di cominciare.
+Suite da 126 a 127 test, verdi.
+
+**Il tipo `Face` non è sparito, è traslocato**: adesso lo esporta `useOuterTextBoxes`
+invece di `CardFaceEditor`, perché è il suo parametro. La collisione con il `Face` di
+`CardFaceNav` resta esattamente com'era —
+[Rivedere il tipo `Face` in `CardFaceNav`](tipo-face-cardfacenav.md).
+
+Aperta lungo la strada:
+[`useOuterTextBoxes`: l'ordine cambia da solo](ordine-e-copia-in-useoutertextboxes.md).

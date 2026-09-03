@@ -3,7 +3,7 @@
 Policy dichiarata (2026-08-25, discussione in life-hacks):
 
 - **CSS** — delega permanente: non si revisiona, non è debito.
-- **SvgTextEditor** — debito di revisione reale, accettato ma da ripagare; in priorità
+- **CardFaceEditor** (allora `SvgTextEditor`) — debito di revisione reale, accettato ma da ripagare; in priorità
   sta sotto promozione e perfezionamento.
 
 Stato rilevato (2026-08-25): `SvgTextEditor.tsx` (351 righe) non ha test dedicati. È
@@ -67,7 +67,7 @@ degli eventi del browser (ordine di `mousedown`/`blur`/`click`, listener passivi
 del click dopo un trascinamento) e su geometria affine. Non è materiale che si assorba in
 una lettura, e approfondirlo non è l'obiettivo attuale. La scommessa è che scomporre il
 componente renda i pezzi leggibili anche senza dominare quel modello: card
-[Scomporre `SvgTextEditor`](scomporre-svgtexteditor.md).
+[Scomporre `CardFaceEditor`](scomporre-cardfaceeditor.md).
 
 ### Le due regole non scritte del componente
 
@@ -121,7 +121,7 @@ fantasma. Serve un browser vero per verificarlo: jsdom non fa hit testing.
 ### Osservazioni strutturali confluite in altre card
 
 Nome che promette genericità, prop opzionali sempre passate, `face` timbrato dall'editor e
-letto solo dal genitore: [Chiarire l'API di `SvgTextEditor`](api-svgtexteditor.md).
+letto solo dal genitore: [Chiarire l'API di `CardFaceEditor`](api-cardfaceeditor.md).
 Duplicazione della conversione client↔contenitore: assorbita da
 [L'overlay non segue lo zoom](overlay-non-segue-lo-zoom.md).
 

@@ -43,5 +43,5 @@ solo sopra le viste invece di una copia per hook.
 
 ## Card collegate
 
-- [Chiarire l'API di `CardFaceEditor`](api-svgtexteditor.md) — il timbro della facciata è
+- [Chiarire l'API di `CardFaceEditor`](api-cardfaceeditor.md) — il timbro della facciata è
   arrivato in questo hook il 2026-09-03, ed è la ragione per cui ci si è guardato dentro.

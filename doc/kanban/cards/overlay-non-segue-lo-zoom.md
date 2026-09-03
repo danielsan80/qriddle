@@ -6,7 +6,7 @@ modificando.
 
 ## Causa
 
-`SvgTextEditor.tsx`. La posizione dell'overlay è memorizzata all'apertura e non più
+`CardFaceEditor.tsx`. La posizione dell'overlay è memorizzata all'apertura e non più
 toccata:
 
 Righe 19-23:
@@ -54,7 +54,7 @@ Effetto collaterale gradito: `handleSvgClick` smette di duplicare la conversione
   un campo a `EditingState` (il testo di partenza). Le due card lavorano sulla stessa
   struttura: questa ne toglie due campi, quella ne aggiunge uno. Meglio farle in
   quest'ordine.
-- [Scomporre `SvgTextEditor`](scomporre-svgtexteditor.md): con la posizione derivata,
+- [Scomporre `CardFaceEditor`](scomporre-cardfaceeditor.md): con la posizione derivata,
   l'overlay diventa molto più facile da estrarre in un componente a sé.
 
 ## Come si è trovata

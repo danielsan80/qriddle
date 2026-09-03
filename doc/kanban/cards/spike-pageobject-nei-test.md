@@ -51,7 +51,7 @@ una riga nelle regole di progetto. Non codice.
 
 ## Card collegate
 
-- [Scomporre `CardFaceEditor`](scomporre-svgtexteditor.md) — se il componente si spezza in
+- [Scomporre `CardFaceEditor`](scomporre-cardfaceeditor.md) — se il componente si spezza in
   pezzi più piccoli, ognuno testabile per conto suo, il bisogno di un PageObject cala.
   Conviene sapere l'esito di questo spike prima di scomporre, non dopo.
 - [Potare i commenti nei test](potare-i-commenti-nei-test.md) — da fare dopo questo.

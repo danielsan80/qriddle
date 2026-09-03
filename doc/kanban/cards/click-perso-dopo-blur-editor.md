@@ -13,7 +13,7 @@ Come riprodurlo:
 
 ## Causa
 
-`SvgTextEditor.tsx`. Il blur dell'input chiude l'editor e arma un flag:
+`CardFaceEditor.tsx`. Il blur dell'input chiude l'editor e arma un flag:
 
 ```tsx
 onBlur={() => stopEditing({ suppressNextClick: true })}   // 315

@@ -4,7 +4,7 @@ Nell'editor di testo sulle facciate del biglietto, **Escape si comporta esattame
 Enter**: chiude l'overlay e tiene quello che hai appena scritto. Chi usa l'applicazione si
 aspetta che Escape butti via la modifica.
 
-`SvgTextEditor.tsx:316-319`:
+`CardFaceEditor.tsx:316-319`:
 
 ```tsx
 onKeyDown={(event) => {
@@ -56,7 +56,7 @@ gesto ambiguo: il blur resta un salvataggio, l'annullamento richiede un atto esp
 
 ## Test
 
-Il comportamento attuale è fissato da `SvgTextEditor.test.tsx`, in
+Il comportamento attuale è fissato da `CardFaceEditor.test.tsx`, in
 `closes the editor on %s, keeping the text that was typed`, che gira su entrambi i tasti.
 Non è un test da aggirare: se si cambia il comportamento **quel test deve fallire**, ed è
 lì apposta perché il cambiamento sia deliberato. Va riscritto separando i due tasti, non

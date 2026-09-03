@@ -1,4 +1,4 @@
-# Scomporre `SvgTextEditor` in comportamenti isolati
+# Scomporre `CardFaceEditor` in comportamenti isolati
 
 351 righe in un file solo, con dentro almeno quattro cose indipendenti. L'obiettivo non è
 la lunghezza: è che ogni pezzo si possa capire **senza tenere in testa gli altri tre**.
@@ -52,7 +52,7 @@ peggiorato le cose invece di migliorarle. Nominarlo è metà del lavoro.
 
 ## Prerequisiti
 
-- [Chiarire l'API di `SvgTextEditor`](api-svgtexteditor.md) — prima: riduce la superficie da
+- [Chiarire l'API di `CardFaceEditor`](api-cardfaceeditor.md) — prima: riduce la superficie da
   spostare.
 - [L'overlay di modifica non segue lo zoom](overlay-non-segue-lo-zoom.md) — la sua
   correzione rende l'overlay derivabile dalla sola casella, quindi molto più facile da
