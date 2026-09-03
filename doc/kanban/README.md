@@ -42,6 +42,6 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 ## DOING
 
-- [Chiarire l'API di `CardFaceEditor`: nome, prop obbligatorie, `face`](cards/api-cardfaceeditor.md)
-
 ## DONE
+
+- [Chiarire l'API di `CardFaceEditor`: nome, prop obbligatorie, `face`](cards/api-cardfaceeditor.md)
