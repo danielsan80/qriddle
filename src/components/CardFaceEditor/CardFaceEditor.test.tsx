@@ -235,6 +235,17 @@ describe('CardFaceEditor box lifecycle', () => {
     fireEvent.click(shrink);
     expect(boxes()).toEqual([{ ...box, fontSize: 3 }]);
   });
+
+  it('shows the invitation to add text only while there is no box', () => {
+    const { svg } = renderHarness([]);
+    expect(screen.getByText('Click to add text')).toBeInTheDocument();
+
+    fireEvent.click(svg, { clientX: 60, clientY: 40 });
+    expect(screen.queryByText('Click to add text')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: '×' }));
+    expect(screen.getByText('Click to add text')).toBeInTheDocument();
+  });
 });
 
 describe('CardFaceEditor closing by blur', () => {
@@ -355,24 +366,5 @@ describe('CardFaceEditor zoom', () => {
     // Untouched: the editor never set a width, so the CSS one still applies.
     expect(svg.style.width).toBe('');
     expect(scrolled).toBe(true);
-  });
-});
-
-describe('CardFaceEditor without a parent holding the boxes', () => {
-  beforeEach(stubSvgGeometry);
-
-  it('keeps the boxes in its own state', () => {
-    const { container } = render(<CardFaceEditor viewBox="0 0 100 100" />);
-    const svg = container.querySelector('svg')!;
-    expect(screen.getByText('Click to add text')).toBeInTheDocument();
-
-    fireEvent.click(svg, { clientX: 60, clientY: 40 });
-    fireEvent.change(screen.getByRole('textbox'), {
-      target: { value: 'auguri' },
-    });
-    fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' });
-
-    expect(screen.getByText('auguri')).toBeInTheDocument();
-    expect(screen.queryByText('Click to add text')).not.toBeInTheDocument();
   });
 });

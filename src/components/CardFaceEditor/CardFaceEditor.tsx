@@ -35,8 +35,8 @@ interface Props {
   viewBox: string;
   className?: string;
   children?: React.ReactNode;
-  textBoxes?: TextBox[];
-  onTextBoxesChange?: (boxes: TextBox[]) => void;
+  textBoxes: TextBox[];
+  onTextBoxesChange: (boxes: TextBox[]) => void;
   face?: Face;
 }
 
@@ -58,21 +58,12 @@ export function CardFaceEditor({
   viewBox,
   className,
   children,
-  textBoxes: controlledBoxes,
+  textBoxes,
   onTextBoxesChange,
   face,
 }: Props) {
-  const [internalBoxes, setInternalBoxes] = useState<TextBox[]>([]);
-  const controlled = controlledBoxes !== undefined;
-  const textBoxes = controlled ? controlledBoxes : internalBoxes;
-
   function setTextBoxes(updater: (prev: TextBox[]) => TextBox[]) {
-    const next = updater(textBoxes);
-    if (controlled) {
-      onTextBoxesChange?.(next);
-    } else {
-      setInternalBoxes(updater);
-    }
+    onTextBoxesChange(updater(textBoxes));
   }
 
   const [editing, setEditing] = useState<EditingState | null>(null);
