@@ -15,6 +15,7 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [Escape non annulla la modifica del testo](cards/escape-non-annulla-la-modifica.md)
 - [Un click sull'anteprima va perso dopo aver chiuso l'editor cliccando altrove](cards/click-perso-dopo-blur-editor.md)
 - [L'overlay di modifica non segue lo zoom](cards/overlay-non-segue-lo-zoom.md)
+- [`useOuterTextBoxes`: l'ordine cambia da solo, e ogni vista ha la sua copia](cards/ordine-e-copia-in-useoutertextboxes.md)
 
 ### Refactoring
 
