@@ -5,15 +5,12 @@ import styles from './CardFaceEditor.module.css';
 
 const DRAG_THRESHOLD = 4;
 
-export type Face = 'front' | 'center' | 'back';
-
 export interface TextBox {
   id: string;
   x: number;
   y: number;
   text: string;
   fontSize: number;
-  face?: Face;
 }
 
 interface EditingState {

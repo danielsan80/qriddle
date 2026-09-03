@@ -1,15 +1,14 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { useOuterTextBoxes } from './useOuterTextBoxes';
+import { useOuterTextBoxes, type FacedTextBox } from './useOuterTextBoxes';
 import { readState, mergeState } from '../lib/browser/urlState';
-import type { TextBox } from '../components/CardFaceEditor';
 
 vi.mock('../lib/browser/urlState', () => ({
   readState: vi.fn().mockReturnValue({}),
   mergeState: vi.fn(),
 }));
 
-const frontBox: TextBox = {
+const frontBox: FacedTextBox = {
   id: '1',
   x: 10,
   y: 20,
@@ -17,7 +16,7 @@ const frontBox: TextBox = {
   fontSize: 8,
   face: 'front',
 };
-const centerBox: TextBox = {
+const centerBox: FacedTextBox = {
   id: '2',
   x: 30,
   y: 40,

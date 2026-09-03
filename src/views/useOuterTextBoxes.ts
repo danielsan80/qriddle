@@ -1,19 +1,26 @@
 import { useEffect, useState } from 'react';
 import { readState, mergeState } from '../lib/browser/urlState';
-import type { Face, TextBox } from '../components/CardFaceEditor';
+import type { TextBox } from '../components/CardFaceEditor';
 
-interface OuterState {
-  textBoxes?: TextBox[];
+export type Face = 'front' | 'center' | 'back';
+
+export interface FacedTextBox extends TextBox {
+  face: Face;
 }
 
-function getInitialTextBoxes(): TextBox[] {
+interface OuterState {
+  textBoxes?: FacedTextBox[];
+}
+
+function getInitialTextBoxes(): FacedTextBox[] {
   return readState<OuterState>({}).textBoxes ?? [];
 }
 
 export function useOuterTextBoxes(
   face: Face,
 ): [TextBox[], (boxes: TextBox[]) => void] {
-  const [textBoxes, setTextBoxes] = useState<TextBox[]>(getInitialTextBoxes);
+  const [textBoxes, setTextBoxes] =
+    useState<FacedTextBox[]>(getInitialTextBoxes);
 
   useEffect(() => {
     mergeState({ textBoxes }, 'replace');

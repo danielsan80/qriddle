@@ -3,7 +3,7 @@ import { config } from '../config';
 import { Puzzle } from '../domain/puzzle';
 import { renderPuzzle } from './renderPuzzle';
 import { cardFontFamily, getQRDataUrl } from '../util';
-import type { TextBox } from '../../components/CardFaceEditor';
+import type { FacedTextBox } from '../../views/useOuterTextBoxes';
 import innerSvgUrl from '../../assets/inner/inner.svg?url';
 import outerSvgUrl from '../../assets/outer/outer.svg?url';
 
@@ -77,7 +77,7 @@ const CENTER_VIEW_HEIGHT = 148.5;
 // Map back to outer.svg space: (x, y) → (210 - x, 148.5 - y), text rotated 180°.
 function drawTextBox(
   ctx: CanvasRenderingContext2D,
-  tb: TextBox,
+  tb: FacedTextBox,
   scale: number,
 ): void {
   if (!tb.text.trim()) return;
@@ -98,7 +98,7 @@ function drawTextBox(
 
 function drawTextBoxes(
   ctx: CanvasRenderingContext2D,
-  textBoxes: TextBox[],
+  textBoxes: FacedTextBox[],
   widthPx: number,
 ): void {
   const scale = widthPx / SVG_WIDTH;
@@ -139,7 +139,7 @@ async function drawCredits(
 async function composeOuterPdf(
   widthPx: number,
   heightPx: number,
-  textBoxes: TextBox[],
+  textBoxes: FacedTextBox[],
 ): Promise<HTMLCanvasElement> {
   const canvas = document.createElement('canvas');
   canvas.width = widthPx;
@@ -154,7 +154,7 @@ async function composeOuterPdf(
 
 export async function renderOuterPdfPreview(
   canvas: HTMLCanvasElement,
-  textBoxes: TextBox[],
+  textBoxes: FacedTextBox[],
 ): Promise<void> {
   const scale = 0.25;
   const composed = await composeOuterPdf(
@@ -169,7 +169,7 @@ export async function renderOuterPdfPreview(
 
 export async function downloadPuzzlePdf(
   puzzle: Puzzle,
-  textBoxes: TextBox[],
+  textBoxes: FacedTextBox[],
   filename = 'puzzle.pdf',
 ): Promise<void> {
   const [inner, outer] = await Promise.all([
