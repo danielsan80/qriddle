@@ -51,6 +51,19 @@ describe('useOuterTextBoxes', () => {
     );
   });
 
+  it('stamps its own face on the boxes it is handed', () => {
+    const { result } = renderHook(() => useOuterTextBoxes('front'));
+
+    act(() =>
+      result.current[1]([{ id: '1', x: 10, y: 20, text: 'hi', fontSize: 8 }]),
+    );
+
+    expect(mergeState).toHaveBeenCalledWith(
+      { textBoxes: [frontBox] },
+      'replace',
+    );
+  });
+
   it('preserves boxes from other faces when updating', () => {
     vi.mocked(readState).mockReturnValue({ textBoxes: [centerBox] });
 

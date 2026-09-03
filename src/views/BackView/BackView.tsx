@@ -26,7 +26,6 @@ export function BackView() {
           <CardFaceEditor
             viewBox="0 148.5 105 148.5"
             className={styles.preview}
-            face="back"
             textBoxes={textBoxes}
             onTextBoxesChange={setTextBoxes}
           >

@@ -24,7 +24,7 @@ export function useOuterTextBoxes(
   function setFaceBoxes(newFaceBoxes: TextBox[]) {
     setTextBoxes((prev) => [
       ...prev.filter((tb) => tb.face !== face),
-      ...newFaceBoxes,
+      ...newFaceBoxes.map((tb) => ({ ...tb, face })),
     ]);
   }
 

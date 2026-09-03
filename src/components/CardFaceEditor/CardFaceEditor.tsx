@@ -37,7 +37,6 @@ interface Props {
   children?: React.ReactNode;
   textBoxes: TextBox[];
   onTextBoxesChange: (boxes: TextBox[]) => void;
-  face?: Face;
 }
 
 function svgToContainer(
@@ -60,7 +59,6 @@ export function CardFaceEditor({
   children,
   textBoxes,
   onTextBoxesChange,
-  face,
 }: Props) {
   function setTextBoxes(updater: (prev: TextBox[]) => TextBox[]) {
     onTextBoxesChange(updater(textBoxes));
@@ -203,7 +201,6 @@ export function CardFaceEditor({
       y: svgCoord.y,
       text: '',
       fontSize: 8,
-      ...(face !== undefined && { face }),
     };
 
     setTextBoxes((prev) => [...prev, newBox]);

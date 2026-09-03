@@ -16,7 +16,6 @@ export function FrontView() {
           <CardFaceEditor
             viewBox="105 148.5 105 148.5"
             className={styles.preview}
-            face="front"
             textBoxes={textBoxes}
             onTextBoxesChange={setTextBoxes}
           >

@@ -16,7 +16,6 @@ export function CenterView() {
           <CardFaceEditor
             viewBox="0 0 210 148.5"
             className={styles.preview}
-            face="center"
             textBoxes={textBoxes}
             onTextBoxesChange={setTextBoxes}
           >
