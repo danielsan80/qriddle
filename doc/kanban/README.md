@@ -16,6 +16,7 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [Un click sull'anteprima va perso dopo aver chiuso l'editor cliccando altrove](cards/click-perso-dopo-blur-editor.md)
 - [L'overlay di modifica non segue lo zoom](cards/overlay-non-segue-lo-zoom.md)
 - [`useOuterTextBoxes`: l'ordine cambia da solo, e ogni vista ha la sua copia](cards/ordine-e-copia-in-useoutertextboxes.md)
+- [Modificare una facciata cancella quelle successive](cards/modifiche-perse-tornando-indietro.md)
 
 ### Refactoring
 
@@ -34,6 +35,7 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [Linkare il progetto dalla GitHub Pages principale (sezione "Lab")](cards/link-github-pages-lab.md)
 - [Ripulire il repo come vetrina (asset di terzi + presentazione)](cards/repo-vetrina-e-asset.md)
 - [Potare i commenti nei test dell'editor](cards/potare-i-commenti-nei-test.md)
+- [Coprire `drawTextBox`: la facciata centrale ruotata](cards/test-su-drawtextbox.md)
 
 ### Spike
 
