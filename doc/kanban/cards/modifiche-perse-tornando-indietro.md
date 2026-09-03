@@ -4,10 +4,11 @@ Segnalato il 2026-09-03: in certi casi modificare una facciata fa sparire le cas
 facciate seguenti. Chi l'ha visto sospettava il click su **Next** con una casella ancora
 aperta, senza aver confermato cliccando sull'SVG.
 
-## Ipotesi principale: la cronologia riporta indietro una fotografia vecchia
+## Causa: la cronologia riporta indietro una fotografia vecchia
 
-Dedotta leggendo, **non ancora provata**. Non c'entra il momento della conferma: c'entra il
-tasto **Previous**, e basta passare da lì una volta.
+Dedotta leggendo e **riprodotta a mano sull'app il 2026-09-03**, seguendo la sequenza della
+tabella qui sotto. Non c'entra il momento della conferma: c'entra il tasto **Previous**, e
+basta passare da lì una volta.
 
 Ci sono due scritture nell'URL, con due modi diversi:
 
@@ -36,21 +37,23 @@ perso per sempre**. Da qui il sintomo: "modifico una facciata e le successive sp
 Il tasto Previous è `history.back()` (`StepView.tsx:44`), quindi ci si passa senza fare
 niente di strano.
 
-## Ipotesi secondaria, da escludere
+## Ipotesi secondaria, accantonata
 
-Quella del segnalatore: Next cliccato con l'editor aperto. `handleSetTrackStep` fa
+Il primo sospetto di chi ha segnalato il bug era un altro: Next cliccato con l'editor
+aperto. `handleSetTrackStep` fa
 `mergeState({ step }, 'push')` **in modo sincrono dentro il gestore del click**, mentre la
 scrittura delle caselle passa da un `useEffect`. Se l'effetto non avesse ancora girato, il
 push congelerebbe l'array **precedente** alla modifica.
 
 In teoria non succede: il blur e il click sono due eventi distinti, React fa il flush del
-primo (ed esegue i suoi effetti) prima di consegnare il secondo. Da verificare comunque,
-perché è il caso che è stato osservato davvero.
+primo (ed esegue i suoi effetti) prima di consegnare il secondo. Dopo la riproduzione, chi
+aveva segnalato il bug ha confermato che la casistica è quella della cronologia: questa
+strada resta scritta come cosa già guardata, non come pista da battere.
 
 ## Come provarlo
 
-A mano, sull'app, seguendo la tabella qui sopra: tre facciate, una casella ciascuna, poi
-Previous e una modifica. Basta guardare l'hash dell'URL prima e dopo.
+Riprodotto a mano il 2026-09-03: tre facciate, una casella ciascuna, poi Previous e una
+modifica. Resta la strada del passo Download per vedere l'effetto sul prodotto finito.
 
 Con un test è più difficile: serve la cronologia vera, e in jsdom `history.back()` e
 `popstate` si comportano diversamente da un browser. Se il test è fragile, meglio un test

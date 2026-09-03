@@ -40,6 +40,10 @@ registrate, non su un metodo alla volta.
 
 ## Perché è la volta buona
 
+Verificato a mano il 2026-09-03: la facciata centrale esce capovolta, quindi oggi il ramo
+funziona. Resta scoperto, cioè nessuno se ne accorgerebbe se smettesse di funzionare — ed è
+la ragione per cui la card resta aperta invece di chiudersi con la verifica manuale.
+
 La card [Modifiche perse tornando indietro](modifiche-perse-tornando-indietro.md) mette in
 dubbio proprio l'integrità di ciò che arriva fin qui. Se quello che entra in `drawTextBox`
 è sbagliato, questo test non lo dice — ma almeno separa i due dubbi invece di lasciarli
