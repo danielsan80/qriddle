@@ -6,6 +6,10 @@ Regole sintetiche: scrivi il minimo necessario per essere compresi.
 - Usa CSS Modules con nesting nativo per i componenti React.
 - Termina i file con newline.
 - Commenti nel codice in inglese.
+- Commenti: pochi. Se serve un commento per spiegare **cosa** fa il codice, riscrivi il
+  codice in modo ovvio e togli il commento, anche a costo di scrivere più righe. Restano
+  solo i commenti che dicono **perché**, quando la ragione non si deduce leggendo (una
+  stranezza del browser, un vincolo esterno, una decisione presa altrove).
 - Feedback onesto: evidenzia problemi e alternative migliori senza giri di parole.
 - Test first: scrivi i test prima dell'implementazione.
 - Asserzioni: evita assertion roulette. Asserisci sul valore intero, non sulle sue parti.
