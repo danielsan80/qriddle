@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { SvgTextEditor, type TextBox } from './SvgTextEditor';
+import { CardFaceEditor, type TextBox } from './CardFaceEditor';
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -39,7 +39,7 @@ const box: TextBox = { id: 'a', x: 10, y: 20, text: 'ciao', fontSize: 8 };
 function renderEditor() {
   const onTextBoxesChange = vi.fn();
   const { unmount } = render(
-    <SvgTextEditor
+    <CardFaceEditor
       viewBox="0 0 100 100"
       textBoxes={[box]}
       onTextBoxesChange={onTextBoxesChange}
@@ -48,7 +48,7 @@ function renderEditor() {
   return { onTextBoxesChange, text: screen.getByText('ciao'), unmount };
 }
 
-describe('SvgTextEditor drag threshold', () => {
+describe('CardFaceEditor drag threshold', () => {
   beforeEach(stubSvgGeometry);
 
   it('opens the editor without moving the box when the pointer stays within the threshold', () => {
@@ -117,7 +117,7 @@ function Harness({ initial }: { initial: TextBox[] }) {
   const [boxes, setBoxes] = useState(initial);
   return (
     <>
-      <SvgTextEditor
+      <CardFaceEditor
         viewBox="0 0 100 100"
         textBoxes={boxes}
         onTextBoxesChange={setBoxes}
@@ -145,7 +145,7 @@ function openEditorOn(element: Element) {
   fireEvent.mouseUp(window);
 }
 
-describe('SvgTextEditor box lifecycle', () => {
+describe('CardFaceEditor box lifecycle', () => {
   beforeEach(stubSvgGeometry);
 
   it('creates an empty box where the click lands and opens its editor', () => {
@@ -237,7 +237,7 @@ describe('SvgTextEditor box lifecycle', () => {
   });
 });
 
-describe('SvgTextEditor closing by blur', () => {
+describe('CardFaceEditor closing by blur', () => {
   beforeEach(stubSvgGeometry);
 
   it('closes the editor and swallows the click that caused the blur', () => {
@@ -306,7 +306,7 @@ const FLOOR_WIDTH = 100;
 const CONTAINER_WIDTH = 500;
 const INITIAL_WIDTH = 200;
 
-describe('SvgTextEditor zoom', () => {
+describe('CardFaceEditor zoom', () => {
   beforeEach(() => {
     stubSvgGeometry();
     // jsdom lays nothing out, so both widths read 0 until they are stubbed.
@@ -358,11 +358,11 @@ describe('SvgTextEditor zoom', () => {
   });
 });
 
-describe('SvgTextEditor without a parent holding the boxes', () => {
+describe('CardFaceEditor without a parent holding the boxes', () => {
   beforeEach(stubSvgGeometry);
 
   it('keeps the boxes in its own state', () => {
-    const { container } = render(<SvgTextEditor viewBox="0 0 100 100" />);
+    const { container } = render(<CardFaceEditor viewBox="0 0 100 100" />);
     const svg = container.querySelector('svg')!;
     expect(screen.getByText('Click to add text')).toBeInTheDocument();
 

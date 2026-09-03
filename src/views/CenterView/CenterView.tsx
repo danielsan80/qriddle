@@ -1,6 +1,6 @@
 import { Panel } from '../../components/layout/Panel';
 import { PreviewStage } from '../../components/stages/PreviewStage';
-import { SvgTextEditor } from '../../components/SvgTextEditor';
+import { CardFaceEditor } from '../../components/CardFaceEditor';
 import { useOuterTextBoxes } from '../useOuterTextBoxes';
 import outerSvgUrl from '../../assets/outer/outer.svg?url';
 import styles from './CenterView.module.css';
@@ -13,7 +13,7 @@ export function CenterView() {
       <Panel.Title>Center</Panel.Title>
       <Panel.Body>
         <PreviewStage>
-          <SvgTextEditor
+          <CardFaceEditor
             viewBox="0 0 210 148.5"
             className={styles.preview}
             face="center"
@@ -33,7 +33,7 @@ export function CenterView() {
               strokeDasharray="3 2"
               pointerEvents="none"
             />
-          </SvgTextEditor>
+          </CardFaceEditor>
         </PreviewStage>
       </Panel.Body>
     </Panel>

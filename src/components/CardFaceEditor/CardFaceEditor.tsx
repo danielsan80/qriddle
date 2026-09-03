@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { config } from '../../lib/config';
 import { cardFontFamily, useFontReady } from '../../lib/util';
-import styles from './SvgTextEditor.module.css';
+import styles from './CardFaceEditor.module.css';
 
 const DRAG_THRESHOLD = 4;
 
@@ -54,7 +54,7 @@ function svgToContainer(
   return { x: screen.x - rect.left, y: screen.y - rect.top };
 }
 
-export function SvgTextEditor({
+export function CardFaceEditor({
   viewBox,
   className,
   children,

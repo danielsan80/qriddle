@@ -3,7 +3,7 @@ import { config } from '../config';
 import { Puzzle } from '../domain/puzzle';
 import { renderPuzzle } from './renderPuzzle';
 import { cardFontFamily, getQRDataUrl } from '../util';
-import type { TextBox } from '../../components/SvgTextEditor';
+import type { TextBox } from '../../components/CardFaceEditor';
 import innerSvgUrl from '../../assets/inner/inner.svg?url';
 import outerSvgUrl from '../../assets/outer/outer.svg?url';
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Panel } from '../../components/layout/Panel';
 import { PreviewStage } from '../../components/stages/PreviewStage';
-import { SvgTextEditor } from '../../components/SvgTextEditor';
+import { CardFaceEditor } from '../../components/CardFaceEditor';
 import { useOuterTextBoxes } from '../useOuterTextBoxes';
 import { getQRDataUrl } from '../../lib/util';
 import { config } from '../../lib/config';
@@ -23,7 +23,7 @@ export function BackView() {
       <Panel.Title>Back</Panel.Title>
       <Panel.Body>
         <PreviewStage>
-          <SvgTextEditor
+          <CardFaceEditor
             viewBox="0 148.5 105 148.5"
             className={styles.preview}
             face="back"
@@ -52,7 +52,7 @@ export function BackView() {
                 </text>
               </>
             )}
-          </SvgTextEditor>
+          </CardFaceEditor>
         </PreviewStage>
       </Panel.Body>
     </Panel>

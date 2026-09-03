@@ -8,7 +8,7 @@ import {
 } from '../../lib/render';
 import { PreviewStage } from '../../components/stages/PreviewStage';
 import { readState } from '../../lib/browser/urlState';
-import type { TextBox } from '../../components/SvgTextEditor';
+import type { TextBox } from '../../components/CardFaceEditor';
 import { config } from '../../lib/config';
 import { cardFontDescriptor, loadFont } from '../../lib/util';
 import styles from './DownloadView.module.css';

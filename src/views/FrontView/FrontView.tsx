@@ -1,6 +1,6 @@
 import { Panel } from '../../components/layout/Panel';
 import { PreviewStage } from '../../components/stages/PreviewStage';
-import { SvgTextEditor } from '../../components/SvgTextEditor';
+import { CardFaceEditor } from '../../components/CardFaceEditor';
 import { useOuterTextBoxes } from '../useOuterTextBoxes';
 import outerSvgUrl from '../../assets/outer/outer.svg?url';
 import styles from './FrontView.module.css';
@@ -13,7 +13,7 @@ export function FrontView() {
       <Panel.Title>Front</Panel.Title>
       <Panel.Body>
         <PreviewStage>
-          <SvgTextEditor
+          <CardFaceEditor
             viewBox="105 148.5 105 148.5"
             className={styles.preview}
             face="front"
@@ -21,7 +21,7 @@ export function FrontView() {
             onTextBoxesChange={setTextBoxes}
           >
             <image href={outerSvgUrl} x="0" y="0" width="210" height="297" />
-          </SvgTextEditor>
+          </CardFaceEditor>
         </PreviewStage>
       </Panel.Body>
     </Panel>

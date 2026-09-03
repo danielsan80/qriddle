@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { readState, mergeState } from '../lib/browser/urlState';
-import type { Face, TextBox } from '../components/SvgTextEditor';
+import type { Face, TextBox } from '../components/CardFaceEditor';
 
 interface OuterState {
   textBoxes?: TextBox[];

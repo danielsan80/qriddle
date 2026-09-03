@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useOuterTextBoxes } from './useOuterTextBoxes';
 import { readState, mergeState } from '../lib/browser/urlState';
-import type { TextBox } from '../components/SvgTextEditor';
+import type { TextBox } from '../components/CardFaceEditor';
 
 vi.mock('../lib/browser/urlState', () => ({
   readState: vi.fn().mockReturnValue({}),
