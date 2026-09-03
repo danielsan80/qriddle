@@ -34,3 +34,6 @@ __pycache__/
 
 # Vite
 *.local
+
+# Claude Code, machine-local settings
+.claude/settings.local.json
