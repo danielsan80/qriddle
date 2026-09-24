@@ -17,7 +17,8 @@
   box-sizing: border-box;
 
   &:hover {
-    background: color-mix(in srgb, var(--paper) 25%, var(--paper));
+    background: color-mix(in srgb, var(--accent) 6%, var(--paper));
+    color: var(--accent);
   }
 
   &.selected {
@@ -46,7 +47,8 @@
   cursor: pointer;
 
   &:hover .quadrant {
-    background: color-mix(in srgb, var(--paper) 25%, var(--paper));
+    background: color-mix(in srgb, var(--accent) 6%, var(--paper));
+    color: var(--accent);
   }
 
   &.selected .quadrant {
@@ -64,7 +66,8 @@
   box-sizing: border-box;
 
   &:hover {
-    background: color-mix(in srgb, var(--paper) 25%, var(--paper));
+    background: color-mix(in srgb, var(--accent) 6%, var(--paper));
+    color: var(--accent);
   }
 
   &.selected {

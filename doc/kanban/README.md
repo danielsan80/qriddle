@@ -17,7 +17,6 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [L'overlay di modifica non segue lo zoom](cards/overlay-non-segue-lo-zoom.md)
 - [`useOuterTextBoxes`: l'ordine cambia da solo, e ogni vista ha la sua copia](cards/ordine-e-copia-in-useoutertextboxes.md)
 - [Modificare una facciata cancella quelle successive](cards/modifiche-perse-tornando-indietro.md)
-- [L'hover sulle sezioni del foglio non si vede](cards/hover-sezioni-del-foglio.md)
 
 ### Refactoring
 
@@ -53,4 +52,5 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 ## DONE
 
+- [L'hover sulle sezioni del foglio non si vede](cards/hover-sezioni-del-foglio.md)
 - [Chiarire l'API di `CardFaceEditor`: nome, prop obbligatorie, `face`](cards/api-cardfaceeditor.md)

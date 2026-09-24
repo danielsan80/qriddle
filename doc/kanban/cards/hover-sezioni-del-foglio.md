@@ -19,3 +19,8 @@ riposo. Tre occorrenze in `CardFaceNav.module.css` (`.inner`, `.center .quadrant
 L'etichetta rossa in hover, invece, non c'è mai stata: `color: var(--accent)` compare solo
 in `.selected`. Da decidere se l'hover deve anticipare la selezione (etichetta in
 `--accent`) o restare un cambio di sfondo.
+
+## Correzione
+
+Hover come anteprima della selezione: etichetta in `--accent`, sfondo con metà della tinta
+di `.selected` (`--accent` al 6% sul paper invece del 12%).
