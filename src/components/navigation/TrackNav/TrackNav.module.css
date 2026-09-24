@@ -11,7 +11,7 @@
   grid-template-columns: 20px 1fr;
   gap: 0 0.75rem;
 
-  &[data-state='future'] {
+  &[data-state='future'] :is(.track, .label) {
     opacity: 0.35;
   }
 
@@ -71,6 +71,14 @@
   letter-spacing: 0.05em;
   padding: 0;
   cursor: pointer;
+  transition:
+    color 0.15s,
+    opacity 0.15s;
+
+  .step:not([aria-current]) &:is(:hover, :focus-visible) {
+    color: var(--accent);
+    opacity: 1;
+  }
 }
 
 .next {

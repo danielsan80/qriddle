@@ -29,7 +29,6 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [Multipuzzle: QR diviso in 4 settori](cards/multipuzzle-4-settori.md)
 - [Stili puzzle alternativi](cards/stili-puzzle-alternativi.md)
 - [Rivedere il tipo `Face` in `CardFaceNav`](cards/tipo-face-cardfacenav.md)
-- [Hover sulle voci del menu laterale](cards/hover-menu-laterale.md)
 - [Un esempio di coordinate più noto e più universale](cards/esempio-coordinate-universale.md)
 - [Bottone di download più evidente](cards/bottone-download-evidente.md)
 - [Far capire che il link è il lavoro salvato](cards/persistenza-e-condivisione.md)
@@ -52,5 +51,6 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 ## DONE
 
+- [Hover sulle voci del menu laterale](cards/hover-menu-laterale.md)
 - [L'hover sulle sezioni del foglio non si vede](cards/hover-sezioni-del-foglio.md)
 - [Chiarire l'API di `CardFaceEditor`: nome, prop obbligatorie, `face`](cards/api-cardfaceeditor.md)
