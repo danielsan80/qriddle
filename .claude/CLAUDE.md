@@ -1,29 +1,8 @@
 # Regole progetto
 
-Regole sintetiche: scrivi il minimo necessario per essere compresi.
-
 - Dopo `npm run dev`, fornisci solo il link (http://localhost:5173). Non verificare l'output del server.
 - Usa CSS Modules con nesting nativo per i componenti React.
-- Termina i file con newline.
-- Commenti nel codice in inglese.
-- Commenti: pochi. Se serve un commento per spiegare **cosa** fa il codice, riscrivi il
-  codice in modo ovvio e togli il commento, anche a costo di scrivere più righe. Restano
-  solo i commenti che dicono **perché**, quando la ragione non si deduce leggendo (una
-  stranezza del browser, un vincolo esterno, una decisione presa altrove).
-- Feedback onesto: evidenzia problemi e alternative migliori senza giri di parole.
-- Test first: scrivi i test prima dell'implementazione.
-- Asserzioni: evita assertion roulette. Asserisci sul valore intero, non sulle sue parti.
-  - OK: `toEqual([...])` sull'array intero
-  - NO: `toHaveLength(n)` seguito da asserzioni sui singoli elementi
-  - NO: asserzioni separate su parti di un risultato
 - Dopo modifiche, esegui `npm run check` (lint + format + test).
-- Git: non committare né pushare di tua iniziativa, solo su mia richiesta esplicita. Quando dico "committa", scegli tu il messaggio e committa subito — non propormi di committare né chiedermi di revisionare prima (la diff la guardo da solo; se il messaggio non mi piace lo riscrivo io). Messaggi in inglese, con prefisso in stile conventional commit (`feat:`, `fix:`, `docs:`, `test:`, `build:`, `chore:`, `refactor:`… — la lista non è chiusa, scegli quello che descrive il commit). Niente trailer `Co-Authored-By`.
-- Piccoli passi: implementa una cosa alla volta.
-- Librerie esterne: diffuse, ben supportate, componibili, stilizzabili. No monoliti.
-- Nomi variabili: evita nomi da una sola lettera, anche in scope locali (no `e` per edge, usa `edge`).
-- "il file" senza specificare quale = CLAUDE.md
-- "toshl-man" = progetto in `/home/danilo/www/projects/toshl-man`
-- Quando ti parlo in inglese e ti scrivo "eng?", dammi un breve feedback sulle frasi che ho scritto correggendo i miei errori.
 
 ## Kanban
 
