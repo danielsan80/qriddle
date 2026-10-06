@@ -13,6 +13,26 @@ function Body({ children }: { children: ReactNode }) {
   return <div className={styles.body}>{children}</div>;
 }
 
+interface ActionButtonProps {
+  onClick: () => void;
+  label: string;
+  children: ReactNode;
+}
+
+function ActionButton({ onClick, label, children }: ActionButtonProps) {
+  return (
+    <button
+      type="button"
+      className={styles.actionButton}
+      onClick={onClick}
+      aria-label={label}
+      title={label}
+    >
+      {children}
+    </button>
+  );
+}
+
 export function Panel({ children }: { children: ReactNode }) {
   return <div className={styles.panel}>{children}</div>;
 }
@@ -20,3 +40,4 @@ export function Panel({ children }: { children: ReactNode }) {
 Panel.Title = Title;
 Panel.Actions = Actions;
 Panel.Body = Body;
+Panel.ActionButton = ActionButton;

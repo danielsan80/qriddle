@@ -49,10 +49,9 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 ## DOING
 
-- [Far capire che il link è il lavoro salvato](cards/persistenza-e-condivisione.md)
-
 ## DONE
 
+- [Far capire che il link è il lavoro salvato](cards/persistenza-e-condivisione.md)
 - [Bottone di download più evidente](cards/bottone-download-evidente.md)
 - [Hover sulle voci del menu laterale](cards/hover-menu-laterale.md)
 - [L'hover sulle sezioni del foglio non si vede](cards/hover-sezioni-del-foglio.md)

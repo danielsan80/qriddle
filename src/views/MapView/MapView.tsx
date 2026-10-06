@@ -135,23 +135,12 @@ export function MapView() {
       <Panel>
         <Panel.Title>Preview</Panel.Title>
         <Panel.Actions>
-          <div className={styles.seedActions}>
-            <input
-              type="text"
-              className={styles.seedInput}
-              aria-label="Seed"
-              value={seed}
-              onChange={(event) => setSeed(event.target.value)}
-            />
-            <button
-              type="button"
-              className={styles.seedButton}
-              title="Regenerate seed"
-              onClick={() => setSeed(generateSeed())}
-            >
-              ↻
-            </button>
-          </div>
+          <Panel.ActionButton
+            label="Another puzzle"
+            onClick={() => setSeed(generateSeed())}
+          >
+            ↻
+          </Panel.ActionButton>
         </Panel.Actions>
         <Panel.Body>
           <CanvasStage show={showCanvas}>

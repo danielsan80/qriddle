@@ -18,5 +18,6 @@ interfaccia"): toglierlo è una decisione da riprendere, non una pulizia.
 - Bottone "Save" nella sidebar, visibile in ogni passo: copia il link e per 5 secondi
   diventa "Saved! Link copied". "Copy link" non rispondeva a chi cerca come salvare, e
   una riga di spiegazione fissa appesantiva.
-- Seed: via il campo di testo, resta solo il bottone per rigenerare il puzzle. Il seed
-  resta nell'URL.
+- Seed: via il campo di testo, resta solo il bottone ↻ per rigenerare il puzzle, senza
+  etichetta: è autoesplicativo, e chi non lo capisce non perde niente. Il nome "Another
+  puzzle" sta in `aria-label` e `title`. Il seed resta nell'URL.
