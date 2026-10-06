@@ -64,17 +64,16 @@ export function DownloadView() {
         </a>{' '}
         <span className={styles.coffeeIcon}>☕</span>
       </p>
+      <button
+        type="button"
+        className={styles.download}
+        onClick={handleDownload}
+        disabled={puzzle === null}
+      >
+        ↓ Download the PDF
+      </button>
       <Panel>
         <Panel.Title>Preview</Panel.Title>
-        <Panel.Actions>
-          <Panel.ActionButton
-            onClick={handleDownload}
-            disabled={puzzle === null}
-            title="Download PDF"
-          >
-            ↓
-          </Panel.ActionButton>
-        </Panel.Actions>
         <Panel.Body>
           <PreviewStage>
             <div className={styles.previews}>

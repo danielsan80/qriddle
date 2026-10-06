@@ -37,31 +37,3 @@
   border-top: 2px solid var(--grid);
   padding-top: 1rem;
 }
-
-.actionButton {
-  background: var(--accent);
-  color: white;
-  border: 1px solid var(--ink);
-  padding: 0.2rem 0.5rem;
-  font-family: 'Courier Prime', monospace;
-  font-size: 1rem;
-  line-height: 1;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 1px 1px 0 var(--ink);
-
-  &:hover:not(:disabled) {
-    transform: translate(1px, 1px);
-    box-shadow: 0 0 0 var(--ink);
-  }
-
-  &:active:not(:disabled) {
-    transform: translate(1px, 1px);
-    box-shadow: 0 0 0 var(--ink);
-  }
-
-  &:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-}
