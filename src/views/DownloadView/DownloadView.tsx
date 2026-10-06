@@ -70,7 +70,7 @@ export function DownloadView() {
         onClick={handleDownload}
         disabled={puzzle === null}
       >
-        ↓ Download the PDF
+        Download the PDF
       </button>
       <Panel>
         <Panel.Title>Preview</Panel.Title>
