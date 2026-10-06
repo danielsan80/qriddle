@@ -1,4 +1,5 @@
 import { MobileBlock } from './components/MobileBlock';
+import { CopyLink } from './components/CopyLink';
 import { Layout } from './components/layout/Layout';
 import { Sidebar } from './components/layout/Sidebar';
 import {
@@ -24,6 +25,7 @@ function App() {
         <Sidebar>
           <CardFaceNav selected={selectedFace} onSelect={setTrackStep} />
           <TrackNav step={trackStep} onStep={setTrackStep} />
+          <CopyLink />
         </Sidebar>
         <main>
           <StepView />

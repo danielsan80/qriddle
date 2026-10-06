@@ -30,7 +30,6 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [Stili puzzle alternativi](cards/stili-puzzle-alternativi.md)
 - [Rivedere il tipo `Face` in `CardFaceNav`](cards/tipo-face-cardfacenav.md)
 - [Un esempio di coordinate più noto e più universale](cards/esempio-coordinate-universale.md)
-- [Far capire che il link è il lavoro salvato](cards/persistenza-e-condivisione.md)
 - [Altri font per i testi del biglietto](cards/altri-font.md)
 - [Ruotare le scritte](cards/rotazione-scritte.md)
 
@@ -48,6 +47,8 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [Un PageObject per i test dei componenti?](cards/spike-pageobject-nei-test.md)
 
 ## DOING
+
+- [Far capire che il link è il lavoro salvato](cards/persistenza-e-condivisione.md)
 
 ## DONE
 

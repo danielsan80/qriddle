@@ -12,3 +12,11 @@ link" o "salva" che in realtà copia l'URL risponderebbe a tutte e tre.
 
 Il seed era stato messo in vista apposta (vedi DONE, "Mostrare il seed in
 interfaccia"): toglierlo è una decisione da riprendere, non una pulizia.
+
+## Decisioni (ottobre 2026)
+
+- Bottone "Save" nella sidebar, visibile in ogni passo: copia il link e per 5 secondi
+  diventa "Saved! Link copied". "Copy link" non rispondeva a chi cerca come salvare, e
+  una riga di spiegazione fissa appesantiva.
+- Seed: via il campo di testo, resta solo il bottone per rigenerare il puzzle. Il seed
+  resta nell'URL.

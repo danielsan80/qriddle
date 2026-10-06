@@ -1,0 +1,19 @@
+.button {
+  margin-top: auto;
+  width: 100%;
+  background: none;
+  color: var(--paper);
+  border: 1px solid var(--paper);
+  padding: 0.5rem;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover,
+  &.copied {
+    background: var(--paper);
+    color: var(--ink);
+  }
+}
