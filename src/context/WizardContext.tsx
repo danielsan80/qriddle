@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useRef, useState } from 'react';
 import type { Puzzle } from '../lib/domain/puzzle';
 import { Image } from '../lib/domain/image';
 import { Puzzle as PuzzleClass } from '../lib/domain/puzzle';
@@ -19,6 +19,10 @@ interface WizardContextValue {
 const WizardContext = createContext<WizardContextValue | null>(null);
 
 const VALID_STEPS = new Set<string>(TRACK_STEPS.map((s) => s.code));
+
+function hasState(): boolean {
+  return window.location.hash.length > 1;
+}
 
 function readStep(): TrackStep {
   const { step } = readState<{ step?: string }>({});
@@ -44,13 +48,22 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
   const [puzzle, setPuzzle] = useState<Puzzle | null>(readPuzzle);
   const [work, setWork] = useState<Work>(() => workFrom(readState({})));
 
+  const touched = useRef(hasState());
+
   useEffect(() => {
-    mergeState(work);
-  }, [work]);
+    if (touched.current) {
+      mergeState({ step: trackStep, ...work });
+    }
+  }, [trackStep, work]);
 
   function handleSetTrackStep(step: TrackStep) {
-    mergeState({ step });
+    touched.current = true;
     setTrackStep(step);
+  }
+
+  function handleUpdateWork(update: (work: Work) => Work) {
+    touched.current = true;
+    setWork(update);
   }
 
   useEffect(() => {
@@ -71,7 +84,7 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
         puzzle,
         setPuzzle,
         work,
-        updateWork: setWork,
+        updateWork: handleUpdateWork,
       }}
     >
       {children}

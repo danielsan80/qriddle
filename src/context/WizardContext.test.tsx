@@ -72,6 +72,32 @@ describe('WizardContext', () => {
     expect(wizard.current.work).toEqual(work);
   });
 
+  it('leaves the URL empty while nothing has been touched', () => {
+    renderWizard();
+    expect(window.location.hash).toBe('');
+  });
+
+  it.each([
+    {
+      action: 'a step change',
+      touch: (wizard: ReturnType<typeof renderWizard>) =>
+        wizard.current.setTrackStep('inner.map'),
+      step: 'inner.map',
+    },
+    {
+      action: 'a change of the work',
+      touch: (wizard: ReturnType<typeof renderWizard>) =>
+        wizard.current.updateWork((current) => ({ ...current, qrText: 'x' })),
+      step: TRACK_STEPS[0].code,
+    },
+  ])('saves step and work at the first touch: $action', ({ touch, step }) => {
+    const wizard = renderWizard();
+
+    act(() => touch(wizard));
+
+    expect(urlState()).toEqual({ step, ...wizard.current.work });
+  });
+
   it('writes every change of the work into the URL', () => {
     window.location.hash = '#' + encode({ step: 'outer.front' });
     const wizard = renderWizard();
