@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { useWizard } from '../../context/useWizard';
 import { workFrom } from '../../context/work';
-import { decode } from '../browser/urlState';
+import { decode } from '../../lib/browser/urlState';
 import { getExampleHash } from './examples';
 import styles from './ExampleLink.module.css';
 

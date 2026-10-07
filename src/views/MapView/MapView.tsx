@@ -8,7 +8,7 @@ import { Image } from '../../lib/domain/image';
 import { Puzzle } from '../../lib/domain/puzzle';
 import { renderInnerPdfPreview, renderImage } from '../../lib/render';
 import { createRandom, generateSeed, getQRMatrix } from '../../lib/util';
-import { ExampleLink } from '../../lib/util/ExampleLink';
+import { ExampleLink } from './ExampleLink';
 import { config } from '../../lib/config';
 import styles from './MapView.module.css';
 
