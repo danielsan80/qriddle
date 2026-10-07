@@ -28,20 +28,23 @@ suoi file sotto `/qriddle/` e si rompe.
 - record `CNAME` da `www` a `danielsan80.github.io` su Cloudflare, proxy spento, così
   `www.qriddle.app` porta al dominio principale.
 
-Da verificare dopo:
+## Esito (7 ottobre 2026)
 
-- che `danilosanchi.net/qriddle/` reindirizzi a `qriddle.app`, e che il frammento `#…`
-  con il lavoro salvato sopravviva al redirect: i link già condivisi devono continuare a
-  funzionare;
-- l'anteprima del link (Open Graph) col dominio nuovo, e il Post Inspector di LinkedIn per
-  rinfrescare quella dei post già condivisi.
+Online su `https://qriddle.app`. Il dominio su Pages è stato impostato via API subito dopo
+il deploy, e il certificato è arrivato in un paio di minuti: l'app è rimasta irraggiungibile
+solo per quel tempo.
 
-Dopo, con calma:
+Verificato:
 
-- Google Search Console: `qriddle.app` come proprietà, e la sitemap. Il "cambio di
-  indirizzo" non serve: vale per un dominio intero, non per una sottocartella;
-- il link sulla pagina Ko-fi, se cita l'indirizzo dell'app;
-- sito, CV e LinkedIn: si aggiorna la fonte in danilosanchi.net, e il resto si ricava da lì.
+- `danilosanchi.net/qriddle/` reindirizza a `https://qriddle.app/` con un 301, e un vecchio
+  link col lavoro salvato nel frammento `#…` lo riapre;
+- `http://` reindirizza a `https://`;
+- file JavaScript e immagine di anteprima rispondono dal dominio nuovo;
+- Umami registra: il sito in Umami è lo stesso, rinominato col dominio nuovo, e lo storico
+  resta.
+
+Il resto, attività manuali, sta in
+[Strascichi del cambio di dominio](strascichi-cambio-dominio.md).
 
 Il redirect da `danilosanchi.net/qriddle` serve a una transizione morbida: biglietti
 stampati col vecchio indirizzo non risultano.
