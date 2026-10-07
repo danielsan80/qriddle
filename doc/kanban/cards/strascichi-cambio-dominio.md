@@ -1,18 +1,17 @@
 # Strascichi del cambio di dominio
 
-Dopo lo spostamento su `qriddle.app` (vedi
-[Spostare l'app su qriddle.app](dominio-qriddle-app.md)), da fare a mano:
+Il lavoro a mano dopo lo spostamento su `qriddle.app` (vedi
+[Spostare l'app su qriddle.app](dominio-qriddle-app.md)):
 
-- **certificato di `www.qriddle.app`**: il record `CNAME` c'è, e in HTTP `www` reindirizza
-  già al dominio principale; il certificato che copre anche `www` GitHub lo stava
-  emettendo. Se non arriva, togliere e rimettere il dominio nelle impostazioni di Pages
-  perché lo riemetta. Finché manca, `www.qriddle.app` dà errore di certificato, perché
-  `.app` impone HTTPS;
-- **Google Search Console**: `qriddle.app` come proprietà, e la sitemap. Il "cambio di
-  indirizzo" non serve: vale per un dominio intero, non per una sottocartella;
-- **LinkedIn**: rinfrescare col Post Inspector l'anteprima dei post che citavano il
-  vecchio indirizzo;
-- **Ko-fi**: il link sulla pagina, se cita l'indirizzo dell'app.
+- Ko-fi, sito, CV e profilo LinkedIn citano il nuovo indirizzo;
+- il certificato di `www.qriddle.app` è stato emesso dopo aver tolto e rimesso il dominio
+  nelle impostazioni di Pages;
+- su Google Search Console `qriddle.app` è una proprietà di tipo Dominio, verificata col
+  record TXT. Il "cambio di indirizzo" non serve: vale per un dominio intero, non per una
+  sottocartella;
+- il Post Inspector di LinkedIn ha riletto il vecchio e il nuovo indirizzo; nessun post
+  citava qriddle, solo il link fra i contenuti multimediali del progetto.
 
-Sito, CV e LinkedIn come contenuti sono lavoro di danilosanchi.net: si aggiorna la sua
-fonte, e il resto si ricava da lì.
+Da ricontrollare: la sitemap, inviata il 7 ottobre, deve passare da "Impossibile
+recuperare" a "Riuscito". Se resta ferma per giorni con una data in "Ultima lettura",
+provare `https://qriddle.app/sitemap.xml` con Controllo URL, "Testa URL live".

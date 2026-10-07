@@ -41,7 +41,6 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 ### Operations
 
-- [Strascichi del cambio di dominio](cards/strascichi-cambio-dominio.md)
 - [Proporre QRiddle su Reddit](cards/proposta-su-reddit.md)
 
 ### Spike
@@ -55,6 +54,7 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 ## DONE
 
+- [Strascichi del cambio di dominio](cards/strascichi-cambio-dominio.md)
 - [Spostare l'app su qriddle.app](cards/dominio-qriddle-app.md)
 - [Un esempio di coordinate più noto e più universale](cards/esempio-coordinate-universale.md)
 - [Far capire che il link è il lavoro salvato](cards/persistenza-e-condivisione.md)
