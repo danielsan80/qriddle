@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import { useWizard } from '../../context/useWizard';
-import { TRACK_STEPS } from '../../components/navigation/TrackNav';
+import {
+  TRACK_STEPS,
+  type TrackStep,
+} from '../../components/navigation/TrackNav';
 import { ShipIcon } from '../../components/icon/ShipIcon';
 import { IntroView } from '../IntroView';
 import { MapView } from '../MapView';
@@ -10,7 +13,7 @@ import { BackView } from '../BackView';
 import { DownloadView } from '../DownloadView';
 import styles from './StepView.module.css';
 
-function currentView(step: ReturnType<typeof useWizard>['trackStep']) {
+function currentView(step: TrackStep) {
   switch (step) {
     case 'intro':
       return <IntroView />;
@@ -27,19 +30,15 @@ function currentView(step: ReturnType<typeof useWizard>['trackStep']) {
   }
 }
 
+type Step = (typeof TRACK_STEPS)[number];
+
 interface StepNavBarProps {
-  prevStep: (typeof TRACK_STEPS)[number] | undefined;
-  nextStep: (typeof TRACK_STEPS)[number] | undefined;
-  onPrevious: () => void;
-  onNext: () => void;
+  prevStep: Step | undefined;
+  nextStep: Step | undefined;
+  onStep: (step: TrackStep) => void;
 }
 
-function StepNavBar({
-  prevStep,
-  nextStep,
-  onPrevious,
-  onNext,
-}: StepNavBarProps) {
+function StepNavBar({ prevStep, nextStep, onStep }: StepNavBarProps) {
   if (!prevStep && !nextStep) return null;
   return (
     <div className={styles.stepNav}>
@@ -47,7 +46,7 @@ function StepNavBar({
         <button
           type="button"
           className={styles.stepNavButton}
-          onClick={onPrevious}
+          onClick={() => onStep(prevStep.code)}
         >
           <ShipIcon mirrored /> Previous
         </button>
@@ -55,7 +54,11 @@ function StepNavBar({
         <span className={styles.stepNavSpacer} />
       )}
       {nextStep && (
-        <button type="button" className={styles.stepNavButton} onClick={onNext}>
+        <button
+          type="button"
+          className={styles.stepNavButton}
+          onClick={() => onStep(nextStep.code)}
+        >
           Next <ShipIcon />
         </button>
       )}
@@ -66,36 +69,24 @@ function StepNavBar({
 export function StepView() {
   const { trackStep, setTrackStep } = useWizard();
   const index = TRACK_STEPS.findIndex((s) => s.code === trackStep);
-  const prevStep = TRACK_STEPS[index - 1];
-  const nextStep = TRACK_STEPS[index + 1];
 
   useEffect(() => {
     document.querySelector('main')?.scrollTo(0, 0);
   }, [trackStep]);
 
-  function handlePrevious() {
-    setTrackStep(prevStep!.code);
-  }
-
-  function handleNext() {
-    setTrackStep(nextStep!.code);
-  }
+  const stepNavBar = (
+    <StepNavBar
+      prevStep={TRACK_STEPS[index - 1]}
+      nextStep={TRACK_STEPS[index + 1]}
+      onStep={setTrackStep}
+    />
+  );
 
   return (
     <>
-      <StepNavBar
-        prevStep={prevStep}
-        nextStep={nextStep}
-        onPrevious={handlePrevious}
-        onNext={handleNext}
-      />
+      {stepNavBar}
       {currentView(trackStep)}
-      <StepNavBar
-        prevStep={prevStep}
-        nextStep={nextStep}
-        onPrevious={handlePrevious}
-        onNext={handleNext}
-      />
+      {stepNavBar}
     </>
   );
 }
