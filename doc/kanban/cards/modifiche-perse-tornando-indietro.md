@@ -82,15 +82,25 @@ Prima di correggere, una precisazione sulla causa: il lavoro dei passi successiv
 anche senza modificare niente. Previous e poi Next basta: Next aggiunge una voce nuova e il
 browser butta via quelle "avanti", compresa l'unica che conteneva C.
 
-La regola adottata: **la cronologia ricorda il passo, non i dati**.
+Prima regola provata, su `fix/history-remembers-steps`: la cronologia ricorda il passo, non
+i dati. Il lavoro stava nel context e al `popstate` si prendeva dall'URL solo il passo.
+Funzionava, ma restava fragile: Previous era `history.back()`, quindi dipendeva da cosa
+c'era nella voce precedente (dopo un esempio, o dopo una ricarica, sbagliava strada).
 
-- il lavoro (`qrText`, `seed`, `textBoxes`) sta in un posto solo, `WizardContext`: si
-  legge dall'URL all'avvio e a ogni modifica si riscrive nella voce corrente;
-- al `popstate`, da Back, Forward o Previous, si prende dall'URL solo il passo, e la voce
-  corrente riceve subito il lavoro attuale: l'URL che si ha davanti resta il lavoro salvato;
-- `MapView`, `useOuterTextBoxes` e `DownloadView` non leggono più l'URL: usano il context.
+La regola adottata il 2026-10-07: **la cronologia del browser non c'entra con l'app**.
 
-Gli esempi caricavano il loro stato aggiungendo una voce alla cronologia e simulando un
-`popstate`, quindi Back riportava al lavoro di prima. Ora passano dal context e
-sostituiscono il lavoro senza chiedere conferma, come aprire un altro documento: deciso
-così il 2026-10-07.
+- quattro modi di navigare, ma due sistemi: Next, Previous, roadmap e fogli cambiano il
+  passo, e il browser ha la sua cronologia. I primi tre sono l'unico modo di muoversi
+  dentro l'app;
+- ogni scrittura nell'URL, passo compreso, è un `replace`: una sola voce di cronologia,
+  sempre aggiornata. Back del browser esce dall'app, Forward ci riporta, col lavoro intatto;
+- Previous è "passo meno uno", come Next è "più uno": funziona anche dopo una ricarica;
+- il lavoro (`qrText`, `seed`, `textBoxes`) sta in un posto solo, `WizardContext`;
+  `MapView`, `useOuterTextBoxes` e `DownloadView` non leggono più l'URL;
+- un hash cambiato da fuori (un link incollato nella barra degli indirizzi) scatena un
+  `hashchange`: si apre come un documento nuovo, passo, puzzle e lavoro;
+- gli esempi sostituiscono il lavoro senza chiedere conferma, come aprire un altro
+  documento.
+
+Messo in conto: chi preme Back e poi chiude la scheda perde il lavoro non salvato, e uno
+swipe sul trackpad fa uscire dall'app. Il bottone Save serve a questo.

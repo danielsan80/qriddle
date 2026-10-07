@@ -1,4 +1,4 @@
-import { createContext, useEffect, useRef, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import type { Puzzle } from '../lib/domain/puzzle';
 import { Image } from '../lib/domain/image';
 import { Puzzle as PuzzleClass } from '../lib/domain/puzzle';
@@ -33,7 +33,7 @@ function buildPuzzle(qrText: string, seed: string): Puzzle {
   return PuzzleClass.create(qrImage.x2(), createRandom(seed));
 }
 
-function getInitialPuzzle(): Puzzle | null {
+function readPuzzle(): Puzzle | null {
   const { qrText, seed } = readState<{ qrText?: string; seed?: string }>({});
   if (!qrText || !seed) return null;
   return buildPuzzle(qrText, seed);
@@ -41,29 +41,27 @@ function getInitialPuzzle(): Puzzle | null {
 
 export function WizardProvider({ children }: { children: React.ReactNode }) {
   const [trackStep, setTrackStep] = useState<TrackStep>(readStep);
-  const [puzzle, setPuzzle] = useState<Puzzle | null>(getInitialPuzzle);
+  const [puzzle, setPuzzle] = useState<Puzzle | null>(readPuzzle);
   const [work, setWork] = useState<Work>(() => workFrom(readState({})));
 
-  // @rev the popstate listener is registered once, so it reads the latest work through the ref instead of a stale closure.
-  const workRef = useRef(work);
   useEffect(() => {
-    workRef.current = work;
     mergeState(work, 'replace');
   }, [work]);
 
   function handleSetTrackStep(step: TrackStep) {
-    mergeState({ step }, 'push');
+    mergeState({ step }, 'replace');
     setTrackStep(step);
   }
 
   useEffect(() => {
-    function handlePopState() {
-      // @rev the URL is already the old entry here: keep its step, overwrite the work with the current one.
-      mergeState(workRef.current, 'replace');
+    // @rev replaceState never fires hashchange: this only runs for a hash changed from outside, such as a link pasted in the address bar.
+    function handleHashChange() {
       setTrackStep(readStep());
+      setPuzzle(readPuzzle());
+      setWork(workFrom(readState({})));
     }
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
   return (

@@ -88,16 +88,12 @@ describe('StepView', () => {
     expect(setTrackStep).toHaveBeenCalledWith('inner.map');
   });
 
-  it('calls history.back on previous-step button click', async () => {
-    const historyBack = vi
-      .spyOn(window.history, 'back')
-      .mockImplementation(() => {});
-    renderWithStep('inner.map');
+  it('calls setTrackStep with previous step on previous-step button click', async () => {
+    const { setTrackStep } = renderWithStep('outer.front');
     await userEvent.click(
       screen.getAllByRole('button', { name: /previous/i })[0],
     );
-    expect(historyBack).toHaveBeenCalledOnce();
-    historyBack.mockRestore();
+    expect(setTrackStep).toHaveBeenCalledWith('inner.map');
   });
 });
 

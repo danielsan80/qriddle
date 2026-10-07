@@ -6,6 +6,7 @@ import { useWizard } from './useWizard';
 import { TRACK_STEPS } from '../components/navigation/TrackNav';
 import { encode, readState } from '../lib/browser/urlState';
 import { config } from '../lib/config';
+import { Puzzle } from '../lib/domain/puzzle';
 import type { FacedTextBox } from '../views/useOuterTextBoxes';
 
 function wrapper({ children }: { children: React.ReactNode }) {
@@ -80,61 +81,39 @@ describe('WizardContext', () => {
     expect(urlState()).toEqual({ step: 'outer.front', ...work });
   });
 
-  it('takes only the step from the URL on popstate, and writes the current work back', () => {
+  it('changes step without adding entries to the browser history', () => {
     const wizard = renderWizard();
-    act(() => wizard.current.updateWork(() => work));
+    const entries = history.length;
 
-    window.location.hash =
-      '#' + encode({ step: 'inner.map', qrText: 'old', textBoxes: [] });
-    act(() => window.dispatchEvent(new PopStateEvent('popstate')));
-
-    expect({
-      trackStep: wizard.current.trackStep,
-      work: wizard.current.work,
-      url: urlState(),
-    }).toEqual({
-      trackStep: 'inner.map',
-      work,
-      url: { step: 'inner.map', ...work },
-    });
-  });
-
-  it('goes back to the first step from the second one', async () => {
-    const wizard = renderWizard();
-    act(() => wizard.current.setTrackStep(TRACK_STEPS[1].code));
-
-    act(() => history.back());
-
-    await waitFor(() =>
-      expect(wizard.current.trackStep).toBe(TRACK_STEPS[0].code),
-    );
-  });
-
-  it('keeps what was written in later steps after Previous and Next', async () => {
-    const wizard = renderWizard();
-    const boxes = [box('A', 'front'), box('B', 'center'), box('C', 'back')];
-    function writeOn(step: FacedTextBox['face'], textBox: FacedTextBox) {
-      act(() => wizard.current.setTrackStep(`outer.${step}`));
-      act(() =>
-        wizard.current.updateWork((current) => ({
-          ...current,
-          textBoxes: [...current.textBoxes, textBox],
-        })),
-      );
-    }
-    writeOn('front', boxes[0]);
-    writeOn('center', boxes[1]);
-    writeOn('back', boxes[2]);
-
-    act(() => history.back());
-    await waitFor(() => expect(wizard.current.trackStep).toBe('outer.center'));
+    act(() => wizard.current.setTrackStep('outer.front'));
     act(() => wizard.current.setTrackStep('outer.back'));
 
-    expect(urlState()).toEqual({
-      step: 'outer.back',
-      qrText: config.defaultQrText,
-      seed: expect.any(String),
-      textBoxes: boxes,
+    expect({ entries: history.length, url: urlState() }).toEqual({
+      entries,
+      url: {
+        step: 'outer.back',
+        qrText: config.defaultQrText,
+        seed: expect.any(String),
+        textBoxes: [],
+      },
     });
+  });
+
+  it('opens the step, the puzzle and the work of a link pasted in the address bar', async () => {
+    const wizard = renderWizard();
+
+    window.location.hash = '#' + encode({ step: 'outer.center', ...work });
+
+    await waitFor(() =>
+      expect({
+        trackStep: wizard.current.trackStep,
+        puzzle: wizard.current.puzzle,
+        work: wizard.current.work,
+      }).toEqual({
+        trackStep: 'outer.center',
+        puzzle: expect.any(Puzzle),
+        work,
+      }),
+    );
   });
 });

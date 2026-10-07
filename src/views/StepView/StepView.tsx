@@ -30,10 +30,16 @@ function currentView(step: ReturnType<typeof useWizard>['trackStep']) {
 interface StepNavBarProps {
   prevStep: (typeof TRACK_STEPS)[number] | undefined;
   nextStep: (typeof TRACK_STEPS)[number] | undefined;
+  onPrevious: () => void;
   onNext: () => void;
 }
 
-function StepNavBar({ prevStep, nextStep, onNext }: StepNavBarProps) {
+function StepNavBar({
+  prevStep,
+  nextStep,
+  onPrevious,
+  onNext,
+}: StepNavBarProps) {
   if (!prevStep && !nextStep) return null;
   return (
     <div className={styles.stepNav}>
@@ -41,7 +47,7 @@ function StepNavBar({ prevStep, nextStep, onNext }: StepNavBarProps) {
         <button
           type="button"
           className={styles.stepNavButton}
-          onClick={() => history.back()}
+          onClick={onPrevious}
         >
           <ShipIcon mirrored /> Previous
         </button>
@@ -49,7 +55,11 @@ function StepNavBar({ prevStep, nextStep, onNext }: StepNavBarProps) {
         <span className={styles.stepNavSpacer} />
       )}
       {nextStep && (
-        <button type="button" className={styles.stepNavButton} onClick={onNext}>
+        <button
+          type="button"
+          className={styles.stepNavButton}
+          onClick={onNext}
+        >
           Next <ShipIcon />
         </button>
       )}
@@ -67,15 +77,29 @@ export function StepView() {
     document.querySelector('main')?.scrollTo(0, 0);
   }, [trackStep]);
 
+  function handlePrevious() {
+    setTrackStep(prevStep!.code);
+  }
+
   function handleNext() {
     setTrackStep(nextStep!.code);
   }
 
   return (
     <>
-      <StepNavBar prevStep={prevStep} nextStep={nextStep} onNext={handleNext} />
+      <StepNavBar
+        prevStep={prevStep}
+        nextStep={nextStep}
+        onPrevious={handlePrevious}
+        onNext={handleNext}
+      />
       {currentView(trackStep)}
-      <StepNavBar prevStep={prevStep} nextStep={nextStep} onNext={handleNext} />
+      <StepNavBar
+        prevStep={prevStep}
+        nextStep={nextStep}
+        onPrevious={handlePrevious}
+        onNext={handleNext}
+      />
     </>
   );
 }
