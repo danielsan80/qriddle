@@ -18,8 +18,8 @@ export function MapView() {
   const { setPuzzle, work, updateWork } = useWizard();
   const { qrText, seed } = work;
 
-  function setQrText(text: string) {
-    updateWork((current) => ({ ...current, qrText: text }));
+  function setQrText(newQrText: string) {
+    updateWork((current) => ({ ...current, qrText: newQrText }));
   }
 
   function setSeed(newSeed: string) {
@@ -71,7 +71,7 @@ export function MapView() {
               id="qrText"
               className={styles.treasureInput}
               value={qrText}
-              onChange={(e) => setQrText(e.target.value)}
+              onChange={(event) => setQrText(event.target.value)}
               onBlur={handleQrTextBlur}
               placeholder="link · secret code · virtual gift"
             />

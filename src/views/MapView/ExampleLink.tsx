@@ -18,8 +18,8 @@ export function ExampleLink({ code, children }: ExampleLinkProps) {
     <a
       href={`#${hash}`}
       className={styles.link}
-      onClick={(e) => {
-        e.preventDefault();
+      onClick={(event) => {
+        event.preventDefault();
         updateWork((current) => workFrom(decode(hash, current)));
       }}
     >
