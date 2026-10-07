@@ -4,10 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MapView } from './MapView';
 import { config } from '../../lib/config';
 import { readState } from '../../lib/browser/urlState';
-
-vi.mock('../../context/useWizard', () => ({
-  useWizard: () => ({ setPuzzle: vi.fn(), puzzle: null }),
-}));
+import { WizardProvider } from '../../context/WizardContext';
 
 vi.mock('../../lib/render', () => ({
   renderImage: vi.fn(),
@@ -15,8 +12,16 @@ vi.mock('../../lib/render', () => ({
   downloadPuzzlePdf: vi.fn(),
 }));
 
+function renderInWizard() {
+  render(
+    <WizardProvider>
+      <MapView />
+    </WizardProvider>,
+  );
+}
+
 function renderMapView() {
-  render(<MapView />);
+  renderInWizard();
   return screen.getByLabelText(/enter the secret text/i) as HTMLInputElement;
 }
 
@@ -44,6 +49,14 @@ describe('MapView', () => {
 
     expect(input.value).toBe('custom text');
   });
+
+  it('loads an example into the secret text', async () => {
+    const input = renderMapView();
+
+    await userEvent.click(screen.getByRole('link', { name: 'coordinates' }));
+
+    expect(input.value).toBe('https://www.google.com/maps?q=44.18,12.6167');
+  });
 });
 
 describe('MapView puzzle seed', () => {
@@ -57,7 +70,7 @@ describe('MapView puzzle seed', () => {
   });
 
   it('shows the another puzzle button as ↻', () => {
-    render(<MapView />);
+    renderInWizard();
 
     expect(
       screen.getByRole('button', { name: 'Another puzzle' }),
@@ -65,7 +78,7 @@ describe('MapView puzzle seed', () => {
   });
 
   it('draws another puzzle with a new seed', async () => {
-    render(<MapView />);
+    renderInWizard();
     const firstSeed = seedInUrl();
 
     await userEvent.click(

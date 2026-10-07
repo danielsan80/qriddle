@@ -75,3 +75,22 @@ un posto solo sopra le viste, invece di una copia per hook.
 Rimedio minimo, se la radice non si tocca: leggere l'URL al momento della scrittura invece
 di partire dalla copia in stato — `mergeState` già rilegge, ma per fondere `step`, non le
 caselle.
+
+## Correzione (2026-10-07)
+
+Prima di correggere, una precisazione sulla causa: il lavoro dei passi successivi si perde
+anche senza modificare niente. Previous e poi Next basta: Next aggiunge una voce nuova e il
+browser butta via quelle "avanti", compresa l'unica che conteneva C.
+
+La regola adottata: **la cronologia ricorda il passo, non i dati**.
+
+- il lavoro (`qrText`, `seed`, `textBoxes`) sta in un posto solo, `WizardContext`: si
+  legge dall'URL all'avvio e a ogni modifica si riscrive nella voce corrente;
+- al `popstate`, da Back, Forward o Previous, si prende dall'URL solo il passo, e la voce
+  corrente riceve subito il lavoro attuale: l'URL che si ha davanti resta il lavoro salvato;
+- `MapView`, `useOuterTextBoxes` e `DownloadView` non leggono più l'URL: usano il context.
+
+Gli esempi caricavano il loro stato aggiungendo una voce alla cronologia e simulando un
+`popstate`, quindi Back riportava al lavoro di prima. Ora passano dal context e
+sostituiscono il lavoro senza chiedere conferma, come aprire un altro documento: deciso
+così il 2026-10-07.

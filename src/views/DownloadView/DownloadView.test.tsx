@@ -4,9 +4,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DownloadView } from './DownloadView';
 import { downloadPuzzlePdf } from '../../lib/render';
 
-const wizard: { puzzle: object | null } = vi.hoisted(() => ({
-  puzzle: null,
-}));
+const wizard: { puzzle: object | null; work: { textBoxes: object[] } } =
+  vi.hoisted(() => ({ puzzle: null, work: { textBoxes: [] } }));
 
 vi.mock('../../context/useWizard', () => ({
   useWizard: () => wizard,
@@ -27,14 +26,16 @@ describe('DownloadView', () => {
     vi.mocked(downloadPuzzlePdf).mockClear();
   });
 
-  it('downloads the puzzle PDF from the labelled button', async () => {
+  it('downloads the puzzle PDF, with the text boxes, from the labelled button', async () => {
     const puzzle = {};
+    const textBoxes = [{ id: '1', text: 'hi', face: 'front' }];
     wizard.puzzle = puzzle;
+    wizard.work.textBoxes = textBoxes;
     render(<DownloadView />);
 
     await userEvent.click(downloadButton());
 
-    expect(downloadPuzzlePdf).toHaveBeenCalledWith(puzzle, []);
+    expect(downloadPuzzlePdf).toHaveBeenCalledWith(puzzle, textBoxes);
   });
 
   it('disables the download until the puzzle exists', () => {

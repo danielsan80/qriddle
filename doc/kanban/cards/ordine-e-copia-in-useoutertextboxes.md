@@ -30,6 +30,11 @@ in modo stabile alla lettura. Da decidere se l'ordine debba avere un significato
 
 ## 2. Il "una vista per volta" è un invariante non scritto
 
+Risolto il 2026-10-07 con
+[Modificare una facciata cancella quelle successive](modifiche-perse-tornando-indietro.md):
+le caselle stanno in `WizardContext`, e l'hook è solo una lente sulla fetta della facciata.
+Resta il punto 1.
+
 Ogni chiamata a `useOuterTextBoxes` fa `useState` seminato dall'URL, quindi front, center e
 back terrebbero **tre copie indipendenti dell'array intero**. Non si pestano i piedi per un
 motivo solo: `StepView` è uno `switch` che monta una vista per volta, quindi le copie non

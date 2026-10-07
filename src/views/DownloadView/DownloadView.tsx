@@ -7,18 +7,13 @@ import {
   renderOuterPdfPreview,
 } from '../../lib/render';
 import { PreviewStage } from '../../components/stages/PreviewStage';
-import { readState } from '../../lib/browser/urlState';
-import type { FacedTextBox } from '../useOuterTextBoxes';
 import { config } from '../../lib/config';
 import { cardFontDescriptor, loadFont } from '../../lib/util';
 import styles from './DownloadView.module.css';
 
-function getTextBoxes(): FacedTextBox[] {
-  return readState<{ textBoxes?: FacedTextBox[] }>({}).textBoxes ?? [];
-}
-
 export function DownloadView() {
-  const { puzzle } = useWizard();
+  const { puzzle, work } = useWizard();
+  const { textBoxes } = work;
   const innerCanvasRef = useRef<HTMLCanvasElement>(null);
   const outerCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -35,15 +30,15 @@ export function DownloadView() {
     const canvas = outerCanvasRef.current;
     if (canvas) {
       void loadFont(cardFontDescriptor).then(() =>
-        renderOuterPdfPreview(canvas, getTextBoxes()),
+        renderOuterPdfPreview(canvas, textBoxes),
       );
     }
-  }, []);
+  }, [textBoxes]);
 
   function handleDownload() {
     if (puzzle) {
       window.umami?.track('download');
-      void downloadPuzzlePdf(puzzle, getTextBoxes());
+      void downloadPuzzlePdf(puzzle, textBoxes);
     }
   }
 

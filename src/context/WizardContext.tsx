@@ -1,23 +1,26 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useRef, useState } from 'react';
 import type { Puzzle } from '../lib/domain/puzzle';
 import { Image } from '../lib/domain/image';
 import { Puzzle as PuzzleClass } from '../lib/domain/puzzle';
 import { type TrackStep, TRACK_STEPS } from '../components/navigation/TrackNav';
 import { readState, mergeState } from '../lib/browser/urlState';
 import { createRandom, getQRMatrix } from '../lib/util';
+import { type Work, workFrom } from './work';
 
 interface WizardContextValue {
   trackStep: TrackStep;
   setTrackStep: (step: TrackStep) => void;
   puzzle: Puzzle | null;
   setPuzzle: (puzzle: Puzzle | null) => void;
+  work: Work;
+  updateWork: (update: (work: Work) => Work) => void;
 }
 
 const WizardContext = createContext<WizardContextValue | null>(null);
 
 const VALID_STEPS = new Set<string>(TRACK_STEPS.map((s) => s.code));
 
-function getInitialStep(): TrackStep {
+function readStep(): TrackStep {
   const { step } = readState<{ step?: string }>({});
   return step && VALID_STEPS.has(step)
     ? (step as TrackStep)
@@ -37,8 +40,16 @@ function getInitialPuzzle(): Puzzle | null {
 }
 
 export function WizardProvider({ children }: { children: React.ReactNode }) {
-  const [trackStep, setTrackStep] = useState<TrackStep>(getInitialStep);
+  const [trackStep, setTrackStep] = useState<TrackStep>(readStep);
   const [puzzle, setPuzzle] = useState<Puzzle | null>(getInitialPuzzle);
+  const [work, setWork] = useState<Work>(() => workFrom(readState({})));
+
+  // @rev the popstate listener is registered once, so it reads the latest work through the ref instead of a stale closure.
+  const workRef = useRef(work);
+  useEffect(() => {
+    workRef.current = work;
+    mergeState(work, 'replace');
+  }, [work]);
 
   function handleSetTrackStep(step: TrackStep) {
     mergeState({ step }, 'push');
@@ -47,11 +58,9 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     function handlePopState() {
-      const { step } = readState<{ step: string }>({ step: getInitialStep() });
-      if (!VALID_STEPS.has(step)) {
-        return;
-      }
-      setTrackStep(step as TrackStep);
+      // @rev the URL is already the old entry here: keep its step, overwrite the work with the current one.
+      mergeState(workRef.current, 'replace');
+      setTrackStep(readStep());
     }
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -64,6 +73,8 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
         setTrackStep: handleSetTrackStep,
         puzzle,
         setPuzzle,
+        work,
+        updateWork: setWork,
       }}
     >
       {children}

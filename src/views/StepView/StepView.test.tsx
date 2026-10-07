@@ -9,16 +9,20 @@ vi.mock('../MapView', () => ({
   MapView: () => <div>MapView</div>,
 }));
 
+function wizardOn(trackStep: TrackStep, setTrackStep = vi.fn()) {
+  return {
+    trackStep,
+    setTrackStep,
+    puzzle: null,
+    setPuzzle: vi.fn(),
+    work: { qrText: '', seed: '', textBoxes: [] },
+    updateWork: vi.fn(),
+  };
+}
+
 function renderWithStep(trackStep: TrackStep, setTrackStep = vi.fn()) {
   render(
-    <WizardContext
-      value={{
-        trackStep,
-        setTrackStep,
-        puzzle: null,
-        setPuzzle: vi.fn(),
-      }}
-    >
+    <WizardContext value={wizardOn(trackStep, setTrackStep)}>
       <StepView />
     </WizardContext>,
   );
@@ -116,14 +120,7 @@ describe('StepView scroll behavior', () => {
   it('scrolls main to top when step changes', () => {
     const { rerender } = render(
       <main>
-        <WizardContext
-          value={{
-            trackStep: 'intro',
-            setTrackStep: vi.fn(),
-            puzzle: null,
-            setPuzzle: vi.fn(),
-          }}
-        >
+        <WizardContext value={wizardOn('intro')}>
           <StepView />
         </WizardContext>
       </main>,
@@ -133,14 +130,7 @@ describe('StepView scroll behavior', () => {
 
     rerender(
       <main>
-        <WizardContext
-          value={{
-            trackStep: 'inner.map',
-            setTrackStep: vi.fn(),
-            puzzle: null,
-            setPuzzle: vi.fn(),
-          }}
-        >
+        <WizardContext value={wizardOn('inner.map')}>
           <StepView />
         </WizardContext>
       </main>,

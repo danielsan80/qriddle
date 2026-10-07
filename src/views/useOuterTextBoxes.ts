@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { readState, mergeState } from '../lib/browser/urlState';
+import { useWizard } from '../context/useWizard';
 import type { TextBox } from '../components/CardFaceEditor';
 
 export type Face = 'front' | 'center' | 'back';
@@ -8,31 +7,21 @@ export interface FacedTextBox extends TextBox {
   face: Face;
 }
 
-interface OuterState {
-  textBoxes?: FacedTextBox[];
-}
-
-function getInitialTextBoxes(): FacedTextBox[] {
-  return readState<OuterState>({}).textBoxes ?? [];
-}
-
 export function useOuterTextBoxes(
   face: Face,
 ): [TextBox[], (boxes: TextBox[]) => void] {
-  const [textBoxes, setTextBoxes] =
-    useState<FacedTextBox[]>(getInitialTextBoxes);
+  const { work, updateWork } = useWizard();
 
-  useEffect(() => {
-    mergeState({ textBoxes }, 'replace');
-  }, [textBoxes]);
-
-  const faceBoxes = textBoxes.filter((tb) => tb.face === face);
+  const faceBoxes = work.textBoxes.filter((tb) => tb.face === face);
 
   function setFaceBoxes(newFaceBoxes: TextBox[]) {
-    setTextBoxes((prev) => [
-      ...prev.filter((tb) => tb.face !== face),
-      ...newFaceBoxes.map((tb) => ({ ...tb, face })),
-    ]);
+    updateWork((current) => ({
+      ...current,
+      textBoxes: [
+        ...current.textBoxes.filter((tb) => tb.face !== face),
+        ...newFaceBoxes.map((tb) => ({ ...tb, face })),
+      ],
+    }));
   }
 
   return [faceBoxes, setFaceBoxes];

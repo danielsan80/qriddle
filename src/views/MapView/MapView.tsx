@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Panel } from '../../components/layout/Panel';
 import { CanvasStage } from '../../components/stages/CanvasStage';
 import { QrcodeCanvas } from '../../components/canvas/QrcodeCanvas';
@@ -10,47 +10,24 @@ import { renderInnerPdfPreview, renderImage } from '../../lib/render';
 import { createRandom, generateSeed, getQRMatrix } from '../../lib/util';
 import { ExampleLink } from '../../lib/util/ExampleLink';
 import { config } from '../../lib/config';
-import { readState, mergeState } from '../../lib/browser/urlState';
 import styles from './MapView.module.css';
 
 const DEBOUNCE_MS = 300;
 
-interface MapState {
-  qrText: string;
-  seed: string;
-}
-
-function getInitialState(): MapState {
-  const state = readState<Partial<MapState>>({});
-  return {
-    qrText: state.qrText ?? config.defaultQrText,
-    seed: state.seed ?? generateSeed(),
-  };
-}
-
 export function MapView() {
-  const { setPuzzle } = useWizard();
+  const { setPuzzle, work, updateWork } = useWizard();
+  const { qrText, seed } = work;
 
-  const [initial] = useState(getInitialState);
-  const [qrText, setQrText] = useState(initial.qrText);
-  const [seed, setSeed] = useState(initial.seed);
+  function setQrText(text: string) {
+    updateWork((current) => ({ ...current, qrText: text }));
+  }
+
+  function setSeed(newSeed: string) {
+    updateWork((current) => ({ ...current, seed: newSeed }));
+  }
 
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
   const puzzleCanvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    mergeState({ qrText, seed }, 'replace');
-  }, [qrText, seed]);
-
-  useEffect(() => {
-    function handlePopState() {
-      const state = readState<Partial<MapState>>({});
-      if (state.qrText !== undefined) setQrText(state.qrText);
-      if (state.seed !== undefined) setSeed(state.seed);
-    }
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
 
   useEffect(() => {
     if (!qrText || !qrCanvasRef.current || !puzzleCanvasRef.current) {
