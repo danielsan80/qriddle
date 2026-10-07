@@ -55,11 +55,7 @@ function StepNavBar({
         <span className={styles.stepNavSpacer} />
       )}
       {nextStep && (
-        <button
-          type="button"
-          className={styles.stepNavButton}
-          onClick={onNext}
-        >
+        <button type="button" className={styles.stepNavButton} onClick={onNext}>
           Next <ShipIcon />
         </button>
       )}
