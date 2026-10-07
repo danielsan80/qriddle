@@ -4,7 +4,7 @@ Hide a message inside a printable greeting card. The card opens into a treasure
 map, the map is a puzzle, and solving the puzzle draws a QR code that decodes back to
 your message.
 
-**Try it: [danilosanchi.net/qriddle](https://danilosanchi.net/qriddle/)**
+**Try it: [qriddle.app](https://qriddle.app/)**
 
 <p>
   <img src="src/assets/photos/front.webp" alt="The card, closed" width="24%">

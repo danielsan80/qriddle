@@ -1,6 +1,6 @@
 export const config = {
   // Site URL (used for credits QR code)
-  siteUrl: 'https://danilosanchi.net/qriddle',
+  siteUrl: 'https://qriddle.app',
 
   // Default QR text (easter egg)
   defaultQrText: 'My precioussss!!!',

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://danilosanchi.net/qriddle/sitemap.xml
+Sitemap: https://qriddle.app/sitemap.xml
