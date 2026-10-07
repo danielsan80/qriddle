@@ -17,6 +17,7 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [L'overlay di modifica non segue lo zoom](cards/overlay-non-segue-lo-zoom.md)
 - [`useOuterTextBoxes`: l'ordine cambia da solo, e ogni vista ha la sua copia](cards/ordine-e-copia-in-useoutertextboxes.md)
 - [Modificare una facciata cancella quelle successive](cards/modifiche-perse-tornando-indietro.md)
+- [La ventola parte nelle viste di modifica](cards/ventola-nelle-viste-di-modifica.md)
 
 ### Refactoring
 
