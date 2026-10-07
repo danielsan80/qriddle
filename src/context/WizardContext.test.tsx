@@ -7,7 +7,7 @@ import { TRACK_STEPS } from '../components/navigation/TrackNav';
 import { encode, readState } from '../lib/browser/urlState';
 import { config } from '../lib/config';
 import { Puzzle } from '../lib/domain/puzzle';
-import type { FacedTextBox } from '../views/useOuterTextBoxes';
+import type { FacedTextBox } from '../lib/domain/card';
 
 function wrapper({ children }: { children: React.ReactNode }) {
   return <WizardProvider>{children}</WizardProvider>;

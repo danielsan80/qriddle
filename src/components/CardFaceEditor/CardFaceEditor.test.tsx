@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { CardFaceEditor, type TextBox } from './CardFaceEditor';
+import { CardFaceEditor } from './CardFaceEditor';
+import type { TextBox } from '../../lib/domain/card';
 
 afterEach(() => vi.restoreAllMocks());
 

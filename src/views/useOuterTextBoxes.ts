@@ -1,11 +1,5 @@
 import { useWizard } from '../context/useWizard';
-import type { TextBox } from '../components/CardFaceEditor';
-
-export type Face = 'front' | 'center' | 'back';
-
-export interface FacedTextBox extends TextBox {
-  face: Face;
-}
+import type { Face, TextBox } from '../lib/domain/card';
 
 export function useOuterTextBoxes(
   face: Face,

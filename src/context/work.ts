@@ -1,6 +1,6 @@
 import { generateSeed } from '../lib/util';
 import { config } from '../lib/config';
-import type { FacedTextBox } from '../views/useOuterTextBoxes';
+import type { FacedTextBox } from '../lib/domain/card';
 
 export type Work = {
   qrText: string;

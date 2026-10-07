@@ -80,6 +80,22 @@ Il puzzle generato (output).
 - `create(image: Image, seed: string): Puzzle` — factory
 - `hasWall(coord: Coord, direction: Direction): boolean`
 
+### Card
+
+Le scritte sulle facciate esterne del biglietto.
+
+**TextBox** — una scritta in coordinate SVG (mm)
+
+- `id: string`
+- `x`, `y: number`
+- `text: string`
+- `fontSize: number`
+
+**Face** — `'front' | 'center' | 'back'`, le facciate esterne su cui si scrive
+
+**FacedTextBox** — `TextBox` con la sua `face: Face`; il biglietto le tiene tutte in un
+array solo
+
 ## Problema
 
 Abbiamo diverse Aree monocromatiche di tile (Cell) quadrate adiacenti ortogonalmente.

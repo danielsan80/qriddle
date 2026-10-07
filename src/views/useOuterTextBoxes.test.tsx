@@ -1,6 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, afterEach } from 'vitest';
-import { useOuterTextBoxes, type FacedTextBox } from './useOuterTextBoxes';
+import { useOuterTextBoxes } from './useOuterTextBoxes';
+import type { FacedTextBox } from '../lib/domain/card';
 import { WizardProvider } from '../context/WizardContext';
 import { useWizard } from '../context/useWizard';
 import { encode } from '../lib/browser/urlState';

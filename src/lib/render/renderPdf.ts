@@ -3,7 +3,7 @@ import { config } from '../config';
 import { Puzzle } from '../domain/puzzle';
 import { renderPuzzle } from './renderPuzzle';
 import { cardFontFamily, getQRDataUrl } from '../util';
-import type { FacedTextBox } from '../../views/useOuterTextBoxes';
+import type { FacedTextBox } from '../domain/card';
 import innerSvgUrl from '../../assets/inner/inner.svg?url';
 import outerSvgUrl from '../../assets/outer/outer.svg?url';
 

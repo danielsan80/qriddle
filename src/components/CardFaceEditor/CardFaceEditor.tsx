@@ -1,17 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { config } from '../../lib/config';
+import type { TextBox } from '../../lib/domain/card';
 import { cardFontFamily, useFontReady } from '../../lib/util';
 import styles from './CardFaceEditor.module.css';
 
 const DRAG_THRESHOLD = 4;
-
-export interface TextBox {
-  id: string;
-  x: number;
-  y: number;
-  text: string;
-  fontSize: number;
-}
 
 interface EditingState {
   id: string;

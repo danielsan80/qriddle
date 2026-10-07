@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { FrontView } from './FrontView';
-import type { TextBox } from '../../components/CardFaceEditor';
+import type { TextBox } from '../../lib/domain/card';
 
 vi.mock('../useOuterTextBoxes', () => ({
   useOuterTextBoxes: vi.fn().mockReturnValue([[], vi.fn()]),
