@@ -6,7 +6,7 @@ restano aperti questi punti.
 
 ## Asset di terzi ancora nel repo
 
-Nessuno: la sezione è chiusa.
+Nessuno nei file attuali.
 
 - ~~**`src/assets/fonts/EdwardianScriptITC.ttf`**~~ — sostituito da Corinthia
   (OFL), self-hostato. Anche DM Serif Display e Courier Prime non arrivano più
@@ -16,6 +16,19 @@ Nessuno: la sezione è chiusa.
   sostituita da una texture generata da `tools/generate-parchment.py`, che
   scrive il JPEG e riscrive il base64 dentro `inner.svg` e `outer.svg` così i
   tre non divergono. `bg_original.jpg` è cancellato.
+
+Nella storia però restano, perché toglierli da un commit non li toglie da quelli
+precedenti (verificato il 2026-10-08):
+
+- `EdwardianScriptITC.ttf` e `Impact.ttf`, font commerciali: entrati in `5c39bab`
+  (marzo), tolti in `3a0be78` e `984c155` (agosto);
+- la pergamena di Vecteezy: entrata in `64c5562` (marzo), tolta in `412e30e`
+  (agosto), anche nel base64 delle versioni di allora di `inner.svg` e `outer.svg`.
+
+La licenza dei font commerciali in genere vieta di ridistribuirli, e un repo
+pubblico con la storia li ridistribuisce a chiunque lo cloni. È l'unico motivo
+concreto, legale e non di gusto, per riscrivere la storia: vedi la nota in fondo
+a "Dove vivono `.claude/` e il kanban".
 
 Il `NOTICE` ora dichiara che tutte le immagini sono opera originale. Le icone
 (`compass.png`, `palm.png`, `ship.png`, `vulcan.png`, `doc/data/map-icons.svg`)
@@ -65,7 +78,9 @@ Nota sulla storia: quel materiale è già nei commit pubblici. Toglierlo da qui 
 avanti non lo cancella — servirebbe riscrivere la storia (`git filter-repo`) e un
 push forzato, con i fork e le cache di GitHub che possono comunque conservarlo.
 Da valutare se ne vale la pena: il contenuto attuale è imbarazzante più che
-rischioso.
+rischioso. Non vale per i font commerciali della sezione "Asset di terzi": se si
+riscrive la storia, vanno tolti anche quelli, ed è la ragione più solida per
+farlo.
 
 ## Nota tecnica emersa
 
