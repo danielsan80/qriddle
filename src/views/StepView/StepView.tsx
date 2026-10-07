@@ -1,9 +1,6 @@
 import { useEffect } from 'react';
 import { useWizard } from '../../context/useWizard';
-import {
-  TRACK_STEPS,
-  type TrackStep,
-} from '../../components/navigation/TrackNav';
+import { STEPS, type Step } from '../../context/steps';
 import { ShipIcon } from '../../components/icon/ShipIcon';
 import { IntroView } from '../IntroView';
 import { MapView } from '../MapView';
@@ -13,7 +10,7 @@ import { BackView } from '../BackView';
 import { DownloadView } from '../DownloadView';
 import styles from './StepView.module.css';
 
-function currentView(step: TrackStep) {
+function currentView(step: Step) {
   switch (step) {
     case 'intro':
       return <IntroView />;
@@ -30,12 +27,10 @@ function currentView(step: TrackStep) {
   }
 }
 
-type Step = (typeof TRACK_STEPS)[number];
-
 interface StepNavBarProps {
   prevStep: Step | undefined;
   nextStep: Step | undefined;
-  onStep: (step: TrackStep) => void;
+  onStep: (step: Step) => void;
 }
 
 function StepNavBar({ prevStep, nextStep, onStep }: StepNavBarProps) {
@@ -46,7 +41,7 @@ function StepNavBar({ prevStep, nextStep, onStep }: StepNavBarProps) {
         <button
           type="button"
           className={styles.stepNavButton}
-          onClick={() => onStep(prevStep.code)}
+          onClick={() => onStep(prevStep)}
         >
           <ShipIcon mirrored /> Previous
         </button>
@@ -57,7 +52,7 @@ function StepNavBar({ prevStep, nextStep, onStep }: StepNavBarProps) {
         <button
           type="button"
           className={styles.stepNavButton}
-          onClick={() => onStep(nextStep.code)}
+          onClick={() => onStep(nextStep)}
         >
           Next <ShipIcon />
         </button>
@@ -67,25 +62,25 @@ function StepNavBar({ prevStep, nextStep, onStep }: StepNavBarProps) {
 }
 
 export function StepView() {
-  const { trackStep, setTrackStep } = useWizard();
-  const index = TRACK_STEPS.findIndex((s) => s.code === trackStep);
+  const { step, setStep } = useWizard();
+  const index = STEPS.indexOf(step);
 
   useEffect(() => {
     document.querySelector('main')?.scrollTo(0, 0);
-  }, [trackStep]);
+  }, [step]);
 
   const stepNavBar = (
     <StepNavBar
-      prevStep={TRACK_STEPS[index - 1]}
-      nextStep={TRACK_STEPS[index + 1]}
-      onStep={setTrackStep}
+      prevStep={STEPS[index - 1]}
+      nextStep={STEPS[index + 1]}
+      onStep={setStep}
     />
   );
 
   return (
     <>
       {stepNavBar}
-      {currentView(trackStep)}
+      {currentView(step)}
       {stepNavBar}
     </>
   );

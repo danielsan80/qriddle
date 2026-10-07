@@ -3,7 +3,7 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { WizardProvider } from './WizardContext';
 import type { Work } from './work';
 import { useWizard } from './useWizard';
-import { TRACK_STEPS } from '../components/navigation/TrackNav';
+import { STEPS } from './steps';
 import { encode, readState } from '../lib/browser/urlState';
 import { config } from '../lib/config';
 import { Puzzle } from '../lib/domain/puzzle';
@@ -39,15 +39,15 @@ describe('WizardContext', () => {
   it('starts with the first track step and no puzzle', () => {
     const wizard = renderWizard();
     expect(wizard.current).toMatchObject({
-      trackStep: TRACK_STEPS[0].code,
+      step: STEPS[0],
       puzzle: null,
     });
   });
 
-  it('updates trackStep via setTrackStep', () => {
+  it('updates step via setStep', () => {
     const wizard = renderWizard();
-    act(() => wizard.current.setTrackStep('download'));
-    expect(wizard.current.trackStep).toBe('download');
+    act(() => wizard.current.setStep('download'));
+    expect(wizard.current.step).toBe('download');
   });
 
   it('updates puzzle via setPuzzle', () => {
@@ -81,14 +81,14 @@ describe('WizardContext', () => {
     {
       action: 'a step change',
       touch: (wizard: ReturnType<typeof renderWizard>) =>
-        wizard.current.setTrackStep('inner.map'),
+        wizard.current.setStep('inner.map'),
       step: 'inner.map',
     },
     {
       action: 'a change of the work',
       touch: (wizard: ReturnType<typeof renderWizard>) =>
         wizard.current.updateWork((current) => ({ ...current, qrText: 'x' })),
-      step: TRACK_STEPS[0].code,
+      step: STEPS[0],
     },
   ])('saves step and work at the first touch: $action', ({ touch, step }) => {
     const wizard = renderWizard();
@@ -111,8 +111,8 @@ describe('WizardContext', () => {
     const wizard = renderWizard();
     const entries = history.length;
 
-    act(() => wizard.current.setTrackStep('outer.front'));
-    act(() => wizard.current.setTrackStep('outer.back'));
+    act(() => wizard.current.setStep('outer.front'));
+    act(() => wizard.current.setStep('outer.back'));
 
     expect({ entries: history.length, url: urlState() }).toEqual({
       entries,
@@ -132,11 +132,11 @@ describe('WizardContext', () => {
 
     await waitFor(() =>
       expect({
-        trackStep: wizard.current.trackStep,
+        step: wizard.current.step,
         puzzle: wizard.current.puzzle,
         work: wizard.current.work,
       }).toEqual({
-        trackStep: 'outer.center',
+        step: 'outer.center',
         puzzle: expect.any(Puzzle),
         work,
       }),

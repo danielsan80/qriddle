@@ -13,9 +13,9 @@ import { useWizard } from './context/useWizard';
 import './App.css';
 
 function App() {
-  const { trackStep, setTrackStep } = useWizard();
-  const selectedFace = (FACES as readonly string[]).includes(trackStep)
-    ? (trackStep as Face)
+  const { step, setStep } = useWizard();
+  const selectedFace = (FACES as readonly string[]).includes(step)
+    ? (step as Face)
     : undefined;
 
   return (
@@ -23,8 +23,8 @@ function App() {
       <MobileBlock />
       <Layout>
         <Sidebar>
-          <CardFaceNav selected={selectedFace} onSelect={setTrackStep} />
-          <TrackNav step={trackStep} onStep={setTrackStep} />
+          <CardFaceNav selected={selectedFace} onSelect={setStep} />
+          <TrackNav step={step} onStep={setStep} />
           <CopyLink />
         </Sidebar>
         <main>

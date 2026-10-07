@@ -3,16 +3,16 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { WizardContext } from '../../context/WizardContext';
 import { StepView } from './StepView';
-import type { TrackStep } from '../../components/navigation/TrackNav';
+import type { Step } from '../../context/steps';
 
 vi.mock('../MapView', () => ({
   MapView: () => <div>MapView</div>,
 }));
 
-function wizardOn(trackStep: TrackStep, setTrackStep = vi.fn()) {
+function wizardOn(step: Step, setStep = vi.fn()) {
   return {
-    trackStep,
-    setTrackStep,
+    step,
+    setStep,
     puzzle: null,
     setPuzzle: vi.fn(),
     work: { qrText: '', seed: '', textBoxes: [] },
@@ -20,13 +20,13 @@ function wizardOn(trackStep: TrackStep, setTrackStep = vi.fn()) {
   };
 }
 
-function renderWithStep(trackStep: TrackStep, setTrackStep = vi.fn()) {
+function renderWithStep(step: Step, setStep = vi.fn()) {
   render(
-    <WizardContext value={wizardOn(trackStep, setTrackStep)}>
+    <WizardContext value={wizardOn(step, setStep)}>
       <StepView />
     </WizardContext>,
   );
-  return { setTrackStep };
+  return { setStep };
 }
 
 describe('StepView', () => {
@@ -82,18 +82,18 @@ describe('StepView', () => {
     );
   });
 
-  it('calls setTrackStep with next step on next-step button click', async () => {
-    const { setTrackStep } = renderWithStep('intro');
+  it('calls setStep with next step on next-step button click', async () => {
+    const { setStep } = renderWithStep('intro');
     await userEvent.click(screen.getAllByRole('button', { name: /next/i })[0]);
-    expect(setTrackStep).toHaveBeenCalledWith('inner.map');
+    expect(setStep).toHaveBeenCalledWith('inner.map');
   });
 
-  it('calls setTrackStep with previous step on previous-step button click', async () => {
-    const { setTrackStep } = renderWithStep('outer.front');
+  it('calls setStep with previous step on previous-step button click', async () => {
+    const { setStep } = renderWithStep('outer.front');
     await userEvent.click(
       screen.getAllByRole('button', { name: /previous/i })[0],
     );
-    expect(setTrackStep).toHaveBeenCalledWith('inner.map');
+    expect(setStep).toHaveBeenCalledWith('inner.map');
   });
 });
 

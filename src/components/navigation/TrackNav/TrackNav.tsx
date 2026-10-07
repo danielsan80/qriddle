@@ -1,12 +1,10 @@
-import { TRACK_STEPS, type TrackStep } from './steps';
+import { STEP_MAP, STEPS, type Step } from '../../../context/steps';
 import { ShipIcon } from '../../icon/ShipIcon';
 import styles from './TrackNav.module.css';
 
-export type { TrackStep };
-
 interface TrackNavProps {
-  step: TrackStep;
-  onStep: (step: TrackStep) => void;
+  step: Step;
+  onStep: (step: Step) => void;
 }
 
 // 8-pointed star in 100x100 space, center (50,50)
@@ -86,26 +84,26 @@ function XMarker() {
 }
 
 export function TrackNav({ step, onStep }: TrackNavProps) {
-  const index = TRACK_STEPS.findIndex((s) => s.code === step);
-  const total = TRACK_STEPS.length;
+  const index = STEPS.indexOf(step);
+  const total = STEPS.length;
 
   return (
     <ol className={styles.steps}>
-      {TRACK_STEPS.map((s, i) => {
-        const isLast = i === total - 1;
-        const past = i <= index;
+      {STEPS.map((item, position) => {
+        const isLast = position === total - 1;
+        const past = position <= index;
 
         return (
           <li
-            key={s.code}
+            key={item}
             className={styles.step}
             data-state={past ? 'past' : 'future'}
-            aria-current={i === index ? 'step' : undefined}
+            aria-current={position === index ? 'step' : undefined}
           >
             <div className={styles.track}>
               {isLast ? (
                 <XMarker />
-              ) : i === 0 ? (
+              ) : position === 0 ? (
                 <CompassMarker past={past} />
               ) : (
                 <DotMarker past={past} />
@@ -113,7 +111,7 @@ export function TrackNav({ step, onStep }: TrackNavProps) {
               {!isLast && (
                 <div
                   className={styles.segment}
-                  data-past={i < index ? 'true' : undefined}
+                  data-past={position < index ? 'true' : undefined}
                 />
               )}
             </div>
@@ -121,16 +119,16 @@ export function TrackNav({ step, onStep }: TrackNavProps) {
               <button
                 type="button"
                 className={styles.label}
-                onClick={() => onStep(s.code)}
+                onClick={() => onStep(item)}
               >
-                {s.label}
+                {STEP_MAP[item].label}
               </button>
-              {i === index && !isLast && (
+              {position === index && !isLast && (
                 <button
                   type="button"
                   aria-label="next"
                   className={styles.next}
-                  onClick={() => onStep(TRACK_STEPS[index + 1].code)}
+                  onClick={() => onStep(STEPS[index + 1])}
                 >
                   <ShipIcon />
                 </button>
