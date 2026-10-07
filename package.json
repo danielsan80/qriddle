@@ -26,7 +26,8 @@
   },
   "prettier": {
     "semi": true,
-    "singleQuote": true
+    "singleQuote": true,
+    "quoteProps": "consistent"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
