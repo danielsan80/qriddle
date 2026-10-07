@@ -2,7 +2,6 @@ import { generateSeed } from '../lib/util';
 import { config } from '../lib/config';
 import type { FacedTextBox } from '../views/useOuterTextBoxes';
 
-// @rev type, not interface: an interface is not assignable to UrlState's index signature, so mergeState and encode would refuse it.
 export type Work = {
   qrText: string;
   seed: string;

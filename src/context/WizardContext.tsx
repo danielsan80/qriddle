@@ -54,7 +54,6 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    // @rev replaceState never fires hashchange: this only runs for a hash changed from outside, such as a link pasted in the address bar.
     function handleHashChange() {
       setTrackStep(readStep());
       setPuzzle(readPuzzle());
