@@ -61,10 +61,9 @@ describe('mergeState', () => {
     window.location.hash = '#' + encode({ qrText: 'hello', seed: 'abc' });
     const spy = vi.spyOn(window.history, 'replaceState');
 
-    mergeState(
-      { frontTextBoxes: [{ id: '1', x: 0, y: 0, text: 'hi', fontSize: 8 }] },
-      'replace',
-    );
+    mergeState({
+      frontTextBoxes: [{ id: '1', x: 0, y: 0, text: 'hi', fontSize: 8 }],
+    });
 
     expect(lastWrittenState(spy)).toEqual({
       qrText: 'hello',
@@ -77,17 +76,8 @@ describe('mergeState', () => {
     window.location.hash = '#' + encode({ qrText: 'old', seed: 'abc' });
     const spy = vi.spyOn(window.history, 'replaceState');
 
-    mergeState({ qrText: 'new' }, 'replace');
+    mergeState({ qrText: 'new' });
 
     expect(lastWrittenState(spy)).toEqual({ qrText: 'new', seed: 'abc' });
-  });
-
-  it('uses pushState when mode is push', () => {
-    window.location.hash = '#' + encode({ step: 'map' });
-    const spy = vi.spyOn(window.history, 'pushState');
-
-    mergeState({ step: 'front' }, 'push');
-
-    expect(lastWrittenState(spy)).toEqual({ step: 'front' });
   });
 });

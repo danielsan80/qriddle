@@ -45,11 +45,11 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
   const [work, setWork] = useState<Work>(() => workFrom(readState({})));
 
   useEffect(() => {
-    mergeState(work, 'replace');
+    mergeState(work);
   }, [work]);
 
   function handleSetTrackStep(step: TrackStep) {
-    mergeState({ step }, 'replace');
+    mergeState({ step });
     setTrackStep(step);
   }
 

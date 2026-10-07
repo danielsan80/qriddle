@@ -23,23 +23,11 @@ export function readState<T>(fallback: T): T {
   return decode(hash.slice(1), fallback);
 }
 
-export type HistoryMode = 'push' | 'replace';
-
-export function writeState(state: UrlState, mode: HistoryMode): void {
-  const url = `#${encode(state)}`;
-  switch (mode) {
-    case 'push':
-      window.history.pushState(null, '', url);
-      break;
-    case 'replace':
-      window.history.replaceState(null, '', url);
-      break;
-    default:
-      throw new Error(`Unexpected HistoryMode: ${mode satisfies never}`);
-  }
+function writeState(state: UrlState): void {
+  window.history.replaceState(null, '', `#${encode(state)}`);
 }
 
-export function mergeState(partial: UrlState, mode: HistoryMode): void {
+export function mergeState(partial: UrlState): void {
   const current = readState<UrlState>({});
-  writeState({ ...current, ...partial }, mode);
+  writeState({ ...current, ...partial });
 }
