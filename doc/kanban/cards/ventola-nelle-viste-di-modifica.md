@@ -77,17 +77,45 @@ e degli stili `:hover`: qriddle non ascolta quell'evento.
 In ordine di guadagno atteso. Dopo ciascuno, la stessa registrazione del trascinamento in
 incognito, confrontata con quella di oggi.
 
-1. **Lo sfondo delle facciate senza SVG annidato.** Estrarre il JPEG da `outer.svg` in un
-   file a parte (o disegnarlo con un `<image>` che punta direttamente al JPEG), così il
-   browser lo tiene in cache già decodificato. `tools/generate-parchment.py` oggi riscrive
-   il base64 dentro `inner.svg` e `outer.svg`: va adeguato perché non diverga. Atteso: le
-   decodifiche spariscono da 917 ms a quasi zero.
+1. **Lo sfondo delle facciate su un livello a sé** — fatto. Scartata l'alternativa di
+   estrarre il JPEG da `outer.svg`: avrebbe tolto la decodifica ma non la
+   rasterizzazione del disegno vettoriale, e chiedeva di adeguare
+   `tools/generate-parchment.py`. `CardFaceEditor` disegna i children in un `<svg>` sotto
+   quello delle caselle, che ha `will-change: transform`: trascinando si ridipinge solo
+   lui (Paint flashing lo conferma).
 2. **L'URL scritto al rilascio del trascinamento**, non a ogni movimento. Il context tiene
    già lo stato in memoria; la scrittura può aspettare la fine del gesto (o un debounce,
    che coprirebbe anche la digitazione). Atteso: via i 270 ms di compressione e le
-   scritture ripetute.
+   scritture ripetute. Dopo la seconda misura è anche una correzione: vedi sotto.
 3. **Il QR dei crediti generato una volta sola**, invece che a ogni ingresso sul retro.
    Guadagno piccolo (16 ms per ingresso), costo piccolo.
 
 Fuori da qui: il ricalcolo della mappa al montaggio non è emerso come costo, e resta
 com'è.
+
+## Seconda misura (2026-10-08, pomeriggio)
+
+Dopo il passo 1 il browser vero decodificava ancora: 4,3 s di Image decode in 21 s di
+trascinamento, sul server di sviluppo. Selezionando un blocco, la riga Network mostrava
+una richiesta di `favicon.png` a ogni frame.
+
+- **La favicon era un PNG 1024×1024 da 2,1 MB.** A ogni `replaceState` cambia l'URL e
+  Chrome rilegge e ridecodifica la favicon della scheda, circa 14 ms ogni volta; il
+  server di sviluppo la serve senza cache. Ridotta a 48×48 (4 kB), difesa da
+  `src/favicon.test.ts`. Dopo: nessuna Image decode, frame fissi a 16,7 ms. Parte dei
+  917 ms della prima misura era probabilmente questa, non lo sfondo.
+- **Chrome rallenta le `replaceState` troppo frequenti** ("Throttling navigation to
+  prevent the browser from hanging", su `urlState.ts`). Se scarta l'ultima scrittura,
+  l'URL resta con una posizione vecchia della casella: lavoro perso in silenzio. Il passo
+  2 quindi corregge anche questo.
+- DevTools attribuiva le decodifiche a un `div` della barra laterale (_Owner element_):
+  attribuzione sbagliata, da non seguire.
+
+## Fitness function
+
+`npm run fitness` (Playwright, `fitness/`) fa la build, trascina una casella in Chromium
+headless e conta gli `ImageDecodeTask` nella traccia: al massimo uno. Sul codice prima del
+passo 1 erano 58. Gira nel workflow prima del deploy.
+
+Non vede la favicon: headless non ha schede e non la carica. Per quella c'è il test sulle
+dimensioni; il resto si verifica a mano con una registrazione nel browser vero.
