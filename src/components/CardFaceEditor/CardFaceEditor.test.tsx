@@ -80,6 +80,33 @@ describe('CardFaceEditor drag threshold', () => {
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
   });
 
+  it('moves the box under the pointer while it is dragged', () => {
+    const { text } = renderEditor();
+
+    fireEvent.mouseDown(text, { clientX: 100, clientY: 100 });
+    fireEvent.mouseMove(window, { clientX: 103, clientY: 102 });
+    fireEvent.mouseMove(window, { clientX: 110, clientY: 106 });
+
+    expect({ x: text.getAttribute('x'), y: text.getAttribute('y') }).toEqual({
+      x: String(10 + 10 / SCALE),
+      y: String(20 + 6 / SCALE),
+    });
+  });
+
+  it('reports the new position once, when the drag ends', () => {
+    const { onTextBoxesChange, text } = renderEditor();
+
+    fireEvent.mouseDown(text, { clientX: 100, clientY: 100 });
+    fireEvent.mouseMove(window, { clientX: 103, clientY: 102 });
+    fireEvent.mouseMove(window, { clientX: 110, clientY: 106 });
+    expect(onTextBoxesChange.mock.calls).toEqual([]);
+
+    fireEvent.mouseUp(window);
+    expect(onTextBoxesChange.mock.calls).toEqual([
+      [[{ ...box, x: 10 + 10 / SCALE, y: 20 + 6 / SCALE }]],
+    ]);
+  });
+
   it('leaves the body cursor untouched on a click and restores it after a drag', () => {
     const { text } = renderEditor();
 

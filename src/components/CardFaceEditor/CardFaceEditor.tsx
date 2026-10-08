@@ -21,6 +21,12 @@ interface DragState {
   moved: boolean;
 }
 
+interface DraggedBox {
+  id: string;
+  x: number;
+  y: number;
+}
+
 interface Props {
   viewBox: string;
   className?: string;
@@ -59,6 +65,8 @@ export function CardFaceEditor({
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<DragState | null>(null);
+  const [dragged, setDragged] = useState<DraggedBox | null>(null);
+  const draggedRef = useRef<DraggedBox | null>(null);
   const justClosedRef = useRef(false);
   // Keep refs to current values for use inside window event listeners
   const textBoxesRef = useRef(textBoxes);
@@ -119,17 +127,13 @@ export function CardFaceEditor({
       if (!drag.moved) return;
 
       const ctm = svgRef.current!.getScreenCTM()!;
-      setTextBoxesRef.current((prev) =>
-        prev.map((tb) =>
-          tb.id === drag.id
-            ? {
-                ...tb,
-                x: drag.startBoxX + dx / ctm.a,
-                y: drag.startBoxY + dy / ctm.d,
-              }
-            : tb,
-        ),
-      );
+      const position = {
+        id: drag.id,
+        x: drag.startBoxX + dx / ctm.a,
+        y: drag.startBoxY + dy / ctm.d,
+      };
+      draggedRef.current = position;
+      setDragged(position);
     }
 
     function onMouseUp() {
@@ -137,6 +141,19 @@ export function CardFaceEditor({
       if (!drag) return;
       dragRef.current = null;
       releaseBodyStyles();
+
+      const position = draggedRef.current;
+      if (position) {
+        draggedRef.current = null;
+        setDragged(null);
+        setTextBoxesRef.current((prev) =>
+          prev.map((tb) =>
+            tb.id === position.id
+              ? { ...tb, x: position.x, y: position.y }
+              : tb,
+          ),
+        );
+      }
 
       if (!drag.moved) {
         // Treat as click: open editor
@@ -239,6 +256,10 @@ export function CardFaceEditor({
     setEditing(null);
   }
 
+  const shownBoxes = textBoxes.map((tb) =>
+    tb.id === dragged?.id ? { ...tb, x: dragged.x, y: dragged.y } : tb,
+  );
+
   const editingBox = editing
     ? textBoxes.find((tb) => tb.id === editing.id)
     : null;
@@ -265,7 +286,7 @@ export function CardFaceEditor({
           onClick={handleSvgClick}
         >
           {fontReady &&
-            textBoxes.map((tb) => (
+            shownBoxes.map((tb) => (
               <text
                 key={tb.id}
                 x={tb.x}
