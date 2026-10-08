@@ -1,5 +1,5 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { describe, it, expect, afterEach } from 'vitest';
+import { describe, it, expect, afterEach, beforeEach, vi } from 'vitest';
 import { WizardProvider } from './WizardContext';
 import type { Work } from './work';
 import { useWizard } from './useWizard';
@@ -8,6 +8,7 @@ import { encode, readState } from '../lib/browser/urlState';
 import { config } from '../lib/config';
 import { Puzzle } from '../lib/domain/puzzle';
 import type { FacedTextBox } from '../lib/domain/card';
+import { analytics } from '../lib/browser/analytics';
 
 function wrapper({ children }: { children: React.ReactNode }) {
   return <WizardProvider>{children}</WizardProvider>;
@@ -141,5 +142,46 @@ describe('WizardContext', () => {
         work,
       }),
     );
+  });
+});
+
+describe('WizardContext analytics', () => {
+  let stepChanged: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    stepChanged = vi
+      .spyOn(analytics, 'stepChanged')
+      .mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    window.location.hash = '';
+  });
+
+  it('tracks every step the user moves to', () => {
+    const wizard = renderWizard();
+
+    act(() => wizard.current.setStep('inner.map'));
+    act(() => wizard.current.setStep('outer.front'));
+
+    expect(stepChanged.mock.calls).toEqual([['inner.map'], ['outer.front']]);
+  });
+
+  it('does not track a move to the step already shown', () => {
+    const wizard = renderWizard();
+
+    act(() => wizard.current.setStep(STEPS[0]));
+
+    expect(stepChanged).not.toHaveBeenCalled();
+  });
+
+  it('does not track the step of a link pasted in the address bar', async () => {
+    const wizard = renderWizard();
+
+    window.location.hash = '#' + encode({ step: 'outer.center', ...work });
+    await waitFor(() => expect(wizard.current.step).toBe('outer.center'));
+
+    expect(stepChanged).not.toHaveBeenCalled();
   });
 });

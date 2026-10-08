@@ -4,6 +4,7 @@ import { Image } from '../lib/domain/image';
 import { Puzzle as PuzzleClass } from '../lib/domain/puzzle';
 import { type Step, STEPS } from './steps';
 import { readState, mergeState } from '../lib/browser/urlState';
+import { analytics } from '../lib/browser/analytics';
 import { createRandom, getQRMatrix } from '../lib/util';
 import { type Work, workFrom } from './work';
 
@@ -56,6 +57,7 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
 
   function handleSetStep(newStep: Step) {
     touched.current = true;
+    if (newStep !== step) analytics.stepChanged(newStep);
     setStep(newStep);
   }
 

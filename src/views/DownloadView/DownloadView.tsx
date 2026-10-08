@@ -8,6 +8,7 @@ import {
 } from '../../lib/render';
 import { PreviewStage } from '../../components/stages/PreviewStage';
 import { config } from '../../lib/config';
+import { analytics } from '../../lib/browser/analytics';
 import { cardFontDescriptor, loadFont } from '../../lib/util';
 import styles from './DownloadView.module.css';
 
@@ -37,7 +38,7 @@ export function DownloadView() {
 
   function handleDownload() {
     if (puzzle) {
-      window.umami?.track('download');
+      analytics.downloadRequested();
       void downloadPuzzlePdf(puzzle, textBoxes);
     }
   }
