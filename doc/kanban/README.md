@@ -23,6 +23,7 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 ### Feature
 
+- [Un evento Umami a ogni cambio di passo](cards/evento-umami-per-passo.md)
 - [Revisione della comunicazione della prima vista (Intro)](cards/revisione-comunicazione-intro.md)
 - [Multipuzzle: QR diviso in 4 settori](cards/multipuzzle-4-settori.md)
 - [Stili puzzle alternativi](cards/stili-puzzle-alternativi.md)
