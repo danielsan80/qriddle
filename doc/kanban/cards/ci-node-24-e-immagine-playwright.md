@@ -22,3 +22,12 @@ Diversamente da coffeebreak-2 (`resolvi/e2e-runner`), qui non serve pubblicare u
 propria: lì serve anche Docker Compose. Da coffeebreak si riprende invece il controllo che
 il tag dell'immagine corrisponda alla versione di `@playwright/test` in `package.json`, con un
 messaggio che dice cosa allineare.
+
+## Ubuntu 26
+
+GitHub annuncia che dal 19 ottobre 2026 `ubuntu-latest` passa a Ubuntu 26 (run
+37821674699, actions/runner-images#14748). Il primo deploy dopo quella data è il primo con
+la fitness function sul nuovo sistema: se `npx playwright install --with-deps chromium`
+non trova le dipendenze, o il conteggio delle decodifiche cambia, si blocca il deploy. Con
+l'immagine Playwright il problema non si pone, perché il sistema lo fissa l'immagine;
+senza, si può fissare `runs-on: ubuntu-24.04` finché Playwright non supporta la 26.
