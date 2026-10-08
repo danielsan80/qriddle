@@ -1,4 +1,5 @@
 main {
+  height: 100%;
   padding: 3rem;
   overflow-y: auto;
   background: var(--paper);

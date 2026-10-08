@@ -3,13 +3,13 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { WizardContext } from '../../context/WizardContext';
 import { StepView } from './StepView';
-import type { Step } from '../../context/steps';
+import type { WorkStep } from '../../context/steps';
 
 vi.mock('../MapView', () => ({
   MapView: () => <div>MapView</div>,
 }));
 
-function wizardOn(step: Step, setStep = vi.fn()) {
+function wizardOn(step: WorkStep, setStep = vi.fn()) {
   return {
     step,
     setStep,
@@ -20,21 +20,16 @@ function wizardOn(step: Step, setStep = vi.fn()) {
   };
 }
 
-function renderWithStep(step: Step, setStep = vi.fn()) {
+function renderWithStep(step: WorkStep, setStep = vi.fn()) {
   render(
     <WizardContext value={wizardOn(step, setStep)}>
-      <StepView />
+      <StepView step={step} />
     </WizardContext>,
   );
   return { setStep };
 }
 
 describe('StepView', () => {
-  it('renders IntroView for intro', () => {
-    renderWithStep('intro');
-    expect(screen.getByText('How it works')).toBeDefined();
-  });
-
   it('renders MapView for inner.map', () => {
     renderWithStep('inner.map');
     expect(screen.getByText('MapView')).toBeDefined();
@@ -61,18 +56,13 @@ describe('StepView', () => {
   });
 
   it('shows next-step button on non-last steps', () => {
-    renderWithStep('intro');
+    renderWithStep('inner.map');
     expect(screen.getAllByRole('button', { name: /next/i })).toHaveLength(2);
   });
 
   it('hides next-step button on last step', () => {
     renderWithStep('download');
     expect(screen.queryByRole('button', { name: /next/i })).toBeNull();
-  });
-
-  it('hides previous-step button on first step', () => {
-    renderWithStep('intro');
-    expect(screen.queryByRole('button', { name: /previous/i })).toBeNull();
   });
 
   it('shows previous-step button on non-first steps', () => {
@@ -83,9 +73,9 @@ describe('StepView', () => {
   });
 
   it('calls setStep with next step on next-step button click', async () => {
-    const { setStep } = renderWithStep('intro');
+    const { setStep } = renderWithStep('inner.map');
     await userEvent.click(screen.getAllByRole('button', { name: /next/i })[0]);
-    expect(setStep).toHaveBeenCalledWith('inner.map');
+    expect(setStep).toHaveBeenCalledWith('outer.front');
   });
 
   it('calls setStep with previous step on previous-step button click', async () => {
@@ -116,8 +106,8 @@ describe('StepView scroll behavior', () => {
   it('scrolls main to top when step changes', () => {
     const { rerender } = render(
       <main>
-        <WizardContext value={wizardOn('intro')}>
-          <StepView />
+        <WizardContext value={wizardOn('inner.map')}>
+          <StepView step="inner.map" />
         </WizardContext>
       </main>,
     );
@@ -126,8 +116,8 @@ describe('StepView scroll behavior', () => {
 
     rerender(
       <main>
-        <WizardContext value={wizardOn('inner.map')}>
-          <StepView />
+        <WizardContext value={wizardOn('outer.front')}>
+          <StepView step="outer.front" />
         </WizardContext>
       </main>,
     );

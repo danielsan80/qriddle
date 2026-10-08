@@ -9,6 +9,7 @@ import {
 } from './components/navigation/CardFaceNav';
 import { TrackNav } from './components/navigation/TrackNav';
 import { StepView } from './views/StepView';
+import { IntroView } from './views/IntroView';
 import { useWizard } from './context/useWizard';
 import './App.css';
 
@@ -21,16 +22,22 @@ function App() {
   return (
     <>
       <MobileBlock />
-      <Layout>
-        <Sidebar>
-          <CardFaceNav selected={selectedFace} onSelect={setStep} />
-          <TrackNav step={step} onStep={setStep} />
-          <CopyLink />
-        </Sidebar>
+      {step === 'intro' ? (
         <main>
-          <StepView />
+          <IntroView />
         </main>
-      </Layout>
+      ) : (
+        <Layout>
+          <Sidebar>
+            <CardFaceNav selected={selectedFace} onSelect={setStep} />
+            <TrackNav step={step} onStep={setStep} />
+            <CopyLink />
+          </Sidebar>
+          <main>
+            <StepView step={step} />
+          </main>
+        </Layout>
+      )}
     </>
   );
 }

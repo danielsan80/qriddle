@@ -25,6 +25,12 @@ function renderApp() {
   );
 }
 
+function startPuzzle() {
+  return userEvent.click(
+    screen.getByRole('button', { name: 'Create your puzzle' }),
+  );
+}
+
 function clickStepButton(name: 'Next' | 'Previous') {
   return userEvent.click(screen.getAllByRole('button', { name })[0]);
 }
@@ -38,9 +44,20 @@ describe('App', () => {
     window.location.hash = '';
   });
 
+  it('starts on the intro without the step navigation, shown from the map on', async () => {
+    renderApp();
+    expect(screen.queryByRole('complementary')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Next' })).toBeNull();
+
+    await startPuzzle();
+
+    expect(screen.getByText('The Treasure')).toBeInTheDocument();
+    expect(screen.getByRole('complementary')).toBeInTheDocument();
+  });
+
   it('goes back to the intro after loading an example on the map', async () => {
     renderApp();
-    await clickStepButton('Next');
+    await startPuzzle();
     await userEvent.click(screen.getByRole('link', { name: 'coordinates' }));
 
     await clickStepButton('Previous');

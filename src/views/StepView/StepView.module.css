@@ -39,7 +39,3 @@
     box-shadow: 0 0 0 var(--ink);
   }
 }
-
-.stepNavSpacer {
-  flex: 1;
-}

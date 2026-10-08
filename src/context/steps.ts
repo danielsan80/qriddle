@@ -9,4 +9,6 @@ export const STEP_MAP = {
 
 export type Step = keyof typeof STEP_MAP;
 
+export type WorkStep = Exclude<Step, 'intro'>;
+
 export const STEPS = Object.keys(STEP_MAP) as Step[];

@@ -2,6 +2,7 @@ import photoFront from '../../assets/photos/front.webp';
 import photoCenter from '../../assets/photos/center.webp';
 import photoMap from '../../assets/photos/map.webp';
 import photoSolve from '../../assets/photos/solve_puzzle.webp';
+import { useWizard } from '../../context/useWizard';
 import styles from './IntroView.module.css';
 
 const STEPS = [
@@ -28,22 +29,52 @@ const STEPS = [
 ];
 
 export function IntroView() {
+  const { setStep } = useWizard();
+
   return (
     <div className={styles.layout}>
-      <h1 className={styles.heading}>How it works</h1>
-      <ol className={styles.steps}>
-        {STEPS.map((step) => (
-          <li key={step.src} className={styles.step}>
-            <img
-              src={step.src}
-              alt={step.alt}
-              className={styles.photo}
-              loading="lazy"
-            />
-            <p className={styles.caption}>{step.caption}</p>
-          </li>
-        ))}
-      </ol>
+      <header className={styles.hero}>
+        <div className={styles.presentation}>
+          <hgroup>
+            <h1 className={styles.name}>QRiddle</h1>
+            <p className={styles.payoff}>
+              Put a treasure into your greeting card
+            </p>
+            <p className={styles.explanation}>
+              Write a secret message. Print it as a puzzle. They solve it to
+              read it.
+            </p>
+          </hgroup>
+          <button
+            type="button"
+            className={styles.cta}
+            onClick={() => setStep('inner.map')}
+          >
+            Create your puzzle
+          </button>
+        </div>
+        <img
+          src={photoSolve}
+          alt="A treasure map puzzle being solved with a marker, a QR code emerging"
+          className={styles.heroPhoto}
+        />
+      </header>
+      <section className={styles.howItWorks}>
+        <h2 className={styles.heading}>How it works</h2>
+        <ol className={styles.steps}>
+          {STEPS.map((step) => (
+            <li key={step.src} className={styles.step}>
+              <img
+                src={step.src}
+                alt={step.alt}
+                className={styles.photo}
+                loading="lazy"
+              />
+              <p className={styles.caption}>{step.caption}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
     </div>
   );
 }

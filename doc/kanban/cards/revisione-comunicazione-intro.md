@@ -14,16 +14,76 @@ me, è andato oltre l'Intro (card
 Nata in una conversazione con ChatGPT, che però qriddle non l'aveva visto in uso: le
 correzioni sotto vengono da lì.
 
-- **Titolo grande**: "Turn your greeting card into a puzzle".
-- **Sottotitolo letterale**, non creativo, che dica il come. Da scegliere fra:
-  - "Write a secret message. Print it as a puzzle. They solve it to read it.";
-  - la frase della meta description di `index.html`, che già funziona: "Your text becomes a
-    printable QR code puzzle the recipient must solve to reveal it."
-- **CTA principale** che dice l'azione, non "Next": "Create your puzzle". Secondaria,
-  facoltativa: "Try an example", che apre uno degli esempi già in `MapView/examples.ts`.
+- **Titolo grande**: "Turn your greeting card into a puzzle". Superato, vedi sotto le
+  decisioni.
+- **Sottotitolo letterale**, non creativo, che dica il come: "Write a secret message. Print
+  it as a puzzle. They solve it to read it." Tre tempi, chi scrive, la carta, chi riceve.
+  Scartata la frase della meta
+  description ("Your text becomes a printable QR code puzzle the recipient must solve to
+  reveal it."): nasconde la carta in un aggettivo, e "QR code" fa pensare a qualcosa da
+  scansionare subito, mentre il QR si ottiene solo risolvendo. Nella meta description resta,
+  perché lì serve alla ricerca.
+- **Una CTA sola**, che dice l'azione, non "Next": "Create your puzzle", verso la mappa.
 - **"How it works"** resta, con le foto, sotto titolo e CTA, come supporto.
 - **La navigazione per passi**: nell'Intro forse va nascosta, perché un percorso a tappe
-  visibile fa percepire fatica. È un'opinione: si prova e si misura.
+  visibile fa percepire fatica.
+
+## Decisioni
+
+- **Un hero a tutta pagina, senza sidebar.** L'Intro presenta, l'app comincia dalla mappa:
+  il cambio di layout è il segnale che si entra. Spariscono quindi anche TrackNav,
+  CardFaceNav, Save e Previous/Next, che sull'Intro non hanno niente da fare.
+- **Il payoff resta**, "Put a treasure into your greeting card": il suo difetto era dover
+  spiegare da solo, e ora sotto c'è la frase letterale. Il titolo della proposta non serve.
+- **Struttura**:
+
+  ```
+  header (hero)
+    hgroup
+      h1  QRiddle
+      p   Put a treasure into your greeting card
+      p   Write a secret message. Print it as a puzzle. They solve it to read it.
+    button  Create your puzzle
+    a       How it works ↓, l'ancora sulla sezione sotto
+    img     una foto del puzzle risolto
+  section#how-it-works
+    h2  How it works
+    le 4 foto
+    button  Create your puzzle
+  ```
+
+  Payoff e frase sono `p` dentro `hgroup`, non `h2` e `h3`: i livelli di intestazione
+  descrivono la struttura, e non aprono sezioni. La frase che spiega è la più piccola
+  della gerarchia, ma va tenuta ben leggibile: è quella che risponde al test dei 5 secondi.
+
+- **"How it works" come seconda azione, con un'ancora.** A differenza di "Try an example",
+  offre una scelta vera: cominciare o prima capire. Un'ancora e non una vista nuova: basta
+  scorrere la stessa pagina, senza un passo del wizard in più con la sua navigazione. Pesa
+  meno della CTA, come link o bottone secondario, perché le due azioni non sembrino
+  equivalenti. In fondo alla sezione torna "Create your puzzle", per chi ha finito di
+  leggere.
+- **La foto accanto al testo, non sotto.** È quella in cui il QR emerge mentre si risolve:
+  al centro, dove un testo sovrapposto (con il velo per leggerlo) la coprirebbe. E come
+  `<img>` con `alt` porta informazione, mentre uno sfondo CSS è decorativo. Per ora è la
+  stessa foto dell'ultimo passo di "How it works", e la ripetizione stona: è provvisoria,
+  finché non ce n'è una da un'altra angolazione.
+- **Sul telefono l'Intro si vede.** Oggi `MobileBlock` copre tutto, Intro compresa: chi
+  arriva dal telefono legge solo "This service works on desktop only", senza sapere di
+  cosa si tratta. Può spiegare una parte del "nessuno va oltre l'Intro": la scheda dei
+  dispositivi di Umami lo dice. L'Intro si vede intera, con l'hero in una colonna e la
+  foto sotto il testo; al posto di "Create your puzzle", il messaggio che si crea dal
+  computer e i bottoni per mandarsi il link, quelli di oggi. Il blocco resta sui passi del
+  lavoro, dove l'editor sul telefono non funziona.
+- **Misurare la sola navigazione non si può**, con questo traffico: il prima e dopo mescola
+  navigazione, testo e CTA. Si decide a giudizio, e il funnel Intro→Map dice se la
+  revisione nel complesso funziona.
+
+## Avanzamento
+
+- [x] L'hero senza sidebar, con `hgroup`, CTA e foto; "How it works" come `h2`.
+- [ ] L'Intro sul telefono.
+- [ ] "How it works ↓" e la CTA ripetuta in fondo.
+- [ ] La foto nuova per l'hero.
 
 ## Idee più vecchie, dalla skill `wizard-ux`
 
@@ -42,6 +102,11 @@ Di marzo 2026, mai fatte; la skill è stata tolta l'8 ottobre 2026.
   disegna un QR con il messaggio. La parola crea proprio l'ambiguità che si vuole togliere.
 - **Si stampa, non si condivide.** "Share a QR code" è sbagliato: il biglietto è un oggetto
   di carta, ed è ciò che distingue qriddle. La proposta non lo diceva mai.
+- **Niente "Try an example" come seconda CTA.** Il risultato lo mostrano già le foto di "How
+  it works", e gli esempi (Isola delle Rose, Mario, il percorso) sono sulla mappa, a un clic
+  dalla CTA principale: il secondo bottone porterebbe nello stesso posto con un altro testo,
+  e chiederebbe una scelta senza una differenza da capire. Se la misura dice che ci si ferma
+  sulla mappa, si lavora lì, per esempio dando più evidenza agli esempi.
 - **Dopo la CTA nessuna schermata vuota**: già così. La mappa parte con un testo di default e
   un puzzle generato.
 

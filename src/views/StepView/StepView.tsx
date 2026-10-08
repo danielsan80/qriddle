@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { useWizard } from '../../context/useWizard';
-import { STEPS, type Step } from '../../context/steps';
+import { STEPS, type Step, type WorkStep } from '../../context/steps';
 import { ShipIcon } from '../../components/icon/ShipIcon';
-import { IntroView } from '../IntroView';
 import { MapView } from '../MapView';
 import { FrontView } from '../FrontView';
 import { CenterView } from '../CenterView';
@@ -10,10 +9,8 @@ import { BackView } from '../BackView';
 import { DownloadView } from '../DownloadView';
 import styles from './StepView.module.css';
 
-function currentView(step: Step) {
+function currentView(step: WorkStep) {
   switch (step) {
-    case 'intro':
-      return <IntroView />;
     case 'inner.map':
       return <MapView />;
     case 'outer.front':
@@ -28,26 +25,21 @@ function currentView(step: Step) {
 }
 
 interface StepNavBarProps {
-  prevStep: Step | undefined;
+  prevStep: Step;
   nextStep: Step | undefined;
   onStep: (step: Step) => void;
 }
 
 function StepNavBar({ prevStep, nextStep, onStep }: StepNavBarProps) {
-  if (!prevStep && !nextStep) return null;
   return (
     <div className={styles.stepNav}>
-      {prevStep ? (
-        <button
-          type="button"
-          className={styles.stepNavButton}
-          onClick={() => onStep(prevStep)}
-        >
-          <ShipIcon mirrored /> Previous
-        </button>
-      ) : (
-        <span className={styles.stepNavSpacer} />
-      )}
+      <button
+        type="button"
+        className={styles.stepNavButton}
+        onClick={() => onStep(prevStep)}
+      >
+        <ShipIcon mirrored /> Previous
+      </button>
       {nextStep && (
         <button
           type="button"
@@ -61,8 +53,12 @@ function StepNavBar({ prevStep, nextStep, onStep }: StepNavBarProps) {
   );
 }
 
-export function StepView() {
-  const { step, setStep } = useWizard();
+interface StepViewProps {
+  step: WorkStep;
+}
+
+export function StepView({ step }: StepViewProps) {
+  const { setStep } = useWizard();
   const index = STEPS.indexOf(step);
 
   useEffect(() => {
