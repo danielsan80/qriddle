@@ -83,10 +83,14 @@ incognito, confrontata con quella di oggi.
    `tools/generate-parchment.py`. `CardFaceEditor` disegna i children in un `<svg>` sotto
    quello delle caselle, che ha `will-change: transform`: trascinando si ridipinge solo
    lui (Paint flashing lo conferma).
-2. **L'URL scritto al rilascio del trascinamento**, non a ogni movimento. Il context tiene
-   già lo stato in memoria; la scrittura può aspettare la fine del gesto (o un debounce,
-   che coprirebbe anche la digitazione). Atteso: via i 270 ms di compressione e le
-   scritture ripetute. Dopo la seconda misura è anche una correzione: vedi sotto.
+2. **L'URL scritto al rilascio del trascinamento** — fatto. Durante il gesto la posizione
+   resta nello stato locale di `CardFaceEditor`, che la comunica una volta sola al
+   rilascio: una scrittura dell'URL per trascinamento invece di una per frame. Scartato il
+   debounce nel context: avrebbe chiesto di forzare la scrittura alla chiusura della
+   scheda, e la digitazione non arriva al throttling di Chrome. Corregge anche la perdita
+   descritta nella seconda misura. Uno smontaggio a metà trascinamento perde lo
+   spostamento: accettato, non c'è un modo normale di cambiare facciata col mouse
+   premuto.
 3. **Il QR dei crediti generato una volta sola**, invece che a ogni ingresso sul retro.
    Guadagno piccolo (16 ms per ingresso), costo piccolo.
 
