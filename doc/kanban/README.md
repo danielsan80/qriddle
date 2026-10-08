@@ -37,6 +37,7 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [Potare i commenti nei test dell'editor](cards/potare-i-commenti-nei-test.md)
 - [Coprire `drawTextBox`: la facciata centrale ruotata](cards/test-su-drawtextbox.md)
 - [Il QR dei crediti generato una volta sola](cards/qr-dei-crediti-una-volta-sola.md)
+- [CI: azioni su Node 24 e Playwright da immagine](cards/ci-node-24-e-immagine-playwright.md)
 
 ### Operations
 
