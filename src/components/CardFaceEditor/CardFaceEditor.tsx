@@ -245,48 +245,60 @@ export function CardFaceEditor({
 
   return (
     <div ref={containerRef} className={styles.container}>
-      <svg
-        ref={svgRef}
-        viewBox={viewBox}
+      <div
         style={widthPx !== null ? { width: widthPx } : undefined}
-        className={`${styles.svg} ${className ?? ''}`}
-        onClick={handleSvgClick}
+        className={`${styles.surface} ${className ?? ''}`}
       >
-        {children}
-        {fontReady &&
-          textBoxes.map((tb) => (
+        <svg
+          data-testid="background-layer"
+          viewBox={viewBox}
+          className={styles.background}
+          aria-hidden
+        >
+          {children}
+        </svg>
+        <svg
+          ref={svgRef}
+          data-testid="text-layer"
+          viewBox={viewBox}
+          className={styles.svg}
+          onClick={handleSvgClick}
+        >
+          {fontReady &&
+            textBoxes.map((tb) => (
+              <text
+                key={tb.id}
+                x={tb.x}
+                y={tb.y}
+                textAnchor="middle"
+                fontSize={tb.fontSize}
+                fontFamily={`'${cardFontFamily}'`}
+                fill={
+                  editing?.id === tb.id
+                    ? `${config.pdf.textColor}4d`
+                    : config.pdf.textColor
+                }
+                onMouseDown={(event) => handleTextMouseDown(event, tb)}
+                className={styles.textNode}
+              >
+                {tb.text}
+              </text>
+            ))}
+          {textBoxes.length === 0 && (
             <text
-              key={tb.id}
-              x={tb.x}
-              y={tb.y}
+              x={placeholderX}
+              y={placeholderY}
               textAnchor="middle"
-              fontSize={tb.fontSize}
-              fontFamily={`'${cardFontFamily}'`}
-              fill={
-                editing?.id === tb.id
-                  ? `${config.pdf.textColor}4d`
-                  : config.pdf.textColor
-              }
-              onMouseDown={(event) => handleTextMouseDown(event, tb)}
-              className={styles.textNode}
+              dominantBaseline="middle"
+              fontSize="3.5"
+              fill="rgba(100,100,100,0.5)"
+              pointerEvents="none"
             >
-              {tb.text}
+              Click to add text
             </text>
-          ))}
-        {textBoxes.length === 0 && (
-          <text
-            x={placeholderX}
-            y={placeholderY}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fontSize="3.5"
-            fill="rgba(100,100,100,0.5)"
-            pointerEvents="none"
-          >
-            Click to add text
-          </text>
-        )}
-      </svg>
+          )}
+        </svg>
+      </div>
 
       {editing && editingBox && (
         <div

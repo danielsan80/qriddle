@@ -132,9 +132,11 @@ function renderHarness(initial: TextBox[] = []) {
   vi.spyOn(crypto, 'randomUUID').mockReturnValue(
     'box-1' as ReturnType<typeof crypto.randomUUID>,
   );
-  const { container } = render(<Harness initial={initial} />);
+  render(<Harness initial={initial} />);
+  const svg = screen.getByTestId('text-layer');
   return {
-    svg: container.querySelector('svg')!,
+    svg,
+    width: () => svg.parentElement!.style.width,
     boxes: () =>
       JSON.parse(screen.getByTestId('boxes').textContent!) as TextBox[],
   };
@@ -333,39 +335,59 @@ describe('CardFaceEditor zoom', () => {
   });
 
   it('grows the svg on a wheel up and shrinks it on a wheel down', () => {
-    const { svg } = renderHarness([box]);
+    const { svg, width } = renderHarness([box]);
 
     fireEvent.wheel(svg, { deltaY: -1 });
-    expect(parseFloat(svg.style.width)).toBeCloseTo(INITIAL_WIDTH * 1.1, 5);
+    expect(parseFloat(width())).toBeCloseTo(INITIAL_WIDTH * 1.1, 5);
 
     fireEvent.wheel(svg, { deltaY: 1 });
-    expect(parseFloat(svg.style.width)).toBeCloseTo(INITIAL_WIDTH, 5);
+    expect(parseFloat(width())).toBeCloseTo(INITIAL_WIDTH, 5);
   });
 
   it('never shrinks below the floor nor grows past the container', () => {
-    const { svg } = renderHarness([box]);
+    const { svg, width } = renderHarness([box]);
 
     for (let step = 0; step < 20; step++) {
       fireEvent.wheel(svg, { deltaY: 1 });
     }
-    expect(svg.style.width).toBe(`${FLOOR_WIDTH}px`);
+    expect(width()).toBe(`${FLOOR_WIDTH}px`);
 
     for (let step = 0; step < 40; step++) {
       fireEvent.wheel(svg, { deltaY: -1 });
     }
-    expect(svg.style.width).toBe(`${CONTAINER_WIDTH}px`);
+    expect(width()).toBe(`${CONTAINER_WIDTH}px`);
   });
 
   // A sideways wheel — a tilt wheel, a trackpad, shift+wheel — carries deltaY
   // zero. It is not a zoom in either direction, and it must stay a scroll:
   // fireEvent returns false when the handler called preventDefault.
   it('ignores a sideways wheel instead of zooming on it', () => {
-    const { svg } = renderHarness([box]);
+    const { svg, width } = renderHarness([box]);
 
     const scrolled = fireEvent.wheel(svg, { deltaY: 0, deltaX: 10 });
 
     // Untouched: the editor never set a width, so the CSS one still applies.
-    expect(svg.style.width).toBe('');
+    expect(width()).toBe('');
     expect(scrolled).toBe(true);
+  });
+});
+
+describe('CardFaceEditor background', () => {
+  it('draws its children in a layer of their own, apart from the text boxes', () => {
+    render(
+      <CardFaceEditor
+        viewBox="0 0 100 100"
+        textBoxes={[box]}
+        onTextBoxesChange={vi.fn()}
+      >
+        <rect data-testid="background" />
+      </CardFaceEditor>,
+    );
+    const backgroundLayer = screen.getByTestId('background').closest('svg')!;
+
+    expect({
+      viewBox: backgroundLayer.getAttribute('viewBox'),
+      holdsTheText: backgroundLayer.contains(screen.getByText('ciao')),
+    }).toEqual({ viewBox: '0 0 100 100', holdsTheText: false });
   });
 });

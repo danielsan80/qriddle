@@ -2,10 +2,25 @@
   position: relative;
 }
 
-.svg {
-  display: block;
+.surface {
+  position: relative;
   margin: auto;
+}
+
+.background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Its own compositor layer: dragging a box repaints this one, not the background. */
+.svg {
+  position: relative;
+  display: block;
+  width: 100%;
   cursor: crosshair;
+  will-change: transform;
 }
 
 .textNode {
