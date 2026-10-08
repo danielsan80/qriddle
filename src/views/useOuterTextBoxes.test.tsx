@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, afterEach } from 'vitest';
 import { useOuterTextBoxes } from './useOuterTextBoxes';
-import type { FacedTextBox } from '../lib/domain/card';
+import type { FacedTextBox, TextBox } from '../lib/domain/card';
 import { WizardProvider } from '../context/WizardContext';
 import { useWizard } from '../context/useWizard';
 import { encode } from '../lib/browser/urlState';
@@ -29,10 +29,18 @@ function wrapper({ children }: { children: React.ReactNode }) {
 
 function renderFront(textBoxes: FacedTextBox[]) {
   window.location.hash = '#' + encode({ textBoxes });
-  return renderHook(
-    () => ({ front: useOuterTextBoxes('front'), wizard: useWizard() }),
+  const { result } = renderHook(
+    () => {
+      const [boxes, setBoxes] = useOuterTextBoxes('front');
+      return { boxes, setBoxes, cardBoxes: useWizard().work.textBoxes };
+    },
     { wrapper },
-  ).result;
+  );
+  return {
+    boxes: () => result.current.boxes,
+    setBoxes: (boxes: TextBox[]) => act(() => result.current.setBoxes(boxes)),
+    cardBoxes: () => result.current.cardBoxes,
+  };
 }
 
 describe('useOuterTextBoxes', () => {
@@ -41,28 +49,50 @@ describe('useOuterTextBoxes', () => {
   });
 
   it('returns only boxes matching the given face', () => {
-    const result = renderFront([frontBox, centerBox]);
+    const front = renderFront([frontBox, centerBox]);
 
-    expect(result.current.front[0]).toEqual([frontBox]);
+    expect(front.boxes()).toEqual([frontBox]);
   });
 
   it('stamps its own face on the boxes it is handed', () => {
-    const result = renderFront([]);
+    const front = renderFront([]);
 
-    act(() =>
-      result.current.front[1]([
-        { id: '1', x: 10, y: 20, text: 'hi', fontSize: 8 },
-      ]),
-    );
+    front.setBoxes([{ id: '1', x: 10, y: 20, text: 'hi', fontSize: 8 }]);
 
-    expect(result.current.wizard.work.textBoxes).toEqual([frontBox]);
+    expect(front.cardBoxes()).toEqual([frontBox]);
   });
 
   it('preserves boxes from other faces when updating', () => {
-    const result = renderFront([centerBox]);
+    const front = renderFront([centerBox]);
 
-    act(() => result.current.front[1]([frontBox]));
+    front.setBoxes([frontBox]);
 
-    expect(result.current.wizard.work.textBoxes).toEqual([centerBox, frontBox]);
+    expect(front.cardBoxes()).toEqual([centerBox, frontBox]);
+  });
+
+  it('keeps the boxes of every face in place when one face changes', () => {
+    const front = renderFront([frontBox, centerBox]);
+    const editedFrontBox = { ...frontBox, text: 'hello' };
+
+    front.setBoxes([editedFrontBox]);
+
+    expect(front.cardBoxes()).toEqual([editedFrontBox, centerBox]);
+  });
+
+  it('adds a new box of the face at the end', () => {
+    const front = renderFront([frontBox, centerBox]);
+    const newFrontBox = { ...frontBox, id: '3', text: 'new' };
+
+    front.setBoxes([frontBox, newFrontBox]);
+
+    expect(front.cardBoxes()).toEqual([frontBox, centerBox, newFrontBox]);
+  });
+
+  it('drops the boxes a face no longer has', () => {
+    const front = renderFront([frontBox, centerBox]);
+
+    front.setBoxes([]);
+
+    expect(front.cardBoxes()).toEqual([centerBox]);
   });
 });

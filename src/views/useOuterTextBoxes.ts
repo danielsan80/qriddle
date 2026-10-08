@@ -6,16 +6,18 @@ export function useOuterTextBoxes(
 ): [TextBox[], (boxes: TextBox[]) => void] {
   const { work, updateWork } = useWizard();
 
-  const faceBoxes = work.textBoxes.filter((tb) => tb.face === face);
+  const faceBoxes = work.textBoxes.filter((textBox) => textBox.face === face);
 
   function setFaceBoxes(newFaceBoxes: TextBox[]) {
-    updateWork((current) => ({
-      ...current,
-      textBoxes: [
-        ...current.textBoxes.filter((tb) => tb.face !== face),
-        ...newFaceBoxes.map((tb) => ({ ...tb, face })),
-      ],
-    }));
+    updateWork((current) => {
+      const incoming = newFaceBoxes.map((textBox) => ({ ...textBox, face }));
+      const inPlace = current.textBoxes.flatMap((textBox) => {
+        if (textBox.face !== face) return [textBox];
+        const replacement = incoming.shift();
+        return replacement ? [replacement] : [];
+      });
+      return { ...current, textBoxes: [...inPlace, ...incoming] };
+    });
   }
 
   return [faceBoxes, setFaceBoxes];
