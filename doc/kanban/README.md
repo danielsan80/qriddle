@@ -15,7 +15,6 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [Escape non annulla la modifica del testo](cards/escape-non-annulla-la-modifica.md)
 - [Un click sull'anteprima va perso dopo aver chiuso l'editor cliccando altrove](cards/click-perso-dopo-blur-editor.md)
 - [L'overlay di modifica non segue lo zoom](cards/overlay-non-segue-lo-zoom.md)
-- [La ventola parte nelle viste di modifica](cards/ventola-nelle-viste-di-modifica.md)
 
 ### Refactoring
 
@@ -37,6 +36,7 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [Ripulire il repo come vetrina (asset di terzi + presentazione)](cards/repo-vetrina-e-asset.md)
 - [Potare i commenti nei test dell'editor](cards/potare-i-commenti-nei-test.md)
 - [Coprire `drawTextBox`: la facciata centrale ruotata](cards/test-su-drawtextbox.md)
+- [Il QR dei crediti generato una volta sola](cards/qr-dei-crediti-una-volta-sola.md)
 
 ### Operations
 
@@ -53,6 +53,7 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 ## DONE
 
+- [La ventola parte nelle viste di modifica](cards/ventola-nelle-viste-di-modifica.md)
 - [Modificare una facciata cancella quelle successive](cards/modifiche-perse-tornando-indietro.md)
 - [`useOuterTextBoxes`: l'ordine cambia da solo, e ogni vista ha la sua copia](cards/ordine-e-copia-in-useoutertextboxes.md)
 - [Strascichi del cambio di dominio](cards/strascichi-cambio-dominio.md)

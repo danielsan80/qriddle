@@ -91,8 +91,8 @@ incognito, confrontata con quella di oggi.
    descritta nella seconda misura. Uno smontaggio a metà trascinamento perde lo
    spostamento: accettato, non c'è un modo normale di cambiare facciata col mouse
    premuto.
-3. **Il QR dei crediti generato una volta sola**, invece che a ogni ingresso sul retro.
-   Guadagno piccolo (16 ms per ingresso), costo piccolo.
+3. **Il QR dei crediti generato una volta sola**: guadagno piccolo, spostato nella card
+   [Il QR dei crediti generato una volta sola](qr-dei-crediti-una-volta-sola.md).
 
 Fuori da qui: il ricalcolo della mappa al montaggio non è emerso come costo, e resta
 com'è.
