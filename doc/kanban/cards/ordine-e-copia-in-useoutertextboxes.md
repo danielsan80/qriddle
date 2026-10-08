@@ -28,12 +28,18 @@ Correzione probabile: ricomporre mantenendo la posizione invece di concatenare, 
 in modo stabile alla lettura. Da decidere se l'ordine debba avere un significato dichiarato
 (z-order) o essere irrilevante per costruzione.
 
+Risolto il 2026-10-08: `setFaceBoxes` sostituisce le caselle della facciata al loro
+posto, quelle nuove vanno in fondo, quelle tolte spariscono. Il z-order è l'ordine di
+creazione. L'effetto era più piccolo di come descritto sopra: dentro una facciata
+l'ordine era già stabile, cambiava solo fra facciate, che stanno in quadranti diversi e
+si sovrappongono solo con una casella trascinata oltre il bordo. Il guadagno vero è che
+l'URL non si rimescola più.
+
 ## 2. Il "una vista per volta" è un invariante non scritto
 
 Risolto il 2026-10-07 con
 [Modificare una facciata cancella quelle successive](modifiche-perse-tornando-indietro.md):
 le caselle stanno in `WizardContext`, e l'hook è solo una lente sulla fetta della facciata.
-Resta il punto 1.
 
 Ogni chiamata a `useOuterTextBoxes` fa `useState` seminato dall'URL, quindi front, center e
 back terrebbero **tre copie indipendenti dell'array intero**. Non si pestano i piedi per un

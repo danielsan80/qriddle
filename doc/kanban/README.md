@@ -15,8 +15,6 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [Escape non annulla la modifica del testo](cards/escape-non-annulla-la-modifica.md)
 - [Un click sull'anteprima va perso dopo aver chiuso l'editor cliccando altrove](cards/click-perso-dopo-blur-editor.md)
 - [L'overlay di modifica non segue lo zoom](cards/overlay-non-segue-lo-zoom.md)
-- [`useOuterTextBoxes`: l'ordine cambia da solo, e ogni vista ha la sua copia](cards/ordine-e-copia-in-useoutertextboxes.md)
-- [Modificare una facciata cancella quelle successive](cards/modifiche-perse-tornando-indietro.md)
 - [La ventola parte nelle viste di modifica](cards/ventola-nelle-viste-di-modifica.md)
 
 ### Refactoring
@@ -55,6 +53,8 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 ## DONE
 
+- [Modificare una facciata cancella quelle successive](cards/modifiche-perse-tornando-indietro.md)
+- [`useOuterTextBoxes`: l'ordine cambia da solo, e ogni vista ha la sua copia](cards/ordine-e-copia-in-useoutertextboxes.md)
 - [Strascichi del cambio di dominio](cards/strascichi-cambio-dominio.md)
 - [Spostare l'app su qriddle.app](cards/dominio-qriddle-app.md)
 - [Un esempio di coordinate più noto e più universale](cards/esempio-coordinate-universale.md)
