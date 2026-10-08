@@ -7,7 +7,7 @@ Dal feedback di chi ha provato l'app (card Trello "Feedback QRiddle", aprile 202
 - "non c'è bisogno del seed, magari un refresh": il seed, esposto come codice da
   leggere e modificare, pesa più di quanto serva a chi vuole solo un altro puzzle.
 
-Il meccanismo c'è (skill `url-state`): manca il modo di dirlo. Un pulsante "copia il
+Il meccanismo c'è (lo stato nell'URL, `src/lib/browser/urlState.ts`): manca il modo di dirlo. Un pulsante "copia il
 link" o "salva" che in realtà copia l'URL risponderebbe a tutte e tre.
 
 Il seed era stato messo in vista apposta (vedi DONE, "Mostrare il seed in

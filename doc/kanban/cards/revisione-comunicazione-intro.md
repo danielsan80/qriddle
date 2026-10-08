@@ -25,6 +25,16 @@ correzioni sotto vengono da lì.
 - **La navigazione per passi**: nell'Intro forse va nascosta, perché un percorso a tappe
   visibile fa percepire fatica. È un'opinione: si prova e si misura.
 
+## Idee più vecchie, dalla skill `wizard-ux`
+
+Di marzo 2026, mai fatte; la skill è stata tolta l'8 ottobre 2026.
+
+- **Un'animazione di apertura del biglietto** (fronte → centro → mappa) come onboarding:
+  mostrata una volta al primo accesso e richiamabile con un bottone, mai come transizione
+  fra i passi. Le quattro foto di "How it works" raccontano già la stessa sequenza.
+- **Il download sempre visibile**, fuori dal wizard e non condizionato al completamento dei
+  passi. Oggi è l'ultimo passo.
+
 ## Correzioni alla proposta originale
 
 - **Niente "riddle".** "Create a QR code riddle" fa pensare a un indovinello con una
