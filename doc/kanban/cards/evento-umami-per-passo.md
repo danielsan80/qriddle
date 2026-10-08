@@ -16,15 +16,31 @@ piccolo, ma nella direzione della card
 
 ## Proposta
 
-A ogni cambio di passo, `window.umami?.track('step', { step })`, con il solo codice del passo
+A ogni cambio di passo, l'evento `step-changed`, con il solo codice del passo
 (`'inner.map'`, `'outer.front'`…): niente del lavoro. È lo stesso meccanismo dell'evento
-`download` già in `DownloadView`. Ne esce un funnel: quanti arrivano alla mappa, alle
+di download già in `DownloadView`. Ne esce un funnel: quanti arrivano alla mappa, alle
 facciate, al download.
 
 Va fatta prima della revisione dell'Intro, che è ciò che dovrà misurare.
 
-Da decidere: dove chiamarlo (il context, che conosce ogni cambio di passo, o `StepView`) e
-se contare anche i passi aperti da un link incollato.
+## Decisioni
+
+- **Nel context**, in `handleSetStep`, da cui passano Previous, Next e la barra laterale.
+- **Solo i cambi fatti da chi usa l'app.** Un link incollato apre il suo passo senza evento:
+  altrimenti un link aperto direttamente sul download sembrerebbe un percorso completo.
+- **Niente evento verso il passo già mostrato**, come il click sull'etichetta del passo
+  corrente: sarebbe rumore.
+- **Una porta, non un event bus.** `src/lib/browser/analytics.ts` espone un fatto per
+  funzione (`stepChanged`, `downloadRequested`): context e `DownloadView` non sanno che
+  dietro c'è Umami, e nei test si sostituisce la porta. Il bus avrebbe un solo ascoltatore e
+  renderebbe indiretto il flusso; se arriva un secondo consumatore, è la porta a emettere
+  sul bus e chi la chiama non cambia.
+- **Nomi al passato**, perché un evento è un fatto: `step-changed` e
+  `download-requested`. Il secondo prende il posto di `download`, e dice quello che si sa
+  davvero: parte al click, prima che il PDF sia generato. Lo storico di `download` resta
+  separato, ma conteneva solo i miei download di prova.
+
+In Umami gli eventi si leggono in Events, con la proprietà `step`.
 
 ## Per misurare pulito
 
