@@ -45,7 +45,7 @@ export function IntroView() {
 
   return (
     <div className={styles.layout}>
-      <header className={styles.hero}>
+      <header className={styles.hero} data-testid="hero-banner">
         <div className={styles.presentation}>
           <hgroup>
             <h1 className={styles.name}>QRiddle</h1>

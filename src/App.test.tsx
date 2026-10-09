@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import App from './App';
 import { WizardProvider } from './context/WizardContext';
+import { IntroPage } from './views/IntroView/IntroView.page';
 import { encode, readState } from './lib/browser/urlState';
 import type { Face, FacedTextBox } from './lib/domain/card';
 
@@ -25,11 +26,7 @@ function renderApp() {
   );
 }
 
-function startPuzzle() {
-  return userEvent.click(
-    screen.getAllByRole('button', { name: 'Create your puzzle' })[0],
-  );
-}
+const introPage = new IntroPage();
 
 function clickStepButton(name: 'Next' | 'Previous') {
   return userEvent.click(screen.getAllByRole('button', { name })[0]);
@@ -49,7 +46,7 @@ describe('App', () => {
     expect(screen.queryByRole('complementary')).toBeNull();
     expect(screen.queryByRole('button', { name: 'Next' })).toBeNull();
 
-    await startPuzzle();
+    await introPage.heroBanner.clickCreateYourPuzzle();
 
     expect(screen.getByText('The Treasure')).toBeInTheDocument();
     expect(screen.getByRole('complementary')).toBeInTheDocument();
@@ -57,7 +54,7 @@ describe('App', () => {
 
   it('goes back to the intro after loading an example on the map', async () => {
     renderApp();
-    await startPuzzle();
+    await introPage.heroBanner.clickCreateYourPuzzle();
     await userEvent.click(screen.getByRole('link', { name: 'coordinates' }));
 
     await clickStepButton('Previous');

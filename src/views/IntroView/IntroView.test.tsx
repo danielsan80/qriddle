@@ -1,8 +1,8 @@
-import { render, screen, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { WizardContext } from '../../context/WizardContext';
 import { IntroView } from './IntroView';
+import { IntroPage } from './IntroView.page';
 
 function renderIntro() {
   const setStep = vi.fn();
@@ -20,11 +20,7 @@ function renderIntro() {
       <IntroView />
     </WizardContext>,
   );
-  return { setStep };
-}
-
-function howItWorksSection() {
-  return screen.getByRole('region', { name: 'How it works' });
+  return { introPage: new IntroPage(), setStep };
 }
 
 describe('IntroView', () => {
@@ -65,25 +61,23 @@ describe('IntroView', () => {
   it('scrolls down to how it works, without touching the hash that holds the work', async () => {
     const scrollIntoView = vi.fn();
     Element.prototype.scrollIntoView = scrollIntoView;
-    renderIntro();
+    const { introPage } = renderIntro();
 
-    await userEvent.click(screen.getByRole('button', { name: 'How it works' }));
+    await introPage.heroBanner.clickHowItWorks();
 
     expect(scrollIntoView).toHaveBeenCalledExactlyOnceWith({
       behavior: 'smooth',
     });
-    expect(scrollIntoView.mock.contexts).toEqual([howItWorksSection()]);
+    expect(scrollIntoView.mock.contexts).toEqual([
+      introPage.howItWorksSection.element,
+    ]);
     expect(window.location.hash).toBe('');
   });
 
   it('starts the puzzle again at the end of how it works', async () => {
-    const { setStep } = renderIntro();
+    const { introPage, setStep } = renderIntro();
 
-    await userEvent.click(
-      within(howItWorksSection()).getByRole('button', {
-        name: 'Create your puzzle',
-      }),
-    );
+    await introPage.howItWorksSection.clickCreateYourPuzzle();
 
     expect(setStep).toHaveBeenCalledExactlyOnceWith('inner.map');
   });
