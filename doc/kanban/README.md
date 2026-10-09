@@ -49,7 +49,7 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [Mutation testing con Stryker](cards/spike-stryker.md)
 - [Revisione dello stile: enigmistica o pirati?](cards/revisione-dello-stile.md)
 - [Download SVG modificabile](cards/spike-download-svg-modificabile.md)
-- [Un PageObject per i test dei componenti?](cards/spike-pageobject-nei-test.md)
+- [Il PageObject di `CardFaceEditor` e l'ordine degli eventi](cards/spike-pageobject-e-ordine-degli-eventi.md)
 
 ## DOING
 

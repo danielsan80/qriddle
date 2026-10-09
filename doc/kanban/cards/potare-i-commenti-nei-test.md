@@ -55,6 +55,7 @@ cancella. Potare non deve diventare buttare.
 
 ## Card collegate
 
-Da fare dopo lo [Spike sul PageObject](spike-pageobject-nei-test.md): se si adotta, una
-parte della potatura la fa da sola dando un nome alle cose, e potare prima significherebbe
-rifare il lavoro.
+Da fare dopo lo
+[Spike sul PageObject di `CardFaceEditor`](spike-pageobject-e-ordine-degli-eventi.md): il
+PageObject fa da solo una parte della potatura, dando un nome alle cose, e potare prima
+significherebbe rifare il lavoro.
