@@ -23,8 +23,6 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 ### Feature
 
-- [Un evento Umami a ogni cambio di passo](cards/evento-umami-per-passo.md)
-- [Revisione della comunicazione della prima vista (Intro)](cards/revisione-comunicazione-intro.md)
 - [La deviazione verso un altro tesoro](cards/deviazione-verso-un-altro-tesoro.md)
 - [Multipuzzle: QR diviso in 4 settori](cards/multipuzzle-4-settori.md)
 - [Stili puzzle alternativi](cards/stili-puzzle-alternativi.md)
@@ -54,8 +52,11 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 ## DOING
 
+- [Revisione della comunicazione della prima vista (Intro)](cards/revisione-comunicazione-intro.md)
+
 ## DONE
 
+- [Un evento Umami a ogni cambio di passo](cards/evento-umami-per-passo.md)
 - [La ventola parte nelle viste di modifica](cards/ventola-nelle-viste-di-modifica.md)
 - [Modificare una facciata cancella quelle successive](cards/modifiche-perse-tornando-indietro.md)
 - [`useOuterTextBoxes`: l'ordine cambia da solo, e ogni vista ha la sua copia](cards/ordine-e-copia-in-useoutertextboxes.md)
