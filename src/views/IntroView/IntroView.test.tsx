@@ -7,8 +7,7 @@ import { IntroPage } from './IntroView.page';
 
 vi.mock('../../lib/browser/device', () => ({ isMobileDevice: vi.fn() }));
 
-const SEND_YOURSELF_THE_LINK =
-  'Puzzles are made on a computer. Send yourself the link:';
+const CREATE_ON_A_COMPUTER = 'Create your puzzle on a computer.';
 
 function renderIntro() {
   const setStep = vi.fn();
@@ -107,11 +106,11 @@ describe('IntroView', () => {
 
     expect(introPage.heroBanner.createYourPuzzleButton).toBeNull();
     expect(introPage.heroBanner.element).toHaveTextContent(
-      SEND_YOURSELF_THE_LINK,
+      CREATE_ON_A_COMPUTER,
     );
     expect(introPage.howItWorksSection.createYourPuzzleButton).toBeNull();
     expect(introPage.howItWorksSection.element).toHaveTextContent(
-      SEND_YOURSELF_THE_LINK,
+      CREATE_ON_A_COMPUTER,
     );
   });
 });

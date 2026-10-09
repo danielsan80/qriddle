@@ -29,7 +29,7 @@ describe('SendLinkButtons', () => {
     });
     render(<SendLinkButtons />);
     await userEvent.click(
-      screen.getByRole('button', { name: 'Share the link' }),
+      screen.getByRole('button', { name: 'Send the link' }),
     );
     expect(share).toHaveBeenCalledExactlyOnceWith({
       url: window.location.href,

@@ -9,7 +9,7 @@ export function CallToAction() {
   if (isMobileDevice()) {
     return (
       <div className={styles.sendLink}>
-        <p>Puzzles are made on a computer. Send yourself the link:</p>
+        <p>Create your puzzle on a computer.</p>
         <SendLinkButtons />
       </div>
     );

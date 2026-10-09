@@ -12,7 +12,7 @@ export function SendLinkButtons() {
     <div className={styles.buttons}>
       {navigator.share != null && (
         <button className={styles.button} onClick={handleShare}>
-          Share the link
+          Send the link
         </button>
       )}
       <button className={styles.button} onClick={copy}>
