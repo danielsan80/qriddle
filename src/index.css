@@ -45,8 +45,6 @@ body {
   font-family: 'Courier Prime', monospace;
   background: var(--ink);
   color: var(--ink);
-  height: 100vh;
-  overflow: hidden;
 }
 
 #root {
