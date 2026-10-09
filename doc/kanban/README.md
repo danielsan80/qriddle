@@ -29,7 +29,6 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [Stili puzzle alternativi](cards/stili-puzzle-alternativi.md)
 - [Rivedere il tipo `Face` in `CardFaceNav`](cards/tipo-face-cardfacenav.md)
 - [Altri font per i testi del biglietto](cards/altri-font.md)
-- [Una foto dell'hero da un'altra angolazione](cards/foto-dell-hero.md)
 - [Ruotare le scritte](cards/rotazione-scritte.md)
 
 ### Tech
@@ -56,6 +55,7 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 ## DONE
 
+- [Una foto dell'hero da un'altra angolazione](cards/foto-dell-hero.md)
 - [Il blocco per il telefono scatta anche sui computer con il touch](cards/blocco-mobile-sui-computer-touch.md)
 - [Revisione della comunicazione della prima vista (Intro)](cards/revisione-comunicazione-intro.md)
 - [Un evento Umami a ogni cambio di passo](cards/evento-umami-per-passo.md)
