@@ -2,6 +2,7 @@ import photoFront from '../../assets/photos/front.webp';
 import photoCenter from '../../assets/photos/center.webp';
 import photoMap from '../../assets/photos/map.webp';
 import photoSolve from '../../assets/photos/solve_puzzle.webp';
+import { useRef } from 'react';
 import { useWizard } from '../../context/useWizard';
 import styles from './IntroView.module.css';
 
@@ -30,6 +31,17 @@ const STEPS = [
 
 export function IntroView() {
   const { setStep } = useWizard();
+  const howItWorksRef = useRef<HTMLElement>(null);
+
+  const createButton = (
+    <button
+      type="button"
+      className={styles.cta}
+      onClick={() => setStep('inner.map')}
+    >
+      Create your puzzle
+    </button>
+  );
 
   return (
     <div className={styles.layout}>
@@ -45,13 +57,21 @@ export function IntroView() {
               read it.
             </p>
           </hgroup>
-          <button
-            type="button"
-            className={styles.cta}
-            onClick={() => setStep('inner.map')}
-          >
-            Create your puzzle
-          </button>
+          <div className={styles.actions}>
+            {createButton}
+            <button
+              type="button"
+              className={styles.howItWorksLink}
+              onClick={() =>
+                howItWorksRef.current?.scrollIntoView({ behavior: 'smooth' })
+              }
+            >
+              How it works
+              <span className={styles.arrow} aria-hidden="true">
+                ↓
+              </span>
+            </button>
+          </div>
         </div>
         <img
           src={photoSolve}
@@ -59,8 +79,14 @@ export function IntroView() {
           className={styles.heroPhoto}
         />
       </header>
-      <section className={styles.howItWorks}>
-        <h2 className={styles.heading}>How it works</h2>
+      <section
+        ref={howItWorksRef}
+        className={styles.howItWorks}
+        aria-labelledby="how-it-works"
+      >
+        <h2 id="how-it-works" className={styles.heading}>
+          How it works
+        </h2>
         <ol className={styles.steps}>
           {STEPS.map((step) => (
             <li key={step.src} className={styles.step}>
@@ -74,6 +100,7 @@ export function IntroView() {
             </li>
           ))}
         </ol>
+        <div className={styles.closingAction}>{createButton}</div>
       </section>
     </div>
   );

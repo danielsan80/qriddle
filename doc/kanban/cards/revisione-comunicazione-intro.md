@@ -44,7 +44,7 @@ correzioni sotto vengono da lì.
       p   Put a treasure into your greeting card
       p   Write a secret message. Print it as a puzzle. They solve it to read it.
     button  Create your puzzle
-    a       How it works ↓, l'ancora sulla sezione sotto
+    button  How it works ↓, che scorre alla sezione sotto
     img     una foto del puzzle risolto
   section#how-it-works
     h2  How it works
@@ -56,9 +56,12 @@ correzioni sotto vengono da lì.
   descrivono la struttura, e non aprono sezioni. La frase che spiega è la più piccola
   della gerarchia, ma va tenuta ben leggibile: è quella che risponde al test dei 5 secondi.
 
-- **"How it works" come seconda azione, con un'ancora.** A differenza di "Try an example",
-  offre una scelta vera: cominciare o prima capire. Un'ancora e non una vista nuova: basta
-  scorrere la stessa pagina, senza un passo del wizard in più con la sua navigazione. Pesa
+- **"How it works" come seconda azione, che scorre alla sezione.** A differenza di "Try an
+  example", offre una scelta vera: cominciare o prima capire. Uno scorrimento e non una
+  vista nuova: basta la stessa pagina, senza un passo del wizard in più con la sua
+  navigazione. Non un'ancora `href="#how-it-works"`, però: l'hash tiene il lavoro, e
+  l'ancora lo sostituirebbe, cancellandolo a chi torna sull'Intro. È un bottone con
+  l'aspetto di un link, che chiama `scrollIntoView`. Pesa
   meno della CTA, come link o bottone secondario, perché le due azioni non sembrino
   equivalenti. In fondo alla sezione torna "Create your puzzle", per chi ha finito di
   leggere.
@@ -82,7 +85,7 @@ correzioni sotto vengono da lì.
 
 - [x] L'hero senza sidebar, con `hgroup`, CTA e foto; "How it works" come `h2`.
 - [ ] L'Intro sul telefono.
-- [ ] "How it works ↓" e la CTA ripetuta in fondo.
+- [x] "How it works ↓" e la CTA ripetuta in fondo.
 - [ ] La foto nuova per l'hero.
 
 ## Idee più vecchie, dalla skill `wizard-ux`

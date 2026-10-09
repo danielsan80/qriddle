@@ -27,7 +27,7 @@ function renderApp() {
 
 function startPuzzle() {
   return userEvent.click(
-    screen.getByRole('button', { name: 'Create your puzzle' }),
+    screen.getAllByRole('button', { name: 'Create your puzzle' })[0],
   );
 }
 
@@ -62,7 +62,9 @@ describe('App', () => {
 
     await clickStepButton('Previous');
 
-    expect(await screen.findByText('How it works')).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { level: 2, name: 'How it works' }),
+    ).toBeInTheDocument();
   });
 
   it('keeps the text written on later faces after Previous and Next', async () => {

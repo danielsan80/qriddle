@@ -1,14 +1,30 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
-import { WizardProvider } from '../../context/WizardContext';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { describe, it, expect, vi } from 'vitest';
+import { WizardContext } from '../../context/WizardContext';
 import { IntroView } from './IntroView';
 
 function renderIntro() {
+  const setStep = vi.fn();
   render(
-    <WizardProvider>
+    <WizardContext
+      value={{
+        step: 'intro',
+        setStep,
+        puzzle: null,
+        setPuzzle: vi.fn(),
+        work: { qrText: '', seed: '', textBoxes: [] },
+        updateWork: vi.fn(),
+      }}
+    >
       <IntroView />
-    </WizardProvider>,
+    </WizardContext>,
   );
+  return { setStep };
+}
+
+function howItWorksSection() {
+  return screen.getByRole('region', { name: 'How it works' });
 }
 
 describe('IntroView', () => {
@@ -44,5 +60,31 @@ describe('IntroView', () => {
     expect(
       screen.getByRole('heading', { level: 2, name: 'How it works' }),
     ).toBeInTheDocument();
+  });
+
+  it('scrolls down to how it works, without touching the hash that holds the work', async () => {
+    const scrollIntoView = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoView;
+    renderIntro();
+
+    await userEvent.click(screen.getByRole('button', { name: 'How it works' }));
+
+    expect(scrollIntoView).toHaveBeenCalledExactlyOnceWith({
+      behavior: 'smooth',
+    });
+    expect(scrollIntoView.mock.contexts).toEqual([howItWorksSection()]);
+    expect(window.location.hash).toBe('');
+  });
+
+  it('starts the puzzle again at the end of how it works', async () => {
+    const { setStep } = renderIntro();
+
+    await userEvent.click(
+      within(howItWorksSection()).getByRole('button', {
+        name: 'Create your puzzle',
+      }),
+    );
+
+    expect(setStep).toHaveBeenCalledExactlyOnceWith('inner.map');
   });
 });
