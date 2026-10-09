@@ -15,7 +15,6 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [Escape non annulla la modifica del testo](cards/escape-non-annulla-la-modifica.md)
 - [Un click sull'anteprima va perso dopo aver chiuso l'editor cliccando altrove](cards/click-perso-dopo-blur-editor.md)
 - [L'overlay di modifica non segue lo zoom](cards/overlay-non-segue-lo-zoom.md)
-- [Il blocco per il telefono scatta anche sui computer con il touch](cards/blocco-mobile-sui-computer-touch.md)
 
 ### Refactoring
 
@@ -57,6 +56,7 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 ## DONE
 
+- [Il blocco per il telefono scatta anche sui computer con il touch](cards/blocco-mobile-sui-computer-touch.md)
 - [Revisione della comunicazione della prima vista (Intro)](cards/revisione-comunicazione-intro.md)
 - [Un evento Umami a ogni cambio di passo](cards/evento-umami-per-passo.md)
 - [La ventola parte nelle viste di modifica](cards/ventola-nelle-viste-di-modifica.md)

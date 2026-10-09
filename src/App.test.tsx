@@ -6,7 +6,7 @@ import { WizardProvider } from './context/WizardContext';
 import { IntroPage } from './views/IntroView/IntroView.page';
 import { MobileBlockPage } from './components/MobileBlock/MobileBlock.page';
 import { encode, readState } from './lib/browser/urlState';
-import { isMobileDevice } from './lib/browser/device';
+import { hasFinePointer } from './lib/browser/device';
 import type { Face, FacedTextBox } from './lib/domain/card';
 
 vi.mock('./lib/render', () => ({
@@ -16,7 +16,7 @@ vi.mock('./lib/render', () => ({
   downloadPuzzlePdf: vi.fn(),
 }));
 
-vi.mock('./lib/browser/device', () => ({ isMobileDevice: vi.fn() }));
+vi.mock('./lib/browser/device', () => ({ hasFinePointer: vi.fn() }));
 
 function box(text: string, face: Face): FacedTextBox {
   return { id: text, x: 10, y: 20, text, fontSize: 8, face };
@@ -40,7 +40,7 @@ function clickStepButton(name: 'Next' | 'Previous') {
 describe('App', () => {
   beforeEach(() => {
     HTMLElement.prototype.scrollTo = vi.fn();
-    vi.mocked(isMobileDevice).mockReturnValue(false);
+    vi.mocked(hasFinePointer).mockReturnValue(true);
   });
 
   afterEach(() => {
@@ -87,14 +87,14 @@ describe('App', () => {
   });
 
   it('on a phone, leaves the intro open', () => {
-    vi.mocked(isMobileDevice).mockReturnValue(true);
+    vi.mocked(hasFinePointer).mockReturnValue(false);
     renderApp();
 
     expect(mobileBlockPage.isShown).toBe(false);
   });
 
   it('on a phone, covers the work steps', () => {
-    vi.mocked(isMobileDevice).mockReturnValue(true);
+    vi.mocked(hasFinePointer).mockReturnValue(false);
     window.location.hash = '#' + encode({ step: 'inner.map' });
     renderApp();
 

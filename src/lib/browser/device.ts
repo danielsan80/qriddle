@@ -1,3 +1,3 @@
-export function isMobileDevice(): boolean {
-  return navigator.maxTouchPoints > 0;
+export function hasFinePointer(): boolean {
+  return window.matchMedia('(any-pointer: fine)').matches;
 }

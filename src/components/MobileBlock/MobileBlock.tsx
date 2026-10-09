@@ -1,9 +1,9 @@
-import { isMobileDevice } from '../../lib/browser/device';
+import { hasFinePointer } from '../../lib/browser/device';
 import { SendLinkButtons } from '../SendLinkButtons';
 import styles from './MobileBlock.module.css';
 
 export function MobileBlock() {
-  if (!isMobileDevice()) return null;
+  if (hasFinePointer()) return null;
 
   return (
     <div

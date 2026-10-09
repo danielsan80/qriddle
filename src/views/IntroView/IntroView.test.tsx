@@ -1,11 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { WizardContext } from '../../context/WizardContext';
-import { isMobileDevice } from '../../lib/browser/device';
+import { hasFinePointer } from '../../lib/browser/device';
 import { IntroView } from './IntroView';
 import { IntroPage } from './IntroView.page';
 
-vi.mock('../../lib/browser/device', () => ({ isMobileDevice: vi.fn() }));
+vi.mock('../../lib/browser/device', () => ({ hasFinePointer: vi.fn() }));
 
 const CREATE_ON_A_COMPUTER = 'Create your puzzle on a computer.';
 
@@ -30,7 +30,7 @@ function renderIntro() {
 
 describe('IntroView', () => {
   beforeEach(() => {
-    vi.mocked(isMobileDevice).mockReturnValue(false);
+    vi.mocked(hasFinePointer).mockReturnValue(true);
   });
 
   it('presents the app with its name, payoff and what it does', () => {
@@ -101,7 +101,7 @@ describe('IntroView', () => {
   });
 
   it('on a phone, asks to send the link to a computer instead of creating the puzzle', () => {
-    vi.mocked(isMobileDevice).mockReturnValue(true);
+    vi.mocked(hasFinePointer).mockReturnValue(false);
     const { introPage } = renderIntro();
 
     expect(introPage.heroBanner.createYourPuzzleButton).toBeNull();
