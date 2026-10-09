@@ -20,6 +20,7 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 - [Debito di revisione: policy e copertura dell'editor SVG](cards/debito-di-revisione-editor-svg.md)
 - [Scomporre `CardFaceEditor` in comportamenti isolati](cards/scomporre-cardfaceeditor.md)
+- [L'Intro fuori dai passi](cards/intro-fuori-dai-passi.md)
 
 ### Feature
 
