@@ -54,7 +54,7 @@ describe('IntroView', () => {
 
     expect(
       screen.getByRole('img', {
-        name: 'A treasure map puzzle being solved with a marker, a QR code emerging',
+        name: 'A hand drawing on the treasure map puzzle with a marker, a QR code emerging',
       }),
     ).toBeInTheDocument();
   });
@@ -65,6 +65,15 @@ describe('IntroView', () => {
     expect(
       screen.getByRole('heading', { level: 2, name: 'How it works' }),
     ).toBeInTheDocument();
+  });
+
+  it('reserves the space of the hero photo before it loads', () => {
+    const { introPage } = renderIntro();
+    const photo = within(introPage.heroBanner.element).getByRole('img');
+
+    expect([photo.getAttribute('width'), photo.getAttribute('height')]).toEqual(
+      ['1319', '879'],
+    );
   });
 
   it('reserves the space of the how it works photos before they load', () => {

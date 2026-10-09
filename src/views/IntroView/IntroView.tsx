@@ -2,6 +2,7 @@ import photoFront from '../../assets/photos/front.webp';
 import photoCenter from '../../assets/photos/center.webp';
 import photoMap from '../../assets/photos/map.webp';
 import photoSolve from '../../assets/photos/solve_puzzle.webp';
+import photoSolveSide from '../../assets/photos/solve_puzzle_side.webp';
 import { useRef } from 'react';
 import { CallToAction } from './CallToAction';
 import styles from './IntroView.module.css';
@@ -71,8 +72,10 @@ export function IntroView() {
           </div>
         </div>
         <img
-          src={photoSolve}
-          alt="A treasure map puzzle being solved with a marker, a QR code emerging"
+          src={photoSolveSide}
+          alt="A hand drawing on the treasure map puzzle with a marker, a QR code emerging"
+          width={1319}
+          height={879}
           className={styles.heroPhoto}
         />
       </header>
