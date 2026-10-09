@@ -9,5 +9,5 @@ Serve uno scatto nuovo dello stesso momento, il QR che emerge sotto il pennarell
 un'altra angolazione. Poi si sostituisce l'import in `IntroView`, con un `alt` che lo
 descriva.
 
-Sul telefono la foto sta sotto il testo, a tutta larghezza: conviene che regga anche
-stretta.
+Sotto i 720px la foto diventa una striscia sopra il testo, ritagliata al centro in
+proporzione 4:1: conviene che il QR che emerge stia nel mezzo dello scatto.

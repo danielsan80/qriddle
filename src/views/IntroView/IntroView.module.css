@@ -42,11 +42,13 @@
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem 2rem;
 }
 
 .howItWorksLink {
+  white-space: nowrap;
   background: none;
   border: none;
   padding: 0;
@@ -133,5 +135,11 @@
   .actions {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .heroPhoto {
+    order: -1;
+    aspect-ratio: 4 / 1;
+    object-fit: cover;
   }
 }

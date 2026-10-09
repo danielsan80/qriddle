@@ -74,9 +74,10 @@ correzioni sotto vengono da lì.
   arriva dal telefono legge solo "This service works on desktop only", senza sapere di
   cosa si tratta. Può spiegare una parte del "nessuno va oltre l'Intro": la scheda dei
   dispositivi di Umami lo dice. L'Intro si vede intera, con l'hero in una colonna e la
-  foto sotto il testo; al posto di "Create your puzzle", il messaggio che si crea dal
-  computer e i bottoni per mandarsi il link, quelli di oggi. Il blocco resta sui passi del
-  lavoro, dove l'editor sul telefono non funziona.
+  foto come striscia sottile sopra il testo: sotto, a fine pagina, non direbbe più niente.
+  Al posto di "Create your puzzle", il messaggio che si crea dal computer e i bottoni per
+  mandarsi il link, quelli di oggi. Il blocco resta sui passi del lavoro, dove l'editor sul
+  telefono non funziona.
 - **Misurare la sola navigazione non si può**, con questo traffico: il prima e dopo mescola
   navigazione, testo e CTA. Si decide a giudizio, e il funnel Intro→Map dice se la
   revisione nel complesso funziona.
