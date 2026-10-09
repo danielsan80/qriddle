@@ -9,21 +9,29 @@ import styles from './IntroView.module.css';
 const STEPS = [
   {
     src: photoFront,
+    width: 1600,
+    height: 1067,
     alt: 'Greeting card closed — ship and route on the cover',
     caption: 'A greeting card with a secret inside.',
   },
   {
     src: photoCenter,
+    width: 1600,
+    height: 1067,
     alt: 'Greeting card open — birthday message and cryptic instructions',
     caption: '"Follow the map. Dig at the X. Claim your treasure."',
   },
   {
     src: photoMap,
+    width: 1067,
+    height: 1600,
     alt: 'Card fully open — puzzle map unsolved',
     caption: 'Unfold it completely to reveal the puzzle.',
   },
   {
     src: photoSolve,
+    width: 1600,
+    height: 1067,
     alt: 'Card flat on table — puzzle being solved with a marker',
     caption: 'Solve it to uncover the hidden message.',
   },
@@ -82,6 +90,8 @@ export function IntroView() {
               <img
                 src={step.src}
                 alt={step.alt}
+                width={step.width}
+                height={step.height}
                 className={styles.photo}
                 loading="lazy"
               />

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { WizardContext } from '../../context/WizardContext';
 import { hasFinePointer } from '../../lib/browser/device';
@@ -65,6 +65,24 @@ describe('IntroView', () => {
     expect(
       screen.getByRole('heading', { level: 2, name: 'How it works' }),
     ).toBeInTheDocument();
+  });
+
+  it('reserves the space of the how it works photos before they load', () => {
+    const { introPage } = renderIntro();
+
+    expect(
+      within(introPage.howItWorksSection.element)
+        .getAllByRole('img')
+        .map((photo) => [
+          photo.getAttribute('width'),
+          photo.getAttribute('height'),
+        ]),
+    ).toEqual([
+      ['1600', '1067'],
+      ['1600', '1067'],
+      ['1067', '1600'],
+      ['1600', '1067'],
+    ]);
   });
 
   it('scrolls down to how it works, without touching the hash that holds the work', async () => {
