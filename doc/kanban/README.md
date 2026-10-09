@@ -30,6 +30,7 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 - [Stili puzzle alternativi](cards/stili-puzzle-alternativi.md)
 - [Rivedere il tipo `Face` in `CardFaceNav`](cards/tipo-face-cardfacenav.md)
 - [Altri font per i testi del biglietto](cards/altri-font.md)
+- [Una foto dell'hero da un'altra angolazione](cards/foto-dell-hero.md)
 - [Ruotare le scritte](cards/rotazione-scritte.md)
 
 ### Tech
@@ -54,10 +55,9 @@ Regole d'uso in `.claude/skills/kanban/SKILL.md`, o `/kanban` da Claude Code.
 
 ## DOING
 
-- [Revisione della comunicazione della prima vista (Intro)](cards/revisione-comunicazione-intro.md)
-
 ## DONE
 
+- [Revisione della comunicazione della prima vista (Intro)](cards/revisione-comunicazione-intro.md)
 - [Un evento Umami a ogni cambio di passo](cards/evento-umami-per-passo.md)
 - [La ventola parte nelle viste di modifica](cards/ventola-nelle-viste-di-modifica.md)
 - [Modificare una facciata cancella quelle successive](cards/modifiche-perse-tornando-indietro.md)

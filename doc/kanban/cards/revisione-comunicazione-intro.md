@@ -86,7 +86,8 @@ correzioni sotto vengono da lì.
 - [x] L'hero senza sidebar, con `hgroup`, CTA e foto; "How it works" come `h2`.
 - [x] L'Intro sul telefono.
 - [x] "How it works ↓" e la CTA ripetuta in fondo.
-- [ ] La foto nuova per l'hero.
+- La foto nuova per l'hero: spostata in
+  [Una foto dell'hero da un'altra angolazione](foto-dell-hero.md).
 
 ## Idee più vecchie, dalla skill `wizard-ux`
 
