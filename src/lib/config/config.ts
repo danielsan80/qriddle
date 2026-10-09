@@ -2,6 +2,9 @@ export const config = {
   // Site URL (used for credits QR code)
   siteUrl: 'https://qriddle.app',
 
+  // How long "link copied" stays on the button
+  linkCopiedConfirmationMs: 5000,
+
   // Default QR text (easter egg)
   defaultQrText: 'My precioussss!!!',
 

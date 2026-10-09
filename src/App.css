@@ -5,3 +5,9 @@ main {
   background: var(--paper);
   color: var(--ink);
 }
+
+@media (max-width: 720px) {
+  main {
+    padding: 1.5rem;
+  }
+}

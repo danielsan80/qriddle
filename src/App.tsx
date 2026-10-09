@@ -19,25 +19,23 @@ function App() {
     ? (step as Face)
     : undefined;
 
-  return (
+  return step === 'intro' ? (
+    <main>
+      <IntroView />
+    </main>
+  ) : (
     <>
       <MobileBlock />
-      {step === 'intro' ? (
+      <Layout>
+        <Sidebar>
+          <CardFaceNav selected={selectedFace} onSelect={setStep} />
+          <TrackNav step={step} onStep={setStep} />
+          <CopyLink />
+        </Sidebar>
         <main>
-          <IntroView />
+          <StepView step={step} />
         </main>
-      ) : (
-        <Layout>
-          <Sidebar>
-            <CardFaceNav selected={selectedFace} onSelect={setStep} />
-            <TrackNav step={step} onStep={setStep} />
-            <CopyLink />
-          </Sidebar>
-          <main>
-            <StepView step={step} />
-          </main>
-        </Layout>
-      )}
+      </Layout>
     </>
   );
 }

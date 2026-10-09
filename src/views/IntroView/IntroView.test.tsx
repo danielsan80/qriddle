@@ -1,8 +1,14 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { WizardContext } from '../../context/WizardContext';
+import { isMobileDevice } from '../../lib/browser/device';
 import { IntroView } from './IntroView';
 import { IntroPage } from './IntroView.page';
+
+vi.mock('../../lib/browser/device', () => ({ isMobileDevice: vi.fn() }));
+
+const SEND_YOURSELF_THE_LINK =
+  'Puzzles are made on a computer. Send yourself the link:';
 
 function renderIntro() {
   const setStep = vi.fn();
@@ -24,6 +30,10 @@ function renderIntro() {
 }
 
 describe('IntroView', () => {
+  beforeEach(() => {
+    vi.mocked(isMobileDevice).mockReturnValue(false);
+  });
+
   it('presents the app with its name, payoff and what it does', () => {
     renderIntro();
 
@@ -80,5 +90,28 @@ describe('IntroView', () => {
     await introPage.howItWorksSection.clickCreateYourPuzzle();
 
     expect(setStep).toHaveBeenCalledExactlyOnceWith('inner.map');
+  });
+
+  it('on a computer, offers to create the puzzle in the hero and at the end of how it works', () => {
+    const { introPage } = renderIntro();
+
+    expect(introPage.heroBanner.createYourPuzzleButton).toBeInTheDocument();
+    expect(
+      introPage.howItWorksSection.createYourPuzzleButton,
+    ).toBeInTheDocument();
+  });
+
+  it('on a phone, asks to send the link to a computer instead of creating the puzzle', () => {
+    vi.mocked(isMobileDevice).mockReturnValue(true);
+    const { introPage } = renderIntro();
+
+    expect(introPage.heroBanner.createYourPuzzleButton).toBeNull();
+    expect(introPage.heroBanner.element).toHaveTextContent(
+      SEND_YOURSELF_THE_LINK,
+    );
+    expect(introPage.howItWorksSection.createYourPuzzleButton).toBeNull();
+    expect(introPage.howItWorksSection.element).toHaveTextContent(
+      SEND_YOURSELF_THE_LINK,
+    );
   });
 });

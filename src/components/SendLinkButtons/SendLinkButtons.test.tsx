@@ -1,63 +1,56 @@
-import { render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { MobileBlock } from './MobileBlock';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { SendLinkButtons } from './SendLinkButtons';
 
-function mockMatchMedia(matches: boolean) {
-  Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: vi.fn().mockReturnValue({ matches }),
-  });
-  Object.defineProperty(navigator, 'maxTouchPoints', {
-    writable: true,
-    value: matches ? 1 : 0,
-  });
-}
-
-describe('MobileBlock', () => {
-  beforeEach(() => {
-    mockMatchMedia(false);
+describe('SendLinkButtons', () => {
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
-  it('renders nothing on desktop', () => {
-    render(<MobileBlock />);
-    expect(screen.queryByRole('dialog')).toBeNull();
-  });
-
-  it('renders overlay on mobile', () => {
-    mockMatchMedia(true);
-    render(<MobileBlock />);
-    expect(screen.getByRole('dialog')).toBeInTheDocument();
-  });
-
-  it('copy button copies current URL', async () => {
-    mockMatchMedia(true);
+  it('copies the current URL', async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, 'clipboard', {
       writable: true,
       value: { writeText },
     });
-    render(<MobileBlock />);
+    render(<SendLinkButtons />);
     await userEvent.click(
-      screen.getByRole('button', { name: /copy the link/i }),
+      screen.getByRole('button', { name: 'Copy the link' }),
     );
-    expect(writeText).toHaveBeenCalledWith(window.location.href);
+    expect(writeText).toHaveBeenCalledExactlyOnceWith(window.location.href);
   });
 
-  it('share button calls navigator.share', async () => {
-    mockMatchMedia(true);
+  it('shares the current URL', async () => {
     const share = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, 'share', {
       writable: true,
       value: share,
     });
-    render(<MobileBlock />);
+    render(<SendLinkButtons />);
     await userEvent.click(
-      screen.getByRole('button', { name: /share the link/i }),
+      screen.getByRole('button', { name: 'Share the link' }),
     );
-    expect(share).toHaveBeenCalledWith({
+    expect(share).toHaveBeenCalledExactlyOnceWith({
       url: window.location.href,
       title: 'QRiddle',
     });
+  });
+
+  it('keeps the confirmation as long as the Save button in the sidebar', async () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      writable: true,
+      value: { writeText: vi.fn().mockResolvedValue(undefined) },
+    });
+    vi.useFakeTimers();
+    render(<SendLinkButtons />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Copy the link' }));
+    await act(async () => {});
+    act(() => vi.advanceTimersByTime(4999));
+
+    expect(
+      screen.getByRole('button', { name: 'Link copied!' }),
+    ).toBeInTheDocument();
   });
 });

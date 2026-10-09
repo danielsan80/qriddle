@@ -4,7 +4,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import App from './App';
 import { WizardProvider } from './context/WizardContext';
 import { IntroPage } from './views/IntroView/IntroView.page';
+import { MobileBlockPage } from './components/MobileBlock/MobileBlock.page';
 import { encode, readState } from './lib/browser/urlState';
+import { isMobileDevice } from './lib/browser/device';
 import type { Face, FacedTextBox } from './lib/domain/card';
 
 vi.mock('./lib/render', () => ({
@@ -13,6 +15,8 @@ vi.mock('./lib/render', () => ({
   renderOuterPdfPreview: vi.fn(),
   downloadPuzzlePdf: vi.fn(),
 }));
+
+vi.mock('./lib/browser/device', () => ({ isMobileDevice: vi.fn() }));
 
 function box(text: string, face: Face): FacedTextBox {
   return { id: text, x: 10, y: 20, text, fontSize: 8, face };
@@ -27,6 +31,7 @@ function renderApp() {
 }
 
 const introPage = new IntroPage();
+const mobileBlockPage = new MobileBlockPage();
 
 function clickStepButton(name: 'Next' | 'Previous') {
   return userEvent.click(screen.getAllByRole('button', { name })[0]);
@@ -35,6 +40,7 @@ function clickStepButton(name: 'Next' | 'Previous') {
 describe('App', () => {
   beforeEach(() => {
     HTMLElement.prototype.scrollTo = vi.fn();
+    vi.mocked(isMobileDevice).mockReturnValue(false);
   });
 
   afterEach(() => {
@@ -78,5 +84,20 @@ describe('App', () => {
     await clickStepButton('Next');
 
     expect(readState({})).toEqual({ step: 'outer.back', ...work });
+  });
+
+  it('on a phone, leaves the intro open', () => {
+    vi.mocked(isMobileDevice).mockReturnValue(true);
+    renderApp();
+
+    expect(mobileBlockPage.isShown).toBe(false);
+  });
+
+  it('on a phone, covers the work steps', () => {
+    vi.mocked(isMobileDevice).mockReturnValue(true);
+    window.location.hash = '#' + encode({ step: 'inner.map' });
+    renderApp();
+
+    expect(mobileBlockPage.isShown).toBe(true);
   });
 });

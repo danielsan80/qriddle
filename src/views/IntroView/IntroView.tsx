@@ -3,7 +3,7 @@ import photoCenter from '../../assets/photos/center.webp';
 import photoMap from '../../assets/photos/map.webp';
 import photoSolve from '../../assets/photos/solve_puzzle.webp';
 import { useRef } from 'react';
-import { useWizard } from '../../context/useWizard';
+import { CallToAction } from './CallToAction';
 import styles from './IntroView.module.css';
 
 const STEPS = [
@@ -30,18 +30,7 @@ const STEPS = [
 ];
 
 export function IntroView() {
-  const { setStep } = useWizard();
   const howItWorksRef = useRef<HTMLElement>(null);
-
-  const createButton = (
-    <button
-      type="button"
-      className={styles.cta}
-      onClick={() => setStep('inner.map')}
-    >
-      Create your puzzle
-    </button>
-  );
 
   return (
     <div className={styles.layout}>
@@ -58,7 +47,7 @@ export function IntroView() {
             </p>
           </hgroup>
           <div className={styles.actions}>
-            {createButton}
+            <CallToAction />
             <button
               type="button"
               className={styles.howItWorksLink}
@@ -100,7 +89,9 @@ export function IntroView() {
             </li>
           ))}
         </ol>
-        <div className={styles.closingAction}>{createButton}</div>
+        <div className={styles.closingAction}>
+          <CallToAction />
+        </div>
       </section>
     </div>
   );

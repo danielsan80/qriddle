@@ -84,7 +84,7 @@ correzioni sotto vengono da lì.
 ## Avanzamento
 
 - [x] L'hero senza sidebar, con `hgroup`, CTA e foto; "How it works" come `h2`.
-- [ ] L'Intro sul telefono.
+- [x] L'Intro sul telefono.
 - [x] "How it works ↓" e la CTA ripetuta in fondo.
 - [ ] La foto nuova per l'hero.
 
