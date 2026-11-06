@@ -51,6 +51,14 @@ npm run build
 Requires Node 20+. There is no backend: everything — QR encoding, maze
 generation, PDF composition — happens in the browser.
 
+The project board lives in `.private/`, a clone of the private
+`danielsan80/qriddle-private`, ignored by this repository. The app does not need
+it:
+
+```sh
+git clone git@github.com:danielsan80/qriddle-private.git .private
+```
+
 ## How the code is laid out
 
 ```

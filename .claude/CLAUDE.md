@@ -6,8 +6,8 @@
 
 ## Kanban
 
-Board in `doc/kanban/README.md`, card in `doc/kanban/cards/`, archivio in
-`doc/kanban/DONE.md`. Regole d'uso nella skill `/kanban`.
+Board in `.private/kanban/`, nel repo privato `danielsan80/qriddle-private`: le
+modifiche alla board si committano lì. Regole d'uso nella skill `/kanban`.
 
 ## Dominio
 
