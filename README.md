@@ -42,7 +42,7 @@ same maze.
 ## Running it
 
 ```sh
-npm install
+bin/install      # clones .private/, then npm install
 npm run dev      # http://localhost:5173
 npm run check    # format + lint + typecheck + tests
 npm run build
@@ -53,11 +53,7 @@ generation, PDF composition — happens in the browser.
 
 The project board lives in `.private/`, a clone of the private
 `danielsan80/qriddle-private`, ignored by this repository. The app does not need
-it:
-
-```sh
-git clone git@github.com:danielsan80/qriddle-private.git .private
-```
+it. `bin/install` clones it when missing: read it to see what it does.
 
 ## How the code is laid out
 
