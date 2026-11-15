@@ -37,7 +37,7 @@ async function composeInnerPdf(
   ctx.drawImage(bg, 0, 0, widthPx, heightPx);
 
   const puzzleCanvas = document.createElement('canvas');
-  renderPuzzle(puzzleCanvas, puzzle, config.pdf);
+  renderPuzzle(puzzleCanvas, puzzle);
 
   const puzzleW = widthPx * (PUZZLE_WIDTH_MM / A4_WIDTH_MM);
   const puzzleH = puzzleW * (puzzleCanvas.height / puzzleCanvas.width);

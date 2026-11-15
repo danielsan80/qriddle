@@ -2,9 +2,9 @@ import { config } from '../config';
 import { Image } from '../domain/image';
 
 export interface ImageRenderOptions {
-  cellSize?: number;
-  blackColor?: string;
-  whiteColor?: string;
+  cellSize: number;
+  blackColor: string;
+  whiteColor: string;
 }
 
 const defaultOptions: ImageRenderOptions = config.qr;
@@ -12,14 +12,14 @@ const defaultOptions: ImageRenderOptions = config.qr;
 export function renderImage(
   canvas: HTMLCanvasElement,
   image: Image,
-  options: ImageRenderOptions = {},
+  options: Partial<ImageRenderOptions> = {},
 ): void {
   const opts = { ...defaultOptions, ...options };
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
   const { rows, cols } = image.size;
-  const cellSize = opts.cellSize!;
+  const cellSize = opts.cellSize;
 
   canvas.width = cols * cellSize;
   canvas.height = rows * cellSize;
@@ -27,8 +27,7 @@ export function renderImage(
   image.forEach((pixel) => {
     const x = pixel.coord.col * cellSize;
     const y = pixel.coord.row * cellSize;
-    ctx.fillStyle =
-      pixel.color === 'black' ? opts.blackColor! : opts.whiteColor!;
+    ctx.fillStyle = pixel.color === 'black' ? opts.blackColor : opts.whiteColor;
     ctx.fillRect(x, y, cellSize, cellSize);
   });
 }

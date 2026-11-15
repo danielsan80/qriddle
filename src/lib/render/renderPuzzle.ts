@@ -3,11 +3,11 @@ import { Coord } from '../domain/image';
 import { Puzzle } from '../domain/puzzle';
 
 export interface PuzzleRenderOptions {
-  cellSize?: number;
-  backgroundColor?: string;
-  borderColor?: string;
-  dotColor?: string;
-  dotRadius?: number;
+  cellSize: number;
+  backgroundColor: string;
+  borderColor: string;
+  dotColor: string;
+  dotRadius: number;
 }
 
 const defaultOptions: PuzzleRenderOptions = config.puzzle;
@@ -15,24 +15,24 @@ const defaultOptions: PuzzleRenderOptions = config.puzzle;
 export function renderPuzzle(
   canvas: HTMLCanvasElement,
   puzzle: Puzzle,
-  options: PuzzleRenderOptions = {},
+  options: Partial<PuzzleRenderOptions> = {},
 ): void {
   const opts = { ...defaultOptions, ...options };
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
   const { rows, cols } = puzzle.image.size;
-  const cellSize = opts.cellSize!;
+  const cellSize = opts.cellSize;
 
   canvas.width = cols * cellSize;
   canvas.height = rows * cellSize;
 
   // Background
-  ctx.fillStyle = opts.backgroundColor!;
+  ctx.fillStyle = opts.backgroundColor;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Walls
-  ctx.strokeStyle = opts.borderColor!;
+  ctx.strokeStyle = opts.borderColor;
   ctx.lineWidth = 2;
 
   for (let row = 0; row < rows; row++) {
@@ -73,12 +73,12 @@ export function renderPuzzle(
   }
 
   // Dots
-  ctx.fillStyle = opts.dotColor!;
+  ctx.fillStyle = opts.dotColor;
   for (const dot of puzzle.dots) {
     const x = (dot.col + 0.5) * cellSize;
     const y = (dot.row + 0.5) * cellSize;
     ctx.beginPath();
-    ctx.arc(x, y, cellSize * opts.dotRadius!, 0, Math.PI * 2);
+    ctx.arc(x, y, cellSize * opts.dotRadius, 0, Math.PI * 2);
     ctx.fill();
   }
 }

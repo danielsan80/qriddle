@@ -13,16 +13,16 @@ export const config = {
 
   // Puzzle render
   puzzle: {
-    cellSize: 6,
+    cellSize: 12,
     backgroundColor: '#f8f5ed',
     borderColor: '#444444',
     dotColor: '#000000',
-    dotRadius: 1,
+    dotRadius: 0.15,
   },
 
   // QR image render
   qr: {
-    cellSize: 6,
+    cellSize: 12,
     blackColor: '#1a1a1a',
     whiteColor: '#ffffff',
   },
@@ -40,15 +40,8 @@ export const config = {
     textY: 287,
   },
 
-  // Preview (canvas on screen)
-  preview: {
-    cellSize: 12,
-  },
-
   // PDF render
   pdf: {
-    cellSize: 12,
-    dotRadius: 0.15,
     textColor: '#523c1b',
   },
 } as const;

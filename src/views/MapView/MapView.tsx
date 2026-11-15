@@ -39,7 +39,7 @@ export function MapView() {
         const { matrix } = getQRMatrix(qrText);
         const qrImage = new Image(matrix);
 
-        renderImage(qrCanvasRef.current!, qrImage, config.preview);
+        renderImage(qrCanvasRef.current!, qrImage);
 
         const puzzleImage = qrImage.x2();
         const newPuzzle = Puzzle.create(puzzleImage, createRandom(seed));
