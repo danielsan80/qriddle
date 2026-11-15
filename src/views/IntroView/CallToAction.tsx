@@ -9,7 +9,9 @@ export function CallToAction() {
   if (!hasFinePointer()) {
     return (
       <div className={styles.sendLink}>
-        <p>Create your puzzle on a computer.</p>
+        <p>
+          Create your puzzle on a <strong>computer</strong>.
+        </p>
         <SendLinkButtons />
       </div>
     );

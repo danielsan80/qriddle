@@ -17,7 +17,7 @@ export function MobileBlock() {
         <p className={styles.message}>
           This service works on desktop only.
           <br />
-          Open it on your computer.
+          Open it on your <strong>computer</strong>.
         </p>
         <SendLinkButtons />
       </div>
