@@ -15,9 +15,9 @@ export const config = {
   puzzle: {
     cellSize: 6,
     backgroundColor: '#f8f5ed',
-    borderColor: '#999999',
-    dotColor: '#999999',
-    dotRadius: 0.3,
+    borderColor: '#444444',
+    dotColor: '#000000',
+    dotRadius: 1,
   },
 
   // QR image render
