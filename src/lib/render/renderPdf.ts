@@ -13,6 +13,8 @@ const PUZZLE_WIDTH_MM = 100;
 // A4 @300dpi
 const A4_PX_W = 2480;
 const A4_PX_H = 3508;
+const JPEG_QUALITY = 0.92;
+const PAPER_COLOR = '#ffffff';
 
 function loadImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -34,6 +36,8 @@ async function composeInnerPdf(
   const ctx = canvas.getContext('2d')!;
 
   const bg = await loadImage(innerSvgUrl);
+  ctx.fillStyle = PAPER_COLOR;
+  ctx.fillRect(0, 0, widthPx, heightPx);
   ctx.drawImage(bg, 0, 0, widthPx, heightPx);
 
   const puzzleCanvas = document.createElement('canvas');
@@ -146,6 +150,8 @@ async function composeOuterPdf(
   canvas.height = heightPx;
   const ctx = canvas.getContext('2d')!;
   const bg = await loadImage(outerSvgUrl);
+  ctx.fillStyle = PAPER_COLOR;
+  ctx.fillRect(0, 0, widthPx, heightPx);
   ctx.drawImage(bg, 0, 0, widthPx, heightPx);
   drawTextBoxes(ctx, textBoxes, widthPx);
   await drawCredits(ctx, widthPx, heightPx);
@@ -182,8 +188,22 @@ export async function downloadPuzzlePdf(
     unit: 'mm',
     format: 'a4',
   });
-  pdf.addImage(outer, 'PNG', 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
+  pdf.addImage(
+    outer.toDataURL('image/jpeg', JPEG_QUALITY),
+    'JPEG',
+    0,
+    0,
+    A4_WIDTH_MM,
+    A4_HEIGHT_MM,
+  );
   pdf.addPage();
-  pdf.addImage(inner, 'PNG', 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
+  pdf.addImage(
+    inner.toDataURL('image/jpeg', JPEG_QUALITY),
+    'JPEG',
+    0,
+    0,
+    A4_WIDTH_MM,
+    A4_HEIGHT_MM,
+  );
   pdf.save(filename);
 }
