@@ -1,6 +1,17 @@
 import { describe, it, expect } from 'vitest';
-import { Image } from '../image';
+import { Coord, CoordSet, Image } from '../image';
 import { AreaStore } from './area';
+
+describe('Area', () => {
+  it('has the cells of its pixels', () => {
+    const image = new Image([[1, 1, 0]]);
+    const store = new AreaStore(image);
+
+    expect(store.at(0)!.cells()).toEqual(
+      CoordSet.create([new Coord(0, 0), new Coord(0, 1)]),
+    );
+  });
+});
 
 describe('AreaStore', () => {
   function mapAreas(image: Image, store: AreaStore): string[][] {

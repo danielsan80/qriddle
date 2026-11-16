@@ -1,4 +1,11 @@
-import { directions, Image, type Color, type Pixel } from '../image';
+import {
+  CoordSet,
+  directions,
+  Image,
+  type Color,
+  type Pixel,
+  Visited,
+} from '../image';
 
 export class Area {
   readonly pixels: Pixel[];
@@ -7,6 +14,10 @@ export class Area {
   constructor(pixels: Pixel[], color: Color) {
     this.pixels = pixels;
     this.color = color;
+  }
+
+  cells(): CoordSet {
+    return CoordSet.create(this.pixels.map((pixel) => pixel.coord));
   }
 }
 
@@ -34,16 +45,15 @@ export class AreaStore {
   }
 
   private findAreas(image: Image): Area[] {
-    const visited = new Set<string>();
+    const visited = Visited.create(image.size);
     const areas: Area[] = [];
 
     image.forEach((pixel) => {
-      const key = pixel.coord.toString();
-      if (visited.has(key)) return;
+      if (visited.has(pixel.coord)) return;
 
       const areaPixels: Pixel[] = [];
       const queue: Pixel[] = [pixel];
-      visited.add(key);
+      visited.mark(pixel.coord);
 
       while (queue.length > 0) {
         const current = queue.shift()!;
@@ -51,14 +61,12 @@ export class AreaStore {
 
         for (const direction of directions) {
           const neighborCoord = current.coord.goTo(direction);
-          const neighborKey = neighborCoord.toString();
-
           if (
             image.has(neighborCoord) &&
-            !visited.has(neighborKey) &&
+            !visited.has(neighborCoord) &&
             image.get(neighborCoord).color === pixel.color
           ) {
-            visited.add(neighborKey);
+            visited.mark(neighborCoord);
             queue.push(image.get(neighborCoord));
           }
         }

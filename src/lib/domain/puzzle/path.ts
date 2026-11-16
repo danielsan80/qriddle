@@ -1,5 +1,11 @@
 import { config } from '../../config';
-import { directions, Image, type Direction, type Pixel } from '../image';
+import {
+  directions,
+  Image,
+  type Direction,
+  type Pixel,
+  Visited,
+} from '../image';
 import { type RandomFn } from '../../util';
 import { Area, AreaStore } from './area';
 import { EdgeStore } from './edge';
@@ -22,8 +28,8 @@ function digAreaPaths(
   edges: EdgeStore,
   random: RandomFn,
 ): void {
-  const pixelSet = new Set(area.pixels.map((p) => p.coord.toString()));
-  const visited = new Set<string>();
+  const pixelSet = area.cells();
+  const visited = Visited.create(image.size);
 
   const startIndex = Math.floor(random() * area.pixels.length);
   const start = area.pixels[startIndex];
@@ -31,17 +37,14 @@ function digAreaPaths(
   const stack: { pixel: Pixel; lastDir: Direction | null }[] = [
     { pixel: start, lastDir: null },
   ];
-  visited.add(start.coord.toString());
+  visited.mark(start.coord);
 
   while (stack.length > 0) {
     const { pixel, lastDir } = stack[stack.length - 1];
 
     const unvisitedDirs = directions.filter((dir) => {
       const neighborCoord = pixel.coord.goTo(dir);
-      return (
-        pixelSet.has(neighborCoord.toString()) &&
-        !visited.has(neighborCoord.toString())
-      );
+      return pixelSet.has(neighborCoord) && !visited.has(neighborCoord);
     });
 
     if (unvisitedDirs.length === 0) {
@@ -54,7 +57,7 @@ function digAreaPaths(
     const next = image.get(nextCoord);
 
     edges.removeWall(pixel.coord, dir);
-    visited.add(nextCoord.toString());
+    visited.mark(nextCoord);
     stack.push({ pixel: next, lastDir: dir });
   }
 }

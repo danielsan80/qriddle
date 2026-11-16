@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Coord, directions, Image } from '../image';
+import { Coord, directions, Image, Visited } from '../image';
 import { createRandom } from '../../util';
 import { AreaStore } from './area';
 import { digPaths } from './path';
@@ -77,22 +77,19 @@ describe('digPaths', () => {
 
     const area = areas.at(0)!;
     const start = area.pixels[0];
-    const visited = new Set<string>();
-    const queue = [start.coord.toString()];
-    visited.add(start.coord.toString());
+    const visited = Visited.create(image.size);
+    const queue = [start.coord];
+    visited.mark(start.coord);
 
     while (queue.length > 0) {
-      const key = queue.shift()!;
-      const [row, col] = key.split(',').map(Number);
-      const coord = new Coord(row, col);
+      const coord = queue.shift()!;
 
       for (const dir of directions) {
         if (!edges.get(coord, dir).hasWall) {
           const neighbor = coord.goTo(dir);
-          const neighborKey = neighbor.toString();
-          if (!visited.has(neighborKey) && image.has(neighbor)) {
-            visited.add(neighborKey);
-            queue.push(neighborKey);
+          if (!visited.has(neighbor) && image.has(neighbor)) {
+            visited.mark(neighbor);
+            queue.push(neighbor);
           }
         }
       }
