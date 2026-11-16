@@ -5,12 +5,28 @@ Il problema che il puzzle risolve e l'algoritmo da cui siamo partiti. Il codice 
 
 ## Problema
 
-Abbiamo diverse Aree monocromatiche di tile (Cell) quadrate adiacenti ortogonalmente.
-Per ciascuna Area abbiamo bisogno di piazzare dei muri tra le tile adiacenti in modo che
-da ogni tile sia possibile raggiungere ogni altra tile dell'area.
+Abbiamo diverse aree monocromatiche di celle quadrate adiacenti ortogonalmente.
+Per ciascuna area abbiamo bisogno di piazzare dei muri tra le celle adiacenti in modo che
+da ogni cella sia possibile raggiungere ogni altra cella dell'area.
 Esistono dei muri anche sui confini esterni dell'area, fissi e irremovibili.
-Definiamo blocchi 2x2 una sottoarea di 4 tile disposte a quadrato tra le quali non è piazzato alcun muro.
+Definiamo blocchi 2x2 una sottoarea di 4 celle disposte a quadrato tra le quali non è piazzato alcun muro.
 Nella soluzione finale non devono essere presenti blocchi 2x2.
+
+## Moduli preanneriti
+
+Per rendere l'enigma più semplice, una percentuale dei moduli neri del QR (2x2 celle) è
+già annerita: si chiamano moduli preanneriti. Li sceglie un generatore casuale ricavato
+dal seed (`seed + ':prefill'`): i moduli neri si mescolano una volta e si prende la
+percentuale richiesta (`work.prefillPercentage`), così alzandola i moduli già scelti restano.
+
+`Puzzle.create` li toglie dalle aree nere prima di scavare i percorsi:
+
+- le celle preannerite fanno aree a sé, senza muri dentro, e murate verso il resto;
+- le aree residue, che possono spezzarsi in più parti, sono le aree da risolvere: lì si
+  scavano i percorsi e si mette un punto per area;
+- un'area residua è fatta di moduli interi, quindi ha almeno 4 celle: un modulo da solo
+  diventa una U;
+- il divieto di blocchi 2x2 vale per le aree da risolvere, non per i moduli preanneriti.
 
 ## Algoritmo per la generazione dei percorsi: Spanning tree + bias direzionale + post-processing (WIP)
 
