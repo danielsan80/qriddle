@@ -13,16 +13,22 @@ modifiche alla board si committano lì. Regole d'uso nella skill `/kanban`.
 
 Il codice sta in `src/lib/domain/`: lì nomi e firme. Qui il lessico con cui ne parliamo.
 
+- **modulo**: una casella del QR;
 - **immagine** (`Image`): la griglia di pixel bianchi e neri da cui nasce il puzzle, il QR
-  con ogni modulo raddoppiato;
+  con ogni modulo raddoppiato in 2x2 celle;
 - **cella** o pixel (`Pixel`): una casella della griglia, con posizione (`Coord`) e colore;
-- **area** (`Area`): celle dello stesso colore adiacenti ortogonalmente;
+- **modulo preannerito** (`prefilledModules`, `prefilledCells` per le sue celle): un
+  modulo nero già annerito nel puzzle; le altre aree sono le **aree da risolvere**;
+- **area** (`Area`): celle adiacenti ortogonalmente, dello stesso colore e tutte
+  preannerite o tutte no (`Area.kind`: `'prefilled'` o `'toSolve'`);
 - **bordo** (`Edge`): il confine fra due celle adiacenti, esterno se sta sul margine della
   griglia; può avere un **muro**;
-- **blocco 2x2**: quattro celle a quadrato senza muri fra loro, vietato nel puzzle finito;
-- **puzzle** (`Puzzle`): l'immagine con i muri, in cui ogni area è percorribile da ogni sua
-  cella a ogni altra e senza blocchi 2x2; più un **punto** (`dots`) in una cella a caso di
-  ogni area nera. Lo genera un **seed**, quindi lo stesso seed dà lo stesso puzzle;
+- **blocco 2x2**: quattro celle a quadrato senza muri fra loro;
+- **puzzle** (`Puzzle`): l'immagine con i muri, in cui ogni area da risolvere è
+  percorribile da ogni sua cella a ogni altra e senza blocchi 2x2; più un **punto** (`dots`)
+  in una cella a caso di ogni area nera da risolvere. Nasce dal QR, da un **seed** e dalla
+  percentuale di moduli preanneriti (`PuzzleFactory.create`): lo stesso seed dà lo stesso
+  puzzle;
 - **biglietto** (`domain/card`): il foglio da piegare che si stampa, con le facciate
   esterne e la pagina interna con la mappa;
 - **specifica** (suffisso `Spec`): dati senza comportamento che descrivono cosa generare.
