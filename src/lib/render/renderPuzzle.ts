@@ -8,6 +8,7 @@ export interface PuzzleRenderOptions {
   borderColor: string;
   dotColor: string;
   dotRadius: number;
+  prefilledColor: string;
 }
 
 const defaultOptions: PuzzleRenderOptions = config.puzzle;
@@ -30,6 +31,17 @@ export function renderPuzzle(
   // Background
   ctx.fillStyle = opts.backgroundColor;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = opts.prefilledColor;
+  puzzle.image.forEach((pixel) => {
+    if (!puzzle.isPrefilled(pixel.coord)) return;
+    ctx.fillRect(
+      pixel.coord.col * cellSize,
+      pixel.coord.row * cellSize,
+      cellSize,
+      cellSize,
+    );
+  });
 
   // Walls
   ctx.strokeStyle = opts.borderColor;
