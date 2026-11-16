@@ -11,6 +11,9 @@ export const config = {
   // Maze generation
   biasStraight: 0.7,
 
+  // Highest percentage of black modules the user can prefill
+  maxPrefillPercentage: 80,
+
   // Puzzle render
   puzzle: {
     cellSize: 12,

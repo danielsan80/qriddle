@@ -1,7 +1,7 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, afterEach, beforeEach, vi } from 'vitest';
 import { WizardProvider } from './WizardContext';
-import type { Work } from './work';
+import { type Work, workPuzzleOf } from './work';
 import { useWizard } from './useWizard';
 import { STEPS } from './steps';
 import { encode, readState } from '../lib/browser/urlState';
@@ -29,6 +29,7 @@ function box(text: string, face: FacedTextBox['face']): FacedTextBox {
 const work: Work = {
   qrText: 'treasure',
   seed: 'abcdefghij',
+  prefillPercentage: 30,
   textBoxes: [box('A', 'front')],
 };
 
@@ -63,6 +64,7 @@ describe('WizardContext', () => {
     expect(wizard.current.work).toEqual({
       qrText: config.defaultQrText,
       seed: expect.any(String),
+      prefillPercentage: 0,
       textBoxes: [],
     });
   });
@@ -121,6 +123,7 @@ describe('WizardContext', () => {
         step: 'outer.back',
         qrText: config.defaultQrText,
         seed: expect.any(String),
+        prefillPercentage: 0,
         textBoxes: [],
       },
     });
@@ -142,6 +145,25 @@ describe('WizardContext', () => {
         work,
       }),
     );
+  });
+
+  it('builds the puzzle of a link with its prefill', () => {
+    window.location.hash = '#' + encode(work);
+    const wizard = renderWizard();
+
+    expect(wizard.current.puzzle).toEqual(workPuzzleOf(work).puzzle);
+  });
+
+  it('opens an old link, saved before the prefill, with no prefill', () => {
+    const oldWork = {
+      qrText: work.qrText,
+      seed: work.seed,
+      textBoxes: work.textBoxes,
+    };
+    window.location.hash = '#' + encode(oldWork);
+    const wizard = renderWizard();
+
+    expect(wizard.current.work).toEqual({ ...work, prefillPercentage: 0 });
   });
 });
 

@@ -1,12 +1,9 @@
 import { createContext, useEffect, useRef, useState } from 'react';
 import type { Puzzle } from '../lib/domain/puzzle';
-import { Image } from '../lib/domain/image';
-import { Puzzle as PuzzleClass } from '../lib/domain/puzzle';
 import { type Step, STEPS } from './steps';
 import { readState, mergeState } from '../lib/browser/urlState';
 import { analytics } from '../lib/browser/analytics';
-import { createRandom, getQRMatrix } from '../lib/util';
-import { type Work, workFrom } from './work';
+import { type Work, workFrom, workPuzzleOf } from './work';
 
 interface WizardContextValue {
   step: Step;
@@ -30,16 +27,10 @@ function readStep(): Step {
   return step && VALID_STEPS.has(step) ? (step as Step) : STEPS[0];
 }
 
-function buildPuzzle(qrText: string, seed: string): Puzzle {
-  const { matrix } = getQRMatrix(qrText);
-  const qrImage = new Image(matrix);
-  return PuzzleClass.create(qrImage.x2(), createRandom(seed), []);
-}
-
 function readPuzzle(): Puzzle | null {
-  const { qrText, seed } = readState<{ qrText?: string; seed?: string }>({});
-  if (!qrText || !seed) return null;
-  return buildPuzzle(qrText, seed);
+  const state = readState<Partial<Work>>({});
+  if (!state.qrText || !state.seed) return null;
+  return workPuzzleOf(workFrom(state)).puzzle;
 }
 
 export function WizardProvider({ children }: { children: React.ReactNode }) {

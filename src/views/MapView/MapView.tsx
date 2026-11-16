@@ -4,11 +4,11 @@ import { CanvasStage } from '../../components/stages/CanvasStage';
 import { QrcodeCanvas } from '../../components/canvas/QrcodeCanvas';
 import { PreviewCanvas } from '../../components/canvas/PreviewCanvas';
 import { useWizard } from '../../context/useWizard';
-import { Image } from '../../lib/domain/image';
-import { Puzzle } from '../../lib/domain/puzzle';
+import { workPuzzleOf } from '../../context/work';
 import { renderInnerPdfPreview, renderImage } from '../../lib/render';
-import { createRandom, generateSeed, getQRMatrix } from '../../lib/util';
+import { generateSeed } from '../../lib/util';
 import { ExampleLink } from './ExampleLink';
+import { PrefillSlider } from './PrefillSlider';
 import { config } from '../../lib/config';
 import styles from './MapView.module.css';
 
@@ -16,7 +16,7 @@ const DEBOUNCE_MS = 300;
 
 export function MapView() {
   const { setPuzzle, work, updateWork } = useWizard();
-  const { qrText, seed } = work;
+  const { qrText, seed, prefillPercentage } = work;
 
   function setQrText(newQrText: string) {
     updateWork((current) => ({ ...current, qrText: newQrText }));
@@ -24,6 +24,13 @@ export function MapView() {
 
   function setSeed(newSeed: string) {
     updateWork((current) => ({ ...current, seed: newSeed }));
+  }
+
+  function setPrefillPercentage(newPrefillPercentage: number): void {
+    updateWork((current) => ({
+      ...current,
+      prefillPercentage: newPrefillPercentage,
+    }));
   }
 
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -36,20 +43,20 @@ export function MapView() {
 
     const timer = setTimeout(() => {
       void (async () => {
-        const { matrix } = getQRMatrix(qrText);
-        const qrImage = new Image(matrix);
+        const { qr, prefilledModules, puzzle } = workPuzzleOf({
+          qrText,
+          seed,
+          prefillPercentage,
+        });
 
-        renderImage(qrCanvasRef.current!, qrImage, []);
-
-        const puzzleImage = qrImage.x2();
-        const newPuzzle = Puzzle.create(puzzleImage, createRandom(seed), []);
-        await renderInnerPdfPreview(puzzleCanvasRef.current!, newPuzzle);
-        setPuzzle(newPuzzle);
+        renderImage(qrCanvasRef.current!, qr, prefilledModules);
+        await renderInnerPdfPreview(puzzleCanvasRef.current!, puzzle);
+        setPuzzle(puzzle);
       })();
     }, DEBOUNCE_MS);
 
     return () => clearTimeout(timer);
-  }, [qrText, seed, setPuzzle]);
+  }, [qrText, seed, prefillPercentage, setPuzzle]);
 
   const handleQrTextBlur = () => {
     if (!qrText) setQrText(config.defaultQrText);
@@ -112,6 +119,10 @@ export function MapView() {
       <Panel>
         <Panel.Title>Preview</Panel.Title>
         <Panel.Actions>
+          <PrefillSlider
+            value={prefillPercentage}
+            onRelease={setPrefillPercentage}
+          />
           <Panel.ActionButton
             label="Another puzzle"
             onClick={() => setSeed(generateSeed())}

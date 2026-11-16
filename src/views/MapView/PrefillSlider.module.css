@@ -1,0 +1,17 @@
+.prefill {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  & input {
+    accent-color: var(--accent);
+    width: 6rem;
+  }
+}
+
+.value {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.85rem;
+  min-width: 2.5rem;
+  text-align: right;
+}

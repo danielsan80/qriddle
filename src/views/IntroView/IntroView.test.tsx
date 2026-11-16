@@ -18,7 +18,7 @@ function renderIntro() {
         setStep,
         puzzle: null,
         setPuzzle: vi.fn(),
-        work: { qrText: '', seed: '', textBoxes: [] },
+        work: { qrText: '', seed: '', prefillPercentage: 0, textBoxes: [] },
         updateWork: vi.fn(),
       }}
     >
