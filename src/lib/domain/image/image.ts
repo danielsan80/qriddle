@@ -70,17 +70,14 @@ export class Image {
   }
 
   x2(): Image {
-    const matrix: Matrix = [];
+    const matrix: Matrix = Array.from({ length: this.size.rows * 2 }, () => []);
 
-    for (let row = 0; row < this.size.rows * 2; row++) {
-      matrix[row] = [];
-      for (let col = 0; col < this.size.cols * 2; col++) {
-        const pixel = this.get(
-          new Coord(Math.floor(row / 2), Math.floor(col / 2)),
-        );
-        matrix[row][col] = pixel.color === 'black' ? 1 : 0;
+    this.forEach((pixel) => {
+      const value = pixel.color === 'black' ? 1 : 0;
+      for (const cell of pixel.coord.x2()) {
+        matrix[cell.row][cell.col] = value;
       }
-    }
+    });
 
     return new Image(matrix);
   }
