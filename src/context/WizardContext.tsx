@@ -33,7 +33,7 @@ function readStep(): Step {
 function buildPuzzle(qrText: string, seed: string): Puzzle {
   const { matrix } = getQRMatrix(qrText);
   const qrImage = new Image(matrix);
-  return PuzzleClass.create(qrImage.x2(), createRandom(seed));
+  return PuzzleClass.create(qrImage.x2(), createRandom(seed), []);
 }
 
 function readPuzzle(): Puzzle | null {

@@ -42,7 +42,7 @@ export function MapView() {
         renderImage(qrCanvasRef.current!, qrImage);
 
         const puzzleImage = qrImage.x2();
-        const newPuzzle = Puzzle.create(puzzleImage, createRandom(seed));
+        const newPuzzle = Puzzle.create(puzzleImage, createRandom(seed), []);
         await renderInnerPdfPreview(puzzleCanvasRef.current!, newPuzzle);
         setPuzzle(newPuzzle);
       })();

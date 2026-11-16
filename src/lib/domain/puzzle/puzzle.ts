@@ -23,11 +23,19 @@ export class Puzzle {
     this.dots = dots;
   }
 
-  static create(image: Image, random: RandomFn): Puzzle {
-    const edges = digPaths(image, random);
-    const areas = new AreaStore(image);
-    const dots = chooseDots(image, random);
+  static create(
+    image: Image,
+    random: RandomFn,
+    prefilledCells: Coord[],
+  ): Puzzle {
+    const edges = digPaths(image, random, prefilledCells);
+    const areas = new AreaStore(image, prefilledCells);
+    const dots = chooseDots(image, random, prefilledCells);
     return new Puzzle(image, areas, edges, dots);
+  }
+
+  isPrefilled(coord: Coord): boolean {
+    return this.areas.isPrefilled(coord);
   }
 
   hasWall(coord: Coord, direction: Direction): boolean {

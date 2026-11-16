@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { Coord, directions, Image } from '../image';
+import { Coord, CoordSet, directions, Image } from '../image';
 import { createRandom } from '../../util';
+import { cellsOfModules, choosePrefilledModules } from './prefill';
+import { type Area } from './area';
 import { Puzzle } from './puzzle';
 
 describe('Puzzle', () => {
@@ -10,7 +12,7 @@ describe('Puzzle', () => {
       [1, 1],
     ]);
 
-    const puzzle = Puzzle.create(image, createRandom('seed'));
+    const puzzle = Puzzle.create(image, createRandom('seed'), []);
 
     expect(puzzle.image).toBe(image);
   });
@@ -22,8 +24,8 @@ describe('Puzzle', () => {
       [1, 1, 1],
     ]);
 
-    const puzzle1 = Puzzle.create(image, createRandom('test-seed'));
-    const puzzle2 = Puzzle.create(image, createRandom('test-seed'));
+    const puzzle1 = Puzzle.create(image, createRandom('test-seed'), []);
+    const puzzle2 = Puzzle.create(image, createRandom('test-seed'), []);
 
     expect(wallMap(puzzle1)).toEqual(wallMap(puzzle2));
   });
@@ -36,8 +38,8 @@ describe('Puzzle', () => {
       [1, 1, 1, 1],
     ]);
 
-    const puzzle1 = Puzzle.create(image, createRandom('seed-a'));
-    const puzzle2 = Puzzle.create(image, createRandom('seed-b'));
+    const puzzle1 = Puzzle.create(image, createRandom('seed-a'), []);
+    const puzzle2 = Puzzle.create(image, createRandom('seed-b'), []);
 
     expect(wallMap(puzzle1)).not.toEqual(wallMap(puzzle2));
   });
@@ -48,7 +50,7 @@ describe('Puzzle', () => {
       [1, 1],
     ]);
 
-    const puzzle = Puzzle.create(image, createRandom('seed'));
+    const puzzle = Puzzle.create(image, createRandom('seed'), []);
 
     // External edges always have walls
     expect(puzzle.hasWall(new Coord(0, 0), 'north')).toBe(true);
@@ -63,7 +65,7 @@ describe('Puzzle', () => {
       [0, 1],
     ]);
 
-    const puzzle = Puzzle.create(image, createRandom('seed'));
+    const puzzle = Puzzle.create(image, createRandom('seed'), []);
 
     // Color boundary walls are preserved
     expect(puzzle.hasWall(new Coord(0, 0), 'east')).toBe(true);
@@ -82,7 +84,7 @@ describe('Puzzle', () => {
       [0, 0, 0, 0, 1, 1],
     ]);
 
-    const puzzle = Puzzle.create(image, createRandom('fixed-seed'));
+    const puzzle = Puzzle.create(image, createRandom('fixed-seed'), []);
 
     expect(toBoxDrawing(puzzle)).toBe(
       [
@@ -110,33 +112,123 @@ describe('Puzzle', () => {
       [1, 1, 1],
     ]);
 
-    const puzzle = Puzzle.create(image, createRandom('seed'));
+    const puzzle = Puzzle.create(image, createRandom('seed'), []);
 
-    // Check connectivity via flood fill through passages
     const area = puzzle.areas.at(0)!;
-    const start = area.pixels[0];
-    const visited = new Set<string>();
-    const queue = [start.coord.toString()];
-    visited.add(start.coord.toString());
+    expect(reachableFrom(puzzle, area.pixels[0].coord).size).toBe(
+      area.pixels.length,
+    );
+  });
 
-    while (queue.length > 0) {
-      const key = queue.shift()!;
-      const [row, col] = key.split(',').map(Number);
-      const coord = new Coord(row, col);
+  describe('with prefilled cells', () => {
+    const qr = new Image([
+      [1, 1, 1, 0, 1, 1, 0, 1],
+      [1, 0, 1, 1, 1, 0, 1, 1],
+      [1, 1, 1, 0, 1, 1, 1, 0],
+      [0, 1, 0, 1, 1, 0, 1, 1],
+      [1, 1, 1, 1, 0, 1, 1, 1],
+      [1, 0, 1, 1, 1, 1, 0, 1],
+      [1, 1, 0, 1, 0, 1, 1, 1],
+      [0, 1, 1, 1, 1, 1, 0, 1],
+    ]);
+    const image = qr.x2();
 
-      for (const dir of directions) {
-        if (!puzzle.hasWall(coord, dir)) {
-          const neighbor = coord.goTo(dir);
-          const neighborKey = neighbor.toString();
-          if (!visited.has(neighborKey) && puzzle.image.has(neighbor)) {
-            visited.add(neighborKey);
-            queue.push(neighborKey);
-          }
-        }
-      }
+    function createWithPrefill(percentage: number): Puzzle {
+      const modules = choosePrefilledModules(
+        qr,
+        percentage,
+        createRandom('prefill'),
+      );
+      return Puzzle.create(
+        image,
+        createRandom('seed'),
+        cellsOfModules(modules),
+      );
     }
 
-    expect(visited.size).toBe(area.pixels.length);
+    it('tells which cells are prefilled', () => {
+      const puzzle = Puzzle.create(
+        new Image([
+          [1, 1],
+          [1, 1],
+        ]),
+        createRandom('seed'),
+        [new Coord(0, 1)],
+      );
+
+      expect(
+        puzzle.image.map((pixel) => puzzle.isPrefilled(pixel.coord)),
+      ).toEqual([
+        [false, true],
+        [false, false],
+      ]);
+    });
+
+    it('draws a prefilled module full, walled from the areas to solve', () => {
+      const puzzle = Puzzle.create(
+        new Image([
+          [1, 1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1, 1],
+          [1, 1, 0, 0, 1, 1],
+          [1, 1, 0, 0, 1, 1],
+        ]),
+        createRandom('fixed-seed'),
+        cellsOfModules([new Coord(0, 1)]),
+      );
+
+      expect(toBoxDrawing(puzzle)).toBe(
+        [
+          '┌───┬───┬───┐',
+          '│◾ ◉│■ ■│◾ ◾│',
+          '├─╴ │   │ ╷ │',
+          '│◾ ◾│■ ■│◾│◾│',
+          '│ ╷ ├───┼─┤ │',
+          '│◾│◾│◻ ◻│◾│◾│',
+          '├─┘ │ ╶─┤ ╵ │',
+          '│◾ ◾│◻ ◻│◉ ◾│',
+          '└───┴───┴───┘',
+        ].join('\n'),
+      );
+    });
+
+    for (const percentage of [20, 50, 80]) {
+      it(`connects every area to solve at ${percentage}%`, () => {
+        const puzzle = createWithPrefill(percentage);
+
+        for (const area of areasToSolve(puzzle)) {
+          expect(reachableFrom(puzzle, area.pixels[0].coord).size).toBe(
+            area.pixels.length,
+          );
+        }
+      });
+
+      it(`leaves no 2x2 block in the areas to solve at ${percentage}%`, () => {
+        const puzzle = createWithPrefill(percentage);
+
+        expect(openBlocksOutsidePrefill(puzzle)).toEqual([]);
+      });
+
+      it(`keeps at least 4 cells in every area to solve at ${percentage}%`, () => {
+        const puzzle = createWithPrefill(percentage);
+
+        const smallAreas = areasToSolve(puzzle).filter(
+          (area) => area.pixels.length < 4,
+        );
+        expect(smallAreas).toEqual([]);
+      });
+    }
+
+    it('puts one dot in each black area to solve', () => {
+      const puzzle = createWithPrefill(50);
+
+      const blackAreas = areasToSolve(puzzle).filter(
+        (area) => area.color === 'black',
+      );
+      const dotAreas = puzzle.dots.map((dot) =>
+        blackAreas.findIndex((area) => cellsOf(area).has(dot)),
+      );
+      expect(dotAreas).toEqual(blackAreas.map((_area, index) => index));
+    });
   });
 
   describe('dots', () => {
@@ -146,7 +238,7 @@ describe('Puzzle', () => {
         [1, 1, 0, 0],
       ]);
 
-      const puzzle = Puzzle.create(image, createRandom('seed'));
+      const puzzle = Puzzle.create(image, createRandom('seed'), []);
       const blackAreas = puzzle.areas.all().filter((a) => a.color === 'black');
 
       expect(puzzle.dots.length).toBe(blackAreas.length);
@@ -158,13 +250,12 @@ describe('Puzzle', () => {
         [1, 1, 0, 0],
       ]);
 
-      const puzzle = Puzzle.create(image, createRandom('seed'));
+      const puzzle = Puzzle.create(image, createRandom('seed'), []);
       const blackAreas = puzzle.areas.all().filter((a) => a.color === 'black');
 
       puzzle.dots.forEach((dot, index) => {
         const area = blackAreas[index];
-        const pixelCoords = area.pixels.map((p) => p.coord.toString());
-        expect(pixelCoords).toContain(dot.toString());
+        expect(cellsOf(area).has(dot)).toBe(true);
       });
     });
 
@@ -175,8 +266,8 @@ describe('Puzzle', () => {
         [1, 1, 1],
       ]);
 
-      const puzzle1 = Puzzle.create(image, createRandom('test-seed'));
-      const puzzle2 = Puzzle.create(image, createRandom('test-seed'));
+      const puzzle1 = Puzzle.create(image, createRandom('test-seed'), []);
+      const puzzle2 = Puzzle.create(image, createRandom('test-seed'), []);
 
       const dots1 = puzzle1.dots.map((d) => d.toString());
       const dots2 = puzzle2.dots.map((d) => d.toString());
@@ -192,8 +283,8 @@ describe('Puzzle', () => {
         [1, 1, 1, 1, 1],
       ]);
 
-      const puzzle1 = Puzzle.create(image, createRandom('seed-a'));
-      const puzzle2 = Puzzle.create(image, createRandom('seed-b'));
+      const puzzle1 = Puzzle.create(image, createRandom('seed-a'), []);
+      const puzzle2 = Puzzle.create(image, createRandom('seed-b'), []);
 
       const dots1 = puzzle1.dots.map((d) => d.toString());
       const dots2 = puzzle2.dots.map((d) => d.toString());
@@ -201,6 +292,49 @@ describe('Puzzle', () => {
     });
   });
 });
+
+function areasToSolve(puzzle: Puzzle): Area[] {
+  return puzzle.areas.all().filter((area) => !area.prefilled);
+}
+
+function cellsOf(area: Area): CoordSet {
+  return CoordSet.of(area.pixels.map((pixel) => pixel.coord));
+}
+
+function reachableFrom(puzzle: Puzzle, start: Coord): CoordSet {
+  const visited = CoordSet.of([start]);
+  const queue = [start];
+  while (queue.length > 0) {
+    const coord = queue.shift()!;
+    for (const direction of directions) {
+      const neighbor = coord.goTo(direction);
+      if (puzzle.hasWall(coord, direction)) continue;
+      if (visited.has(neighbor)) continue;
+      visited.add(neighbor);
+      queue.push(neighbor);
+    }
+  }
+  return visited;
+}
+
+function openBlocksOutsidePrefill(puzzle: Puzzle): string[] {
+  const { rows, cols } = puzzle.image.size;
+  const blocks: string[] = [];
+  for (let row = 0; row < rows - 1; row++) {
+    for (let col = 0; col < cols - 1; col++) {
+      const topLeft = new Coord(row, col);
+      const bottomRight = new Coord(row + 1, col + 1);
+      if (puzzle.isPrefilled(topLeft)) continue;
+      const open =
+        !puzzle.hasWall(topLeft, 'east') &&
+        !puzzle.hasWall(topLeft, 'south') &&
+        !puzzle.hasWall(bottomRight, 'north') &&
+        !puzzle.hasWall(bottomRight, 'west');
+      if (open) blocks.push(topLeft.toString());
+    }
+  }
+  return blocks;
+}
 
 function wallMap(puzzle: Puzzle): string[][] {
   const { rows, cols } = puzzle.image.size;
@@ -238,9 +372,11 @@ function toBoxDrawing(puzzle: Puzzle): string {
       const isDot = dotSet.has(coord.toString());
       grid[row * 2 + 1][col * 2 + 1] = isDot
         ? '◉'
-        : cell.color === 'black'
-          ? '◾'
-          : '◻';
+        : puzzle.isPrefilled(coord)
+          ? '■'
+          : cell.color === 'black'
+            ? '◾'
+            : '◻';
     }
   }
 

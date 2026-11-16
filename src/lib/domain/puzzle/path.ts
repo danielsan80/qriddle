@@ -1,5 +1,6 @@
 import { config } from '../../config';
 import {
+  Coord,
   CoordSet,
   directions,
   Image,
@@ -10,16 +11,35 @@ import { type RandomFn } from '../../util';
 import { Area, AreaStore } from './area';
 import { EdgeStore } from './edge';
 
-export function digPaths(image: Image, random: RandomFn): EdgeStore {
-  const areas = new AreaStore(image);
+export function digPaths(
+  image: Image,
+  random: RandomFn,
+  prefilledCells: Coord[],
+): EdgeStore {
+  const areas = new AreaStore(image, prefilledCells);
   const edges = EdgeStore.walled(image);
 
   for (const area of areas.all()) {
+    if (area.prefilled) {
+      openArea(area, edges);
+      continue;
+    }
     if (area.pixels.length <= 1) continue;
     digAreaPaths(image, area, edges, random);
   }
 
   return edges;
+}
+
+function openArea(area: Area, edges: EdgeStore): void {
+  const cells = CoordSet.of(area.pixels.map((pixel) => pixel.coord));
+  for (const pixel of area.pixels) {
+    for (const direction of ['east', 'south'] as const) {
+      if (cells.has(pixel.coord.goTo(direction))) {
+        edges.removeWall(pixel.coord, direction);
+      }
+    }
+  }
 }
 
 function digAreaPaths(

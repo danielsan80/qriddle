@@ -12,8 +12,8 @@ describe('digPaths', () => {
       [1, 1, 1],
     ]);
 
-    const edges1 = digPaths(image, createRandom('test-seed'));
-    const edges2 = digPaths(image, createRandom('test-seed'));
+    const edges1 = digPaths(image, createRandom('test-seed'), []);
+    const edges2 = digPaths(image, createRandom('test-seed'), []);
 
     expect(edges1.wallMap()).toEqual(edges2.wallMap());
   });
@@ -26,8 +26,8 @@ describe('digPaths', () => {
       [1, 1, 1, 1],
     ]);
 
-    const edges1 = digPaths(image, createRandom('seed-a'));
-    const edges2 = digPaths(image, createRandom('seed-b'));
+    const edges1 = digPaths(image, createRandom('seed-a'), []);
+    const edges2 = digPaths(image, createRandom('seed-b'), []);
 
     expect(edges1.wallMap()).not.toEqual(edges2.wallMap());
   });
@@ -38,7 +38,7 @@ describe('digPaths', () => {
       [1, 1],
     ]);
 
-    const edges = digPaths(image, createRandom('seed'));
+    const edges = digPaths(image, createRandom('seed'), []);
 
     expect(edges.get(new Coord(0, 0), 'north').hasWall).toBe(true);
     expect(edges.get(new Coord(0, 0), 'west').hasWall).toBe(true);
@@ -57,7 +57,7 @@ describe('digPaths', () => {
       [0, 1],
     ]);
 
-    const edges = digPaths(image, createRandom('seed'));
+    const edges = digPaths(image, createRandom('seed'), []);
 
     expect(edges.get(new Coord(0, 0), 'east').hasWall).toBe(true);
     expect(edges.get(new Coord(1, 0), 'east').hasWall).toBe(true);
@@ -72,8 +72,8 @@ describe('digPaths', () => {
       [1, 1, 1],
     ]);
 
-    const edges = digPaths(image, createRandom('seed'));
-    const areas = new AreaStore(image);
+    const edges = digPaths(image, createRandom('seed'), []);
+    const areas = new AreaStore(image, []);
 
     const area = areas.at(0)!;
     const start = area.pixels[0];
@@ -99,5 +99,27 @@ describe('digPaths', () => {
     }
 
     expect(visited.size).toBe(area.pixels.length);
+  });
+
+  describe('with prefilled cells', () => {
+    const image = new Image([
+      [1, 1, 1, 1],
+      [1, 1, 1, 1],
+    ]);
+    const prefilledCells = [
+      new Coord(0, 0),
+      new Coord(0, 1),
+      new Coord(1, 0),
+      new Coord(1, 1),
+    ];
+
+    it('opens the prefilled cells and walls them from the area to solve', () => {
+      const edges = digPaths(image, createRandom('seed'), prefilledCells);
+
+      expect(edges.wallMap()).toEqual([
+        ['NW', 'NE', 'NEW', 'NEW'],
+        ['SW', 'ES', 'SW', 'ES'],
+      ]);
+    });
   });
 });
