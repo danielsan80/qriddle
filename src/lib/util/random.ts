@@ -1,4 +1,4 @@
-export type RandomFn = () => number;
+import { type RandomFn } from '../domain/puzzle';
 
 const SEED_LENGTH = 10;
 const SEED_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789';

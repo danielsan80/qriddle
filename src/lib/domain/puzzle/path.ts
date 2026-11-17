@@ -6,7 +6,7 @@ import {
   type Pixel,
   Visited,
 } from '../image';
-import { type RandomFn } from '../../util';
+import { type RandomFn } from './random';
 import { Area, AreaStore } from './area';
 import { EdgeStore } from './edge';
 
