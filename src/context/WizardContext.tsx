@@ -1,11 +1,11 @@
 import { createContext, useEffect, useRef, useState } from 'react';
 import type { Puzzle } from '../lib/domain/puzzle';
 import { Image } from '../lib/domain/image';
-import { Puzzle as PuzzleClass } from '../lib/domain/puzzle';
 import { type Step, STEPS } from './steps';
 import { readState, mergeState } from '../lib/browser/urlState';
 import { analytics } from '../lib/browser/analytics';
-import { createRandom, getQRMatrix } from '../lib/util';
+import { getQRMatrix } from '../lib/util';
+import { puzzleFactory } from './puzzleFactory';
 import { type Work, workFrom } from './work';
 
 interface WizardContextValue {
@@ -33,7 +33,7 @@ function readStep(): Step {
 function buildPuzzle(qrText: string, seed: string): Puzzle {
   const { matrix } = getQRMatrix(qrText);
   const qrImage = new Image(matrix);
-  return PuzzleClass.create(qrImage.x2(), createRandom(seed));
+  return puzzleFactory.create(qrImage, seed);
 }
 
 function readPuzzle(): Puzzle | null {

@@ -1,6 +1,5 @@
 export { Area, AreaStore } from './area';
 export { Edge, EdgeStore, EdgeMap, edgeKey, type Edges } from './edge';
-export { digPaths } from './path';
-export { chooseDots } from './dot';
 export { Puzzle } from './puzzle';
-export { type RandomFn } from './random';
+export { PuzzleFactory } from './puzzleFactory';
+export { type RandomFn, type CreateRandomFn } from './random';

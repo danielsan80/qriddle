@@ -5,9 +5,9 @@ import { QrcodeCanvas } from '../../components/canvas/QrcodeCanvas';
 import { PreviewCanvas } from '../../components/canvas/PreviewCanvas';
 import { useWizard } from '../../context/useWizard';
 import { Image } from '../../lib/domain/image';
-import { Puzzle } from '../../lib/domain/puzzle';
+import { puzzleFactory } from '../../context/puzzleFactory';
 import { renderInnerPdfPreview, renderImage } from '../../lib/render';
-import { createRandom, generateSeed, getQRMatrix } from '../../lib/util';
+import { generateSeed, getQRMatrix } from '../../lib/util';
 import { ExampleLink } from './ExampleLink';
 import { config } from '../../lib/config';
 import styles from './MapView.module.css';
@@ -41,8 +41,7 @@ export function MapView() {
 
         renderImage(qrCanvasRef.current!, qrImage);
 
-        const puzzleImage = qrImage.x2();
-        const newPuzzle = Puzzle.create(puzzleImage, createRandom(seed));
+        const newPuzzle = puzzleFactory.create(qrImage, seed);
         await renderInnerPdfPreview(puzzleCanvasRef.current!, newPuzzle);
         setPuzzle(newPuzzle);
       })();

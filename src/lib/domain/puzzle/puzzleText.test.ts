@@ -5,15 +5,11 @@ import { Puzzle } from './puzzle';
 import { ALL_WALLS, PuzzleText } from './puzzleText.testing';
 
 describe('PuzzleText', () => {
-  const image = new Image([
-    [1, 1, 1, 1],
-    [1, 1, 1, 1],
-    [1, 1, 0, 0],
-    [1, 1, 0, 0],
+  const qr = new Image([
+    [1, 1],
+    [1, 0],
   ]);
-  const puzzleText = PuzzleText.create(
-    Puzzle.create(image, createRandom('seed')),
-  );
+  const puzzleText = PuzzleText.create(Puzzle.create(qr, createRandom('seed')));
 
   it('draws all the walls without the cells', () => {
     expect(puzzleText.walls(ALL_WALLS)).toBe(
@@ -23,13 +19,7 @@ describe('PuzzleText', () => {
 
   it('draws only the external walls', () => {
     const puzzleText = PuzzleText.create(
-      Puzzle.create(
-        new Image([
-          [0, 0, 1, 1],
-          [0, 0, 1, 1],
-        ]),
-        createRandom('seed'),
-      ),
+      Puzzle.create(new Image([[0, 1]]), createRandom('seed')),
     );
 
     // prettier-ignore
@@ -46,13 +36,7 @@ describe('PuzzleText', () => {
 
   it('draws only the walls inside the areas', () => {
     const puzzleText = PuzzleText.create(
-      Puzzle.create(
-        new Image([
-          [0, 0, 1, 1],
-          [0, 0, 1, 1],
-        ]),
-        createRandom('seed'),
-      ),
+      Puzzle.create(new Image([[0, 1]]), createRandom('seed')),
     );
 
     // prettier-ignore

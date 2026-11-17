@@ -23,7 +23,8 @@ export class Puzzle {
     this.dots = dots;
   }
 
-  static create(image: Image, random: RandomFn): Puzzle {
+  static create(qr: Image, random: RandomFn): Puzzle {
+    const image = qr.x2();
     const edges = digPaths(image, random);
     const areas = new AreaStore(image);
     const dots = chooseDots(image, random);
