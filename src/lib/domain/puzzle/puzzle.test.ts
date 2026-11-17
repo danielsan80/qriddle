@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { Coord, directions, Image } from '../image';
+import { Image } from '../image';
 import { createRandom } from '../../util';
 import { Puzzle } from './puzzle';
+import { PuzzleTester } from './puzzle.tester';
+import { ALL_WALLS } from './puzzleText.testing';
 
 describe('Puzzle', () => {
   it('exposes the image', () => {
@@ -15,17 +17,51 @@ describe('Puzzle', () => {
     expect(puzzle.image).toBe(image);
   });
 
+  it('draws the walls and the dots from the random', () => {
+    const image = new Image([
+      [1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 0, 0],
+      [1, 1, 1, 1, 0, 0],
+      [1, 1, 0, 0, 1, 1],
+      [1, 1, 0, 0, 1, 1],
+    ]);
+
+    const puzzle = Puzzle.create(image, createRandom('fixed-seed'));
+
+    expect(new PuzzleTester(puzzle).toText().full()).toBe(
+      [
+        '╔═══════════╗',
+        '║◾ ◾ ◾ ◾ ◾ ◾║',
+        '║ ┌─┬───╴ ╷ ║',
+        '║◾│◾│◾ ◾ ◾│◾║',
+        '║ ╵ │ ╶─┬─┼─╢',
+        '║◾ ◾│◾ ◉│◻│◻║',
+        '╟───┴─╴ │ ╵ ║',
+        '║◾ ◾ ◾ ◾│◻ ◻║',
+        '║ ╷ ┌─┬─┼───╢',
+        '║◾│◾│◻│◻│◉ ◾║',
+        '╟─┘ │ ╵ │ ╶─╢',
+        '║◾ ◾│◻ ◻│◾ ◾║',
+        '╚═══╧═══╧═══╝',
+      ].join('\n'),
+    );
+  });
+
   it('produces same result with same seed', () => {
     const image = new Image([
-      [1, 1, 1],
-      [1, 1, 1],
-      [1, 1, 1],
+      [1, 1, 1, 1],
+      [1, 1, 1, 1],
+      [1, 1, 1, 1],
+      [1, 1, 1, 1],
     ]);
 
     const puzzle1 = Puzzle.create(image, createRandom('test-seed'));
     const puzzle2 = Puzzle.create(image, createRandom('test-seed'));
 
-    expect(wallMap(puzzle1)).toEqual(wallMap(puzzle2));
+    expect(new PuzzleTester(puzzle1).toText().full()).toEqual(
+      new PuzzleTester(puzzle2).toText().full(),
+    );
   });
 
   it('produces different results with different seeds', () => {
@@ -39,7 +75,9 @@ describe('Puzzle', () => {
     const puzzle1 = Puzzle.create(image, createRandom('seed-a'));
     const puzzle2 = Puzzle.create(image, createRandom('seed-b'));
 
-    expect(wallMap(puzzle1)).not.toEqual(wallMap(puzzle2));
+    expect(new PuzzleTester(puzzle1).toText().full()).not.toEqual(
+      new PuzzleTester(puzzle2).toText().full(),
+    );
   });
 
   it('preserves external walls', () => {
@@ -50,93 +88,72 @@ describe('Puzzle', () => {
 
     const puzzle = Puzzle.create(image, createRandom('seed'));
 
-    // External edges always have walls
-    expect(puzzle.hasWall(new Coord(0, 0), 'north')).toBe(true);
-    expect(puzzle.hasWall(new Coord(0, 0), 'west')).toBe(true);
-    expect(puzzle.hasWall(new Coord(1, 1), 'south')).toBe(true);
-    expect(puzzle.hasWall(new Coord(1, 1), 'east')).toBe(true);
-  });
-
-  it('preserves walls between different colors', () => {
-    const image = new Image([
-      [0, 1],
-      [0, 1],
-    ]);
-
-    const puzzle = Puzzle.create(image, createRandom('seed'));
-
-    // Color boundary walls are preserved
-    expect(puzzle.hasWall(new Coord(0, 0), 'east')).toBe(true);
-    expect(puzzle.hasWall(new Coord(1, 0), 'east')).toBe(true);
-    expect(puzzle.hasWall(new Coord(0, 1), 'west')).toBe(true);
-    expect(puzzle.hasWall(new Coord(1, 1), 'west')).toBe(true);
-  });
-
-  it('generates deterministic puzzle with fixed seed', () => {
-    const image = new Image([
-      [1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 0, 0],
-      [1, 1, 1, 0, 0, 0],
-      [1, 0, 0, 0, 1, 1],
-      [0, 0, 0, 0, 1, 1],
-    ]);
-
-    const puzzle = Puzzle.create(image, createRandom('fixed-seed'));
-
-    expect(toBoxDrawing(puzzle)).toBe(
+    // prettier-ignore
+    expect(new PuzzleTester(puzzle).toText().walls(['external'])).toBe(
       [
-        '┌─────────┬─┐',
-        '│◾ ◾ ◾ ◾ ◾│◾│',
-        '│ ╶─────┐ ╵ │',
-        '│◾ ◾ ◾ ◾│◾ ◾│',
-        '│ ╶─┬─╴ ├───┤',
-        '│◉ ◾│◾ ◾│◻ ◻│',
-        '├─╴ └─┬─┘ ╶─┤',
-        '│◾ ◾ ◾│◻ ◻ ◻│',
-        '│ ┌───┤ ┌───┤',
-        '│◾│◻ ◻│◻│◾ ◾│',
-        '├─┘ ╷ ╵ │ ╷ │',
-        '│◻ ◻│◻ ◻│◾│◉│',
-        '└───┴───┴─┴─┘',
+        '╔═══╗',
+        '║   ║',
+        '║   ║',
+        '║   ║',
+        '╚═══╝',
+      ].join('\n'),
+    );
+    // prettier-ignore
+    expect(new PuzzleTester(puzzle).toText().walls(ALL_WALLS)).toBe(
+      [
+        '╔═╤═╗',
+        '║ │ ║',
+        '║ ╵ ║',
+        '║   ║',
+        '╚═══╝',
       ].join('\n'),
     );
   });
 
-  it('ensures all cells in an area are connected (spanning tree)', () => {
+  it('preserves walls between different colors', () => {
     const image = new Image([
-      [1, 1, 1],
-      [1, 1, 1],
-      [1, 1, 1],
+      [0, 0, 1, 1],
+      [0, 0, 1, 1],
     ]);
 
     const puzzle = Puzzle.create(image, createRandom('seed'));
 
-    // Check connectivity via flood fill through passages
+    // prettier-ignore
+    expect(new PuzzleTester(puzzle).toText().walls(['betweenAreas'])).toBe(
+      [
+        '    ╷    ',
+        '    │    ',
+        '    │    ',
+        '    │    ',
+        '    ╵    ',
+      ].join('\n'),
+    );
+    // prettier-ignore
+    expect(new PuzzleTester(puzzle).toText().walls(ALL_WALLS)).toBe(
+      [
+        '╔═╤═╤═══╗',
+        '║ │ │   ║',
+        '║ ╵ │ ╷ ║',
+        '║   │ │ ║',
+        '╚═══╧═╧═╝',
+      ].join('\n'),
+    );
+  });
+
+  it('connects all the cells of an area', () => {
+    const image = new Image([
+      [1, 1, 1, 1],
+      [1, 1, 1, 1],
+      [1, 1, 1, 1],
+      [1, 1, 1, 1],
+    ]);
+
+    const puzzle = Puzzle.create(image, createRandom('seed'));
+
     const area = puzzle.areas.at(0)!;
-    const start = area.pixels[0];
-    const visited = new Set<string>();
-    const queue = [start.coord.toString()];
-    visited.add(start.coord.toString());
-
-    while (queue.length > 0) {
-      const key = queue.shift()!;
-      const [row, col] = key.split(',').map(Number);
-      const coord = new Coord(row, col);
-
-      for (const dir of directions) {
-        if (!puzzle.hasWall(coord, dir)) {
-          const neighbor = coord.goTo(dir);
-          const neighborKey = neighbor.toString();
-          if (!visited.has(neighborKey) && puzzle.image.has(neighbor)) {
-            visited.add(neighborKey);
-            queue.push(neighborKey);
-          }
-        }
-      }
-    }
-
-    expect(visited.size).toBe(area.pixels.length);
+    expect(
+      new PuzzleTester(puzzle).reachableCellsFrom(area.pixels[0].coord),
+    ).toEqual(area.cells());
   });
 
   describe('dots', () => {
@@ -170,9 +187,10 @@ describe('Puzzle', () => {
 
     it('produces same dots with same seed', () => {
       const image = new Image([
-        [1, 1, 1],
-        [1, 1, 1],
-        [1, 1, 1],
+        [1, 1, 1, 1],
+        [1, 1, 1, 1],
+        [1, 1, 1, 1],
+        [1, 1, 1, 1],
       ]);
 
       const puzzle1 = Puzzle.create(image, createRandom('test-seed'));
@@ -185,11 +203,12 @@ describe('Puzzle', () => {
 
     it('produces different dots with different seeds', () => {
       const image = new Image([
-        [1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
       ]);
 
       const puzzle1 = Puzzle.create(image, createRandom('seed-a'));
@@ -201,111 +220,3 @@ describe('Puzzle', () => {
     });
   });
 });
-
-function wallMap(puzzle: Puzzle): string[][] {
-  const { rows, cols } = puzzle.image.size;
-  const result: string[][] = [];
-  for (let row = 0; row < rows; row++) {
-    result[row] = [];
-    for (let col = 0; col < cols; col++) {
-      const coord = new Coord(row, col);
-      const walls = directions
-        .filter((dir) => puzzle.hasWall(coord, dir))
-        .map((d) => d[0].toUpperCase())
-        .join('');
-      result[row][col] = walls || '-';
-    }
-  }
-  return result;
-}
-
-function toBoxDrawing(puzzle: Puzzle): string {
-  const { rows, cols } = puzzle.image.size;
-  const grid: string[][] = [];
-  const dotSet = new Set(puzzle.dots.map((d) => d.toString()));
-
-  for (let r = 0; r < rows * 2 + 1; r++) {
-    grid[r] = [];
-    for (let c = 0; c < cols * 2 + 1; c++) {
-      grid[r][c] = ' ';
-    }
-  }
-
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      const coord = new Coord(row, col);
-      const cell = puzzle.image.get(coord);
-      const isDot = dotSet.has(coord.toString());
-      grid[row * 2 + 1][col * 2 + 1] = isDot
-        ? '◉'
-        : cell.color === 'black'
-          ? '◾'
-          : '◻';
-    }
-  }
-
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      const coord = new Coord(row, col);
-      if (puzzle.hasWall(coord, 'north')) {
-        grid[row * 2][col * 2 + 1] = '─';
-      }
-      if (puzzle.hasWall(coord, 'south')) {
-        grid[row * 2 + 2][col * 2 + 1] = '─';
-      }
-    }
-  }
-
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      const coord = new Coord(row, col);
-      if (puzzle.hasWall(coord, 'west')) {
-        grid[row * 2 + 1][col * 2] = '│';
-      }
-      if (puzzle.hasWall(coord, 'east')) {
-        grid[row * 2 + 1][col * 2 + 2] = '│';
-      }
-    }
-  }
-
-  for (let r = 0; r < rows * 2 + 1; r += 2) {
-    for (let c = 0; c < cols * 2 + 1; c += 2) {
-      const north = r > 0 && grid[r - 1][c] === '│';
-      const south = r < rows * 2 && grid[r + 1][c] === '│';
-      const west = c > 0 && grid[r][c - 1] === '─';
-      const east = c < cols * 2 && grid[r][c + 1] === '─';
-
-      grid[r][c] = getCorner(north, east, south, west);
-    }
-  }
-
-  return grid.map((row) => row.join('')).join('\n');
-}
-
-function getCorner(
-  north: boolean,
-  east: boolean,
-  south: boolean,
-  west: boolean,
-): string {
-  const key = `${north ? 'N' : ''}${east ? 'E' : ''}${south ? 'S' : ''}${west ? 'W' : ''}`;
-  const corners: Record<string, string> = {
-    '': ' ',
-    'N': '╵',
-    'E': '╶',
-    'S': '╷',
-    'W': '╴',
-    'NE': '└',
-    'NS': '│',
-    'NW': '┘',
-    'ES': '┌',
-    'EW': '─',
-    'SW': '┐',
-    'NES': '├',
-    'NEW': '┴',
-    'NSW': '┤',
-    'ESW': '┬',
-    'NESW': '┼',
-  };
-  return corners[key] || '+';
-}
