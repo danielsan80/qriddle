@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { Image } from '../image';
 import { createRandom } from '../../util';
 import { Puzzle } from './puzzle';
-import { PuzzleTester } from './puzzle.tester';
+import { PuzzleDriver } from './puzzle.driver';
 import { ALL_WALLS } from './puzzleText.testing';
 
 describe('Puzzle', () => {
@@ -24,7 +24,7 @@ describe('Puzzle', () => {
 
     const puzzle = Puzzle.create(qr, createRandom('fixed-seed'));
 
-    expect(new PuzzleTester(puzzle).toText().full()).toBe(
+    expect(new PuzzleDriver(puzzle).toText().full()).toBe(
       [
         '╔═══════════╗',
         '║◾ ◾ ◾ ◾ ◾ ◾║',
@@ -52,8 +52,8 @@ describe('Puzzle', () => {
     const puzzle1 = Puzzle.create(qr, createRandom('test-seed'));
     const puzzle2 = Puzzle.create(qr, createRandom('test-seed'));
 
-    expect(new PuzzleTester(puzzle1).toText().full()).toEqual(
-      new PuzzleTester(puzzle2).toText().full(),
+    expect(new PuzzleDriver(puzzle1).toText().full()).toEqual(
+      new PuzzleDriver(puzzle2).toText().full(),
     );
   });
 
@@ -66,8 +66,8 @@ describe('Puzzle', () => {
     const puzzle1 = Puzzle.create(qr, createRandom('seed-a'));
     const puzzle2 = Puzzle.create(qr, createRandom('seed-b'));
 
-    expect(new PuzzleTester(puzzle1).toText().full()).not.toEqual(
-      new PuzzleTester(puzzle2).toText().full(),
+    expect(new PuzzleDriver(puzzle1).toText().full()).not.toEqual(
+      new PuzzleDriver(puzzle2).toText().full(),
     );
   });
 
@@ -77,7 +77,7 @@ describe('Puzzle', () => {
     const puzzle = Puzzle.create(qr, createRandom('seed'));
 
     // prettier-ignore
-    expect(new PuzzleTester(puzzle).toText().walls(['external'])).toBe(
+    expect(new PuzzleDriver(puzzle).toText().walls(['external'])).toBe(
       [
         '╔═══╗',
         '║   ║',
@@ -87,7 +87,7 @@ describe('Puzzle', () => {
       ].join('\n'),
     );
     // prettier-ignore
-    expect(new PuzzleTester(puzzle).toText().walls(ALL_WALLS)).toBe(
+    expect(new PuzzleDriver(puzzle).toText().walls(ALL_WALLS)).toBe(
       [
         '╔═╤═╗',
         '║ │ ║',
@@ -104,7 +104,7 @@ describe('Puzzle', () => {
     const puzzle = Puzzle.create(qr, createRandom('seed'));
 
     // prettier-ignore
-    expect(new PuzzleTester(puzzle).toText().walls(['betweenAreas'])).toBe(
+    expect(new PuzzleDriver(puzzle).toText().walls(['betweenAreas'])).toBe(
       [
         '    ╷    ',
         '    │    ',
@@ -114,7 +114,7 @@ describe('Puzzle', () => {
       ].join('\n'),
     );
     // prettier-ignore
-    expect(new PuzzleTester(puzzle).toText().walls(ALL_WALLS)).toBe(
+    expect(new PuzzleDriver(puzzle).toText().walls(ALL_WALLS)).toBe(
       [
         '╔═╤═╤═══╗',
         '║ │ │   ║',
@@ -135,7 +135,7 @@ describe('Puzzle', () => {
 
     const area = puzzle.areas.at(0)!;
     expect(
-      new PuzzleTester(puzzle).reachableCellsFrom(area.pixels[0].coord),
+      new PuzzleDriver(puzzle).reachableCellsFrom(area.pixels[0].coord),
     ).toEqual(area.cells());
   });
 

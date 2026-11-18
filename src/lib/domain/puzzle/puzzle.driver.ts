@@ -2,7 +2,7 @@ import { Coord, CoordSet, directions, Visited } from '../image';
 import { type Puzzle } from './puzzle';
 import { PuzzleText } from './puzzleText.testing';
 
-export class PuzzleTester {
+export class PuzzleDriver {
   private readonly puzzle: Puzzle;
 
   constructor(puzzle: Puzzle) {
