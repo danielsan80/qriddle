@@ -32,7 +32,7 @@ function renderFront(textBoxes: FacedTextBox[]) {
   const { result } = renderHook(
     () => {
       const [boxes, setBoxes] = useOuterTextBoxes('front');
-      return { boxes, setBoxes, cardBoxes: useWizard().work.textBoxes };
+      return { boxes, setBoxes, cardBoxes: useWizard().cardSpec.textBoxes };
     },
     { wrapper },
   );

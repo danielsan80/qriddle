@@ -4,12 +4,14 @@ import type { Face, TextBox } from '../lib/domain/card';
 export function useOuterTextBoxes(
   face: Face,
 ): [TextBox[], (boxes: TextBox[]) => void] {
-  const { work, updateWork } = useWizard();
+  const { cardSpec, updateCardSpec } = useWizard();
 
-  const faceBoxes = work.textBoxes.filter((textBox) => textBox.face === face);
+  const faceBoxes = cardSpec.textBoxes.filter(
+    (textBox) => textBox.face === face,
+  );
 
   function setFaceBoxes(newFaceBoxes: TextBox[]) {
-    updateWork((current) => {
+    updateCardSpec((current) => {
       const incoming = newFaceBoxes.map((textBox) => ({ ...textBox, face }));
       const inPlace = current.textBoxes.flatMap((textBox) => {
         if (textBox.face !== face) return [textBox];

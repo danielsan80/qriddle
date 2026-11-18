@@ -1,12 +1,11 @@
 import QRCode from 'qrcode';
-import type { Matrix } from '../domain/image';
 
 export interface QROptions {
   errorCorrectionLevel?: 'L' | 'M' | 'Q' | 'H';
 }
 
 export interface QRMatrixResult {
-  matrix: Matrix;
+  matrix: number[][];
   size: number;
   blackCount: number;
 }
@@ -37,7 +36,7 @@ export function getQRMatrix(
   });
 
   const size = qr.modules.size;
-  const matrix: Matrix = [];
+  const matrix: number[][] = [];
   let blackCount = 0;
 
   for (let row = 0; row < size; row++) {

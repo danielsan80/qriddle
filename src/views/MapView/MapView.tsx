@@ -4,51 +4,37 @@ import { CanvasStage } from '../../components/stages/CanvasStage';
 import { QrcodeCanvas } from '../../components/canvas/QrcodeCanvas';
 import { PreviewCanvas } from '../../components/canvas/PreviewCanvas';
 import { useWizard } from '../../context/useWizard';
-import { Image } from '../../lib/domain/image';
-import { puzzleFactory } from '../../context/puzzleFactory';
 import { renderInnerPdfPreview, renderImage } from '../../lib/render';
 import { generateSeed, getQRMatrix } from '../../lib/util';
+import { Image } from '../../lib/domain/image';
 import { ExampleLink } from './ExampleLink';
 import { config } from '../../lib/config';
 import styles from './MapView.module.css';
 
-const DEBOUNCE_MS = 300;
-
 export function MapView() {
-  const { setPuzzle, work, updateWork } = useWizard();
-  const { qrText, seed } = work;
+  const { puzzle, cardSpec, updateCardSpec } = useWizard();
+  const { qrText } = cardSpec;
 
   function setQrText(newQrText: string) {
-    updateWork((current) => ({ ...current, qrText: newQrText }));
+    updateCardSpec((current) => ({ ...current, qrText: newQrText }));
   }
 
   function setSeed(newSeed: string) {
-    updateWork((current) => ({ ...current, seed: newSeed }));
+    updateCardSpec((current) => ({ ...current, seed: newSeed }));
   }
 
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
   const puzzleCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    if (!qrText || !qrCanvasRef.current || !puzzleCanvasRef.current) {
-      return;
-    }
+    if (!qrText || !qrCanvasRef.current) return;
+    renderImage(qrCanvasRef.current, new Image(getQRMatrix(qrText).matrix));
+  }, [qrText]);
 
-    const timer = setTimeout(() => {
-      void (async () => {
-        const { matrix } = getQRMatrix(qrText);
-        const qrImage = new Image(matrix);
-
-        renderImage(qrCanvasRef.current!, qrImage);
-
-        const newPuzzle = puzzleFactory.create(qrImage, seed);
-        await renderInnerPdfPreview(puzzleCanvasRef.current!, newPuzzle);
-        setPuzzle(newPuzzle);
-      })();
-    }, DEBOUNCE_MS);
-
-    return () => clearTimeout(timer);
-  }, [qrText, seed, setPuzzle]);
+  useEffect(() => {
+    if (!puzzle || !puzzleCanvasRef.current) return;
+    void renderInnerPdfPreview(puzzleCanvasRef.current, puzzle);
+  }, [puzzle]);
 
   const handleQrTextBlur = () => {
     if (!qrText) setQrText(config.defaultQrText);

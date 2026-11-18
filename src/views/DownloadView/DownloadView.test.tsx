@@ -5,8 +5,8 @@ import { DownloadView } from './DownloadView';
 import { downloadPuzzlePdf } from '../../lib/render';
 import { analytics } from '../../lib/browser/analytics';
 
-const wizard: { puzzle: object | null; work: { textBoxes: object[] } } =
-  vi.hoisted(() => ({ puzzle: null, work: { textBoxes: [] } }));
+const wizard: { puzzle: object | null; cardSpec: { textBoxes: object[] } } =
+  vi.hoisted(() => ({ puzzle: null, cardSpec: { textBoxes: [] } }));
 
 vi.mock('../../context/useWizard', () => ({
   useWizard: () => wizard,
@@ -35,7 +35,7 @@ describe('DownloadView', () => {
     const puzzle = {};
     const textBoxes = [{ id: '1', text: 'hi', face: 'front' }];
     wizard.puzzle = puzzle;
-    wizard.work.textBoxes = textBoxes;
+    wizard.cardSpec.textBoxes = textBoxes;
     render(<DownloadView />);
 
     await userEvent.click(downloadButton());

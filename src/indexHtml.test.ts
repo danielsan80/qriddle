@@ -8,7 +8,7 @@ function umamiScript() {
 }
 
 describe('index.html', () => {
-  it('keeps the work in the URL hash away from the analytics', () => {
+  it('keeps the card spec in the URL hash away from the analytics', () => {
     expect(umamiScript()?.getAttribute('data-exclude-hash')).toBe('true');
   });
 });

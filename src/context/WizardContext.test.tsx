@@ -1,22 +1,12 @@
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import { describe, it, expect, afterEach, beforeEach, vi } from 'vitest';
-import { WizardProvider } from './WizardContext';
-import type { Work } from './work';
-import { useWizard } from './useWizard';
+import type { CardSpec, FacedTextBox } from '../lib/domain/card';
 import { STEPS } from './steps';
 import { encode, readState } from '../lib/browser/urlState';
 import { config } from '../lib/config';
 import { Puzzle } from '../lib/domain/puzzle';
-import type { FacedTextBox } from '../lib/domain/card';
 import { analytics } from '../lib/browser/analytics';
-
-function wrapper({ children }: { children: React.ReactNode }) {
-  return <WizardProvider>{children}</WizardProvider>;
-}
-
-function renderWizard() {
-  return renderHook(() => useWizard(), { wrapper }).result;
-}
+import { WizardDriver } from './WizardContext.driver';
 
 function urlState() {
   return readState<Record<string, unknown>>({});
@@ -26,7 +16,7 @@ function box(text: string, face: FacedTextBox['face']): FacedTextBox {
   return { id: text, x: 10, y: 20, text, fontSize: 8, face };
 }
 
-const work: Work = {
+const cardSpec: CardSpec = {
   qrText: 'treasure',
   seed: 'abcdefghij',
   textBoxes: [box('A', 'front')],
@@ -37,83 +27,65 @@ describe('WizardContext', () => {
     window.location.hash = '';
   });
 
-  it('starts with the first track step and no puzzle', () => {
-    const wizard = renderWizard();
-    expect(wizard.current).toMatchObject({
-      step: STEPS[0],
-      puzzle: null,
-    });
+  it('starts with the first track step', () => {
+    expect(WizardDriver.render().step).toBe(STEPS[0]);
   });
 
   it('updates step via setStep', () => {
-    const wizard = renderWizard();
-    act(() => wizard.current.setStep('download'));
-    expect(wizard.current.step).toBe('download');
-  });
-
-  it('updates puzzle via setPuzzle', () => {
-    const wizard = renderWizard();
-    const fakePuzzle = {} as never;
-    act(() => wizard.current.setPuzzle(fakePuzzle));
-    expect(wizard.current.puzzle).toBe(fakePuzzle);
+    const wizardDriver = WizardDriver.render();
+    wizardDriver.setStep('download');
+    expect(wizardDriver.step).toBe('download');
   });
 
   it('starts from the default text and a fresh seed when the URL is empty', () => {
-    const wizard = renderWizard();
-    expect(wizard.current.work).toEqual({
+    expect(WizardDriver.render().cardSpec).toEqual({
       qrText: config.defaultQrText,
       seed: expect.any(String),
       textBoxes: [],
     });
   });
 
-  it('reads the work from the URL at start', () => {
-    window.location.hash = '#' + encode(work);
-    const wizard = renderWizard();
-    expect(wizard.current.work).toEqual(work);
+  it('reads the card spec from the URL at start', () => {
+    window.location.hash = '#' + encode(cardSpec);
+    expect(WizardDriver.render().cardSpec).toEqual(cardSpec);
   });
 
   it('leaves the URL empty while nothing has been touched', () => {
-    renderWizard();
+    WizardDriver.render();
     expect(window.location.hash).toBe('');
   });
 
-  it.each([
-    {
-      action: 'a step change',
-      touch: (wizard: ReturnType<typeof renderWizard>) =>
-        wizard.current.setStep('inner.map'),
-      step: 'inner.map',
-    },
-    {
-      action: 'a change of the work',
-      touch: (wizard: ReturnType<typeof renderWizard>) =>
-        wizard.current.updateWork((current) => ({ ...current, qrText: 'x' })),
-      step: STEPS[0],
-    },
-  ])('saves step and work at the first touch: $action', ({ touch, step }) => {
-    const wizard = renderWizard();
+  it('saves step and card spec at the first step change', () => {
+    const wizardDriver = WizardDriver.render();
 
-    act(() => touch(wizard));
+    wizardDriver.setStep('inner.map');
 
-    expect(urlState()).toEqual({ step, ...wizard.current.work });
+    expect(urlState()).toEqual({ step: 'inner.map', ...wizardDriver.cardSpec });
   });
 
-  it('writes every change of the work into the URL', () => {
+  it('saves step and card spec at the first change of the card spec', () => {
+    const wizardDriver = WizardDriver.render();
+
+    wizardDriver.changeQrText('x');
+
+    expect(urlState()).toEqual({ step: STEPS[0], ...wizardDriver.cardSpec });
+  });
+
+  it('writes every change of the card spec into the URL', () => {
     window.location.hash = '#' + encode({ step: 'outer.front' });
-    const wizard = renderWizard();
+    const wizardDriver = WizardDriver.render();
 
-    act(() => wizard.current.updateWork(() => work));
+    wizardDriver.setCardSpec(cardSpec);
 
-    expect(urlState()).toEqual({ step: 'outer.front', ...work });
+    expect(urlState()).toEqual({ step: 'outer.front', ...cardSpec });
   });
 
   it('changes step without adding entries to the browser history', () => {
-    const wizard = renderWizard();
+    const wizardDriver = WizardDriver.render();
     const entries = history.length;
 
-    act(() => wizard.current.setStep('outer.front'));
-    act(() => wizard.current.setStep('outer.back'));
+    wizardDriver.setStep('outer.front');
+    wizardDriver.setStep('outer.back');
 
     expect({ entries: history.length, url: urlState() }).toEqual({
       entries,
@@ -126,22 +98,79 @@ describe('WizardContext', () => {
     });
   });
 
-  it('opens the step, the puzzle and the work of a link pasted in the address bar', async () => {
-    const wizard = renderWizard();
+  it('opens the step, the puzzle and the card spec of a link pasted in the address bar', async () => {
+    const wizardDriver = WizardDriver.render();
 
-    window.location.hash = '#' + encode({ step: 'outer.center', ...work });
+    window.location.hash = '#' + encode({ step: 'outer.center', ...cardSpec });
 
     await waitFor(() =>
       expect({
-        step: wizard.current.step,
-        puzzle: wizard.current.puzzle,
-        work: wizard.current.work,
+        step: wizardDriver.step,
+        puzzle: wizardDriver.puzzle,
+        cardSpec: wizardDriver.cardSpec,
       }).toEqual({
         step: 'outer.center',
         puzzle: expect.any(Puzzle),
-        work,
+        cardSpec,
       }),
     );
+  });
+});
+
+describe('WizardContext puzzle', () => {
+  const delay = config.puzzleGenerationDelayMs;
+
+  function wait(ms: number) {
+    act(() => vi.advanceTimersByTime(ms));
+  }
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+    window.location.hash = '#' + encode(cardSpec);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    window.location.hash = '';
+  });
+
+  it('gives the same puzzle to the same card spec', () => {
+    expect(WizardDriver.render().puzzle).toEqual(WizardDriver.render().puzzle);
+  });
+
+  it('generates the puzzle of the new card spec once the changes pause', () => {
+    const wizardDriver = WizardDriver.render();
+    const before = wizardDriver.puzzle;
+
+    wizardDriver.changeSeed('another');
+    wait(delay - 1);
+    expect(wizardDriver.puzzle).toBe(before);
+
+    wait(1);
+    expect(wizardDriver.puzzle).not.toEqual(before);
+  });
+
+  it('restarts the wait at each change', () => {
+    const wizardDriver = WizardDriver.render();
+    const before = wizardDriver.puzzle;
+
+    wizardDriver.changeSeed('another');
+    wait(delay - 100);
+    wizardDriver.changeSeed('yet another');
+    wait(delay - 1);
+    expect(wizardDriver.puzzle).toBe(before);
+
+    wait(1);
+    expect(wizardDriver.puzzle).not.toEqual(before);
+  });
+
+  it('has no puzzle without a QR text', () => {
+    const wizardDriver = WizardDriver.render();
+
+    wizardDriver.changeQrText('');
+    wait(delay);
+
+    expect(wizardDriver.puzzle).toBeNull();
   });
 });
 
@@ -160,27 +189,25 @@ describe('WizardContext analytics', () => {
   });
 
   it('tracks every step the user moves to', () => {
-    const wizard = renderWizard();
+    const wizardDriver = WizardDriver.render();
 
-    act(() => wizard.current.setStep('inner.map'));
-    act(() => wizard.current.setStep('outer.front'));
+    wizardDriver.setStep('inner.map');
+    wizardDriver.setStep('outer.front');
 
     expect(stepChanged.mock.calls).toEqual([['inner.map'], ['outer.front']]);
   });
 
   it('does not track a move to the step already shown', () => {
-    const wizard = renderWizard();
-
-    act(() => wizard.current.setStep(STEPS[0]));
+    WizardDriver.render().setStep(STEPS[0]);
 
     expect(stepChanged).not.toHaveBeenCalled();
   });
 
   it('does not track the step of a link pasted in the address bar', async () => {
-    const wizard = renderWizard();
+    const wizardDriver = WizardDriver.render();
 
-    window.location.hash = '#' + encode({ step: 'outer.center', ...work });
-    await waitFor(() => expect(wizard.current.step).toBe('outer.center'));
+    window.location.hash = '#' + encode({ step: 'outer.center', ...cardSpec });
+    await waitFor(() => expect(wizardDriver.step).toBe('outer.center'));
 
     expect(stepChanged).not.toHaveBeenCalled();
   });

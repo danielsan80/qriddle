@@ -14,9 +14,8 @@ function wizardOn(step: WorkStep, setStep = vi.fn()) {
     step,
     setStep,
     puzzle: null,
-    setPuzzle: vi.fn(),
-    work: { qrText: '', seed: '', textBoxes: [] },
-    updateWork: vi.fn(),
+    cardSpec: { qrText: '', seed: '', textBoxes: [] },
+    updateCardSpec: vi.fn(),
   };
 }
 

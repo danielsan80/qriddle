@@ -18,7 +18,7 @@ describe('CopyLink', () => {
     vi.useRealTimers();
   });
 
-  it('copies the current URL, which holds the work', async () => {
+  it('copies the current URL, which holds the card spec', async () => {
     window.location.hash = '#state=abc';
     render(<CopyLink />);
 

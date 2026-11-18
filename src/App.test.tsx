@@ -71,19 +71,19 @@ describe('App', () => {
   });
 
   it('keeps the text written on later faces after Previous and Next', async () => {
-    const work = {
+    const cardSpec = {
       qrText: 'treasure',
       seed: 'abcdefghij',
       textBoxes: [box('A', 'front'), box('B', 'center'), box('C', 'back')],
     };
-    window.location.hash = '#' + encode({ step: 'outer.back', ...work });
+    window.location.hash = '#' + encode({ step: 'outer.back', ...cardSpec });
     renderApp();
 
     await clickStepButton('Previous');
     expect(readState<{ step?: string }>({}).step).toBe('outer.center');
     await clickStepButton('Next');
 
-    expect(readState({})).toEqual({ step: 'outer.back', ...work });
+    expect(readState({})).toEqual({ step: 'outer.back', ...cardSpec });
   });
 
   it('on a phone, leaves the intro open', () => {

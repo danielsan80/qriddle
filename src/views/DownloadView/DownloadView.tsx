@@ -13,8 +13,8 @@ import { cardFontDescriptor, loadFont } from '../../lib/util';
 import styles from './DownloadView.module.css';
 
 export function DownloadView() {
-  const { puzzle, work } = useWizard();
-  const { textBoxes } = work;
+  const { puzzle, cardSpec } = useWizard();
+  const { textBoxes } = cardSpec;
   const innerCanvasRef = useRef<HTMLCanvasElement>(null);
   const outerCanvasRef = useRef<HTMLCanvasElement>(null);
 

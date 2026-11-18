@@ -1,20 +1,22 @@
-import { createContext, useEffect, useRef, useState } from 'react';
+import { createContext, useEffect, useMemo, useRef, useState } from 'react';
 import type { Puzzle } from '../lib/domain/puzzle';
 import { Image } from '../lib/domain/image';
-import { type Step, STEPS } from './steps';
-import { readState, mergeState } from '../lib/browser/urlState';
-import { analytics } from '../lib/browser/analytics';
 import { getQRMatrix } from '../lib/util';
+import { useDebouncedValue } from '../hooks/useDebouncedValue';
+import { config } from '../lib/config';
 import { puzzleFactory } from './puzzleFactory';
-import { type Work, workFrom } from './work';
+import { type Step, STEPS } from './steps';
+import { readState, mergeState, type UrlState } from '../lib/browser/urlState';
+import { analytics } from '../lib/browser/analytics';
+import type { CardSpec } from '../lib/domain/card';
+import { cardSpecFromUrlState } from './cardSpec';
 
 interface WizardContextValue {
   step: Step;
   setStep: (step: Step) => void;
   puzzle: Puzzle | null;
-  setPuzzle: (puzzle: Puzzle | null) => void;
-  work: Work;
-  updateWork: (update: (work: Work) => Work) => void;
+  cardSpec: CardSpec;
+  updateCardSpec: (update: (cardSpec: CardSpec) => CardSpec) => void;
 }
 
 const WizardContext = createContext<WizardContextValue | null>(null);
@@ -26,34 +28,37 @@ function hasState(): boolean {
 }
 
 function readStep(): Step {
-  const { step } = readState<{ step?: string }>({});
-  return step && VALID_STEPS.has(step) ? (step as Step) : STEPS[0];
-}
-
-function buildPuzzle(qrText: string, seed: string): Puzzle {
-  const { matrix } = getQRMatrix(qrText);
-  const qrImage = new Image(matrix);
-  return puzzleFactory.create(qrImage, seed);
-}
-
-function readPuzzle(): Puzzle | null {
-  const { qrText, seed } = readState<{ qrText?: string; seed?: string }>({});
-  if (!qrText || !seed) return null;
-  return buildPuzzle(qrText, seed);
+  const { step } = readState<UrlState>({});
+  return typeof step === 'string' && VALID_STEPS.has(step)
+    ? (step as Step)
+    : STEPS[0];
 }
 
 export function WizardProvider({ children }: { children: React.ReactNode }) {
   const [step, setStep] = useState<Step>(readStep);
-  const [puzzle, setPuzzle] = useState<Puzzle | null>(readPuzzle);
-  const [work, setWork] = useState<Work>(() => workFrom(readState({})));
+  const [cardSpec, setCardSpec] = useState<CardSpec>(() =>
+    cardSpecFromUrlState(readState<UrlState>({})),
+  );
+  const qrText = useDebouncedValue(
+    cardSpec.qrText,
+    config.puzzleGenerationDelayMs,
+  );
+  const seed = useDebouncedValue(cardSpec.seed, config.puzzleGenerationDelayMs);
+  const puzzle = useMemo(
+    () =>
+      qrText
+        ? puzzleFactory.create(new Image(getQRMatrix(qrText).matrix), seed)
+        : null,
+    [qrText, seed],
+  );
 
   const touched = useRef(hasState());
 
   useEffect(() => {
     if (touched.current) {
-      mergeState({ step, ...work });
+      mergeState({ step, ...cardSpec });
     }
-  }, [step, work]);
+  }, [step, cardSpec]);
 
   function handleSetStep(newStep: Step) {
     touched.current = true;
@@ -61,16 +66,15 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     setStep(newStep);
   }
 
-  function handleUpdateWork(update: (work: Work) => Work) {
+  function handleUpdateCardSpec(update: (cardSpec: CardSpec) => CardSpec) {
     touched.current = true;
-    setWork(update);
+    setCardSpec(update);
   }
 
   useEffect(() => {
     function handleHashChange() {
       setStep(readStep());
-      setPuzzle(readPuzzle());
-      setWork(workFrom(readState({})));
+      setCardSpec(cardSpecFromUrlState(readState<UrlState>({})));
     }
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
@@ -82,9 +86,8 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
         step,
         setStep: handleSetStep,
         puzzle,
-        setPuzzle,
-        work,
-        updateWork: handleUpdateWork,
+        cardSpec,
+        updateCardSpec: handleUpdateCardSpec,
       }}
     >
       {children}

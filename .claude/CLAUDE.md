@@ -23,6 +23,10 @@ Il codice sta in `src/lib/domain/`: lì nomi e firme. Qui il lessico con cui ne 
 - **puzzle** (`Puzzle`): l'immagine con i muri, in cui ogni area è percorribile da ogni sua
   cella a ogni altra e senza blocchi 2x2; più un **punto** (`dots`) in una cella a caso di
   ogni area nera. Lo genera un **seed**, quindi lo stesso seed dà lo stesso puzzle;
+- **biglietto** (`domain/card`): il foglio da piegare che si stampa, con le facciate
+  esterne e la pagina interna con la mappa;
+- **specifica** (suffisso `Spec`): dati senza comportamento che descrivono cosa generare.
+  `CardSpec` è quella del biglietto, ciò che il link salva;
 - **facciata** (`Face`): fronte, centro o retro, le facciate esterne del biglietto su cui si
   scrive; la mappa sta nella pagina interna;
 - **casella di testo** (`TextBox`, `FacedTextBox`): una scritta su una facciata.

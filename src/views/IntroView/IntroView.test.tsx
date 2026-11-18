@@ -17,9 +17,8 @@ function renderIntro() {
         step: 'intro',
         setStep,
         puzzle: null,
-        setPuzzle: vi.fn(),
-        work: { qrText: '', seed: '', textBoxes: [] },
-        updateWork: vi.fn(),
+        cardSpec: { qrText: '', seed: '', textBoxes: [] },
+        updateCardSpec: vi.fn(),
       }}
     >
       <IntroView />
@@ -94,7 +93,7 @@ describe('IntroView', () => {
     ]);
   });
 
-  it('scrolls down to how it works, without touching the hash that holds the work', async () => {
+  it('scrolls down to how it works, without touching the hash that holds the card spec', async () => {
     const scrollIntoView = vi.fn();
     Element.prototype.scrollIntoView = scrollIntoView;
     const { introPage } = renderIntro();

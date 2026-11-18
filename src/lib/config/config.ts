@@ -5,6 +5,9 @@ export const config = {
   // How long "link copied" stays on the button
   linkCopiedConfirmationMs: 5000,
 
+  // How long typing must pause before the puzzle is generated again
+  puzzleGenerationDelayMs: 300,
+
   // Default QR text (easter egg)
   defaultQrText: 'My precioussss!!!',
 
