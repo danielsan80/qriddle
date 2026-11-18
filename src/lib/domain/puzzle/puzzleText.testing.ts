@@ -46,6 +46,7 @@ export class PuzzleText {
     if (this.puzzle.dots.some((dot) => dot.toString() === coord.toString())) {
       return '◉';
     }
+    if (this.puzzle.prefilledCells.has(coord)) return '■';
     return this.puzzle.image.get(coord).color === 'black' ? '◾' : '◻';
   }
 

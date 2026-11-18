@@ -28,6 +28,25 @@ export class PuzzleDriver {
     return CoordSet.create(reached);
   }
 
+  open2x2BlocksOutsidePrefill(): CoordSet {
+    const { rows, cols } = this.puzzle.image.size;
+    const blocks: Coord[] = [];
+    for (let row = 0; row < rows - 1; row++) {
+      for (let col = 0; col < cols - 1; col++) {
+        const topLeft = new Coord(row, col);
+        const bottomRight = new Coord(row + 1, col + 1);
+        if (this.puzzle.prefilledCells.has(topLeft)) continue;
+        const open =
+          !this.puzzle.hasWall(topLeft, 'east') &&
+          !this.puzzle.hasWall(topLeft, 'south') &&
+          !this.puzzle.hasWall(bottomRight, 'north') &&
+          !this.puzzle.hasWall(bottomRight, 'west');
+        if (open) blocks.push(topLeft);
+      }
+    }
+    return CoordSet.create(blocks);
+  }
+
   toText(): PuzzleText {
     return PuzzleText.create(this.puzzle);
   }

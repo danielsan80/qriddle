@@ -47,7 +47,7 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
   const puzzle = useMemo(
     () =>
       qrText
-        ? puzzleFactory.create(new Image(getQRMatrix(qrText).matrix), seed)
+        ? puzzleFactory.create(new Image(getQRMatrix(qrText).matrix), seed, 0)
         : null,
     [qrText, seed],
   );

@@ -12,8 +12,8 @@ describe('PuzzleFactory', () => {
   const puzzleFactory = new PuzzleFactory(createRandom);
 
   it('creates the puzzle with the random of the seed', () => {
-    expect(puzzleFactory.create(qr, 'seed')).toEqual(
-      Puzzle.create(qr, createRandom('seed')),
+    expect(puzzleFactory.create(qr, 'seed', 50)).toEqual(
+      Puzzle.create(qr, createRandom('seed'), 50),
     );
   });
 });

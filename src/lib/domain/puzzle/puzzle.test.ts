@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Image } from '../image';
+import { Coord, CoordSet, Image } from '../image';
 import { createRandom } from '../../util';
 import { Puzzle } from './puzzle';
 import { PuzzleDriver } from './puzzle.driver';
@@ -12,7 +12,7 @@ describe('Puzzle', () => {
       [1, 1],
     ]);
 
-    expect(Puzzle.create(qr, createRandom('seed')).image).toEqual(qr.x2());
+    expect(Puzzle.create(qr, createRandom('seed'), 0).image).toEqual(qr.x2());
   });
 
   it('draws the walls and the dots from the random', () => {
@@ -22,7 +22,7 @@ describe('Puzzle', () => {
       [1, 0, 1],
     ]);
 
-    const puzzle = Puzzle.create(qr, createRandom('fixed-seed'));
+    const puzzle = Puzzle.create(qr, createRandom('fixed-seed'), 0);
 
     expect(new PuzzleDriver(puzzle).toText().full()).toBe(
       [
@@ -49,8 +49,8 @@ describe('Puzzle', () => {
       [1, 1],
     ]);
 
-    const puzzle1 = Puzzle.create(qr, createRandom('test-seed'));
-    const puzzle2 = Puzzle.create(qr, createRandom('test-seed'));
+    const puzzle1 = Puzzle.create(qr, createRandom('test-seed'), 0);
+    const puzzle2 = Puzzle.create(qr, createRandom('test-seed'), 0);
 
     expect(new PuzzleDriver(puzzle1).toText().full()).toEqual(
       new PuzzleDriver(puzzle2).toText().full(),
@@ -63,8 +63,8 @@ describe('Puzzle', () => {
       [1, 1],
     ]);
 
-    const puzzle1 = Puzzle.create(qr, createRandom('seed-a'));
-    const puzzle2 = Puzzle.create(qr, createRandom('seed-b'));
+    const puzzle1 = Puzzle.create(qr, createRandom('seed-a'), 0);
+    const puzzle2 = Puzzle.create(qr, createRandom('seed-b'), 0);
 
     expect(new PuzzleDriver(puzzle1).toText().full()).not.toEqual(
       new PuzzleDriver(puzzle2).toText().full(),
@@ -74,7 +74,7 @@ describe('Puzzle', () => {
   it('preserves external walls', () => {
     const qr = new Image([[1]]);
 
-    const puzzle = Puzzle.create(qr, createRandom('seed'));
+    const puzzle = Puzzle.create(qr, createRandom('seed'), 0);
 
     // prettier-ignore
     expect(new PuzzleDriver(puzzle).toText().walls(['external'])).toBe(
@@ -101,7 +101,7 @@ describe('Puzzle', () => {
   it('preserves walls between different colors', () => {
     const qr = new Image([[0, 1]]);
 
-    const puzzle = Puzzle.create(qr, createRandom('seed'));
+    const puzzle = Puzzle.create(qr, createRandom('seed'), 0);
 
     // prettier-ignore
     expect(new PuzzleDriver(puzzle).toText().walls(['betweenAreas'])).toBe(
@@ -131,7 +131,7 @@ describe('Puzzle', () => {
       [1, 1],
     ]);
 
-    const puzzle = Puzzle.create(qr, createRandom('seed'));
+    const puzzle = Puzzle.create(qr, createRandom('seed'), 0);
 
     const area = puzzle.areas.at(0)!;
     expect(
@@ -139,11 +139,96 @@ describe('Puzzle', () => {
     ).toEqual(area.cells());
   });
 
+  describe('with prefilled cells', () => {
+    const qr = new Image([
+      [1, 1, 1, 0, 1, 1, 0, 1],
+      [1, 0, 1, 1, 1, 0, 1, 1],
+      [1, 1, 1, 0, 1, 1, 1, 0],
+      [0, 1, 0, 1, 1, 0, 1, 1],
+      [1, 1, 1, 1, 0, 1, 1, 1],
+      [1, 0, 1, 1, 1, 1, 0, 1],
+      [1, 1, 0, 1, 0, 1, 1, 1],
+      [0, 1, 1, 1, 1, 1, 0, 1],
+    ]);
+
+    it('prefills no cell at 0%', () => {
+      expect(Puzzle.create(qr, createRandom('seed'), 0).prefilledCells).toEqual(
+        CoordSet.empty(),
+      );
+    });
+
+    it('draws a prefilled module full, walled from the areas to solve', () => {
+      const qr = new Image([
+        [1, 1, 1],
+        [1, 0, 1],
+      ]);
+
+      const puzzle = Puzzle.create(qr, createRandom('seed'), 20);
+
+      expect(puzzle.prefilledModules).toEqual(
+        CoordSet.create([new Coord(0, 1)]),
+      );
+      // prettier-ignore
+      expect(new PuzzleDriver(puzzle).toText().full()).toBe([
+        '╔═══╤═══╤═══╗',
+        '║◾ ◾│■ ■│◾ ◾║',
+        '║ ╷ │   │ ╷ ║',
+        '║◾│◾│■ ■│◾│◾║',
+        '║ │ ├───┤ │ ║',
+        '║◾│◾│◻ ◻│◾│◾║',
+        '║ └─┼─╴ │ │ ║',
+        '║◉ ◾│◻ ◻│◾│◉║',
+        '╚═══╧═══╧═╧═╝',
+      ].join('\n'));
+    });
+
+    for (const percentage of [20, 50, 80]) {
+      it(`connects every area to solve at ${percentage}%`, () => {
+        const puzzle = Puzzle.create(qr, createRandom('seed'), percentage);
+
+        for (const area of puzzle.areas.toSolve()) {
+          expect(
+            new PuzzleDriver(puzzle).reachableCellsFrom(area.pixels[0].coord),
+          ).toEqual(area.cells());
+        }
+      });
+
+      it(`leaves no 2x2 block in the areas to solve at ${percentage}%`, () => {
+        const puzzle = Puzzle.create(qr, createRandom('seed'), percentage);
+
+        expect(new PuzzleDriver(puzzle).open2x2BlocksOutsidePrefill()).toEqual(
+          CoordSet.empty(),
+        );
+      });
+
+      it(`keeps at least 4 cells in every area to solve at ${percentage}%`, () => {
+        const puzzle = Puzzle.create(qr, createRandom('seed'), percentage);
+
+        const smallAreas = puzzle.areas
+          .toSolve()
+          .filter((area) => area.pixels.length < 4);
+        expect(smallAreas).toEqual([]);
+      });
+    }
+
+    it('puts one dot in each black area to solve', () => {
+      const puzzle = Puzzle.create(qr, createRandom('seed'), 50);
+
+      const blackAreas = puzzle.areas
+        .toSolve()
+        .filter((area) => area.color === 'black');
+      const dotAreas = puzzle.dots.map((dot) =>
+        blackAreas.findIndex((area) => area.cells().has(dot)),
+      );
+      expect(dotAreas).toEqual(blackAreas.map((_area, index) => index));
+    });
+  });
+
   describe('dots', () => {
     it('has one dot per black area', () => {
       const qr = new Image([[1, 0]]);
 
-      const puzzle = Puzzle.create(qr, createRandom('seed'));
+      const puzzle = Puzzle.create(qr, createRandom('seed'), 0);
       const blackAreas = puzzle.areas.all().filter((a) => a.color === 'black');
 
       expect(puzzle.dots.length).toBe(blackAreas.length);
@@ -152,7 +237,7 @@ describe('Puzzle', () => {
     it('each dot belongs to a black area', () => {
       const qr = new Image([[1, 0]]);
 
-      const puzzle = Puzzle.create(qr, createRandom('seed'));
+      const puzzle = Puzzle.create(qr, createRandom('seed'), 0);
       const blackAreas = puzzle.areas.all().filter((a) => a.color === 'black');
 
       puzzle.dots.forEach((dot, index) => {
@@ -168,8 +253,8 @@ describe('Puzzle', () => {
         [1, 1],
       ]);
 
-      const puzzle1 = Puzzle.create(qr, createRandom('test-seed'));
-      const puzzle2 = Puzzle.create(qr, createRandom('test-seed'));
+      const puzzle1 = Puzzle.create(qr, createRandom('test-seed'), 0);
+      const puzzle2 = Puzzle.create(qr, createRandom('test-seed'), 0);
 
       const dots1 = puzzle1.dots.map((d) => d.toString());
       const dots2 = puzzle2.dots.map((d) => d.toString());
@@ -183,8 +268,8 @@ describe('Puzzle', () => {
         [1, 1, 1],
       ]);
 
-      const puzzle1 = Puzzle.create(qr, createRandom('seed-a'));
-      const puzzle2 = Puzzle.create(qr, createRandom('seed-b'));
+      const puzzle1 = Puzzle.create(qr, createRandom('seed-a'), 0);
+      const puzzle2 = Puzzle.create(qr, createRandom('seed-b'), 0);
 
       const dots1 = puzzle1.dots.map((d) => d.toString());
       const dots2 = puzzle2.dots.map((d) => d.toString());

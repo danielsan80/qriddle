@@ -9,7 +9,7 @@ export class PuzzleFactory {
     this.createRandom = createRandom;
   }
 
-  create(qr: Image, seed: string): Puzzle {
-    return Puzzle.create(qr, this.createRandom(seed));
+  create(qr: Image, seed: string, prefillPercentage: number): Puzzle {
+    return Puzzle.create(qr, this.createRandom(seed), prefillPercentage);
   }
 }

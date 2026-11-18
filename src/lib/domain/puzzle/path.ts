@@ -4,6 +4,19 @@ import { type RandomFn } from './random';
 import { type Area } from './area';
 import { EdgeStore } from './edge';
 
+export function openAreas(areas: Area[], edges: EdgeStore): void {
+  for (const area of areas) {
+    const cells = area.cells();
+    for (const pixel of area.pixels) {
+      for (const direction of ['east', 'south'] as const) {
+        if (cells.has(pixel.coord.goTo(direction))) {
+          edges.removeWall(pixel.coord, direction);
+        }
+      }
+    }
+  }
+}
+
 export function digPaths(
   areas: Area[],
   edges: EdgeStore,
