@@ -1,4 +1,4 @@
-import { Coord, directions, Image, type Direction } from '../image';
+import { Coord, directions, Image, type Direction, type Size } from '../image';
 
 export type Edges = {
   north: Edge;
@@ -68,6 +68,10 @@ export class EdgeStore {
 
   static create(image: Image): EdgeStore {
     return new EdgeStore(image);
+  }
+
+  get imageSize(): Size {
+    return this.image.size;
   }
 
   static walled(image: Image): EdgeStore {

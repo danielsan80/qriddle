@@ -1,50 +1,38 @@
 import { config } from '../../config';
-import {
-  directions,
-  Image,
-  type Direction,
-  type Pixel,
-  Visited,
-} from '../image';
+import { Coord, directions, type Direction, Visited } from '../image';
 import { type RandomFn } from './random';
-import { Area, AreaStore } from './area';
+import { type Area } from './area';
 import { EdgeStore } from './edge';
 
-export function digPaths(image: Image, random: RandomFn): EdgeStore {
-  const areas = new AreaStore(image);
-  const edges = EdgeStore.walled(image);
-
-  for (const area of areas.all()) {
-    if (area.pixels.length <= 1) continue;
-    digAreaPaths(image, area, edges, random);
-  }
-
-  return edges;
-}
-
-function digAreaPaths(
-  image: Image,
-  area: Area,
+export function digPaths(
+  areas: Area[],
   edges: EdgeStore,
   random: RandomFn,
 ): void {
-  const pixelSet = area.cells();
-  const visited = Visited.create(image.size);
+  for (const area of areas) {
+    if (area.pixels.length <= 1) continue;
+    digAreaPaths(area, edges, random);
+  }
+}
+
+type StackItem = { coord: Coord; lastDir: Direction | null };
+
+function digAreaPaths(area: Area, edges: EdgeStore, random: RandomFn): void {
+  const cells = area.cells();
+  const visited = Visited.create(edges.imageSize);
 
   const startIndex = Math.floor(random() * area.pixels.length);
-  const start = area.pixels[startIndex];
+  const start = area.pixels[startIndex].coord;
 
-  const stack: { pixel: Pixel; lastDir: Direction | null }[] = [
-    { pixel: start, lastDir: null },
-  ];
-  visited.mark(start.coord);
+  const stack: StackItem[] = [{ coord: start, lastDir: null }];
+  visited.mark(start);
 
   while (stack.length > 0) {
-    const { pixel, lastDir } = stack[stack.length - 1];
+    const { coord, lastDir } = stack[stack.length - 1];
 
     const unvisitedDirs = directions.filter((dir) => {
-      const neighborCoord = pixel.coord.goTo(dir);
-      return pixelSet.has(neighborCoord) && !visited.has(neighborCoord);
+      const neighbor = coord.goTo(dir);
+      return cells.has(neighbor) && !visited.has(neighbor);
     });
 
     if (unvisitedDirs.length === 0) {
@@ -53,12 +41,11 @@ function digAreaPaths(
     }
 
     const dir = chooseDirection(unvisitedDirs, lastDir, random);
-    const nextCoord = pixel.coord.goTo(dir);
-    const next = image.get(nextCoord);
+    const next = coord.goTo(dir);
 
-    edges.removeWall(pixel.coord, dir);
-    visited.mark(nextCoord);
-    stack.push({ pixel: next, lastDir: dir });
+    edges.removeWall(coord, dir);
+    visited.mark(next);
+    stack.push({ coord: next, lastDir: dir });
   }
 }
 

@@ -1,12 +1,9 @@
-import { Coord, Image } from '../image';
+import { Coord } from '../image';
 import { type RandomFn } from './random';
-import { AreaStore } from './area';
+import { type Area } from './area';
 
-export function chooseDots(image: Image, random: RandomFn): Coord[] {
-  const areas = new AreaStore(image);
-
+export function chooseDots(areas: Area[], random: RandomFn): Coord[] {
   return areas
-    .all()
     .filter((area) => area.color === 'black')
     .map((area) => {
       const index = Math.floor(random() * area.pixels.length);

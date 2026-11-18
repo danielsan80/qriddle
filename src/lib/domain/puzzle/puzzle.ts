@@ -25,9 +25,10 @@ export class Puzzle {
 
   static create(qr: Image, random: RandomFn): Puzzle {
     const image = qr.x2();
-    const edges = digPaths(image, random);
     const areas = new AreaStore(image);
-    const dots = chooseDots(image, random);
+    const edges = EdgeStore.walled(image);
+    digPaths(areas.all(), edges, random);
+    const dots = chooseDots(areas.all(), random);
     return new Puzzle(image, areas, edges, dots);
   }
 

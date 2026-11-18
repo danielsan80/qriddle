@@ -1,8 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { Image } from '../image';
+import { type Coord, Image } from '../image';
 import { createRandom } from '../../util';
 import { AreaStore } from './area';
 import { chooseDots } from './dot';
+
+function dotsOf(image: Image, seed: string): Coord[] {
+  return chooseDots(new AreaStore(image).all(), createRandom(seed));
+}
 
 describe('chooseDots', () => {
   it('produces same result with same seed', () => {
@@ -12,8 +16,8 @@ describe('chooseDots', () => {
       [1, 1, 1],
     ]);
 
-    const dots1 = chooseDots(image, createRandom('test-seed'));
-    const dots2 = chooseDots(image, createRandom('test-seed'));
+    const dots1 = dotsOf(image, 'test-seed');
+    const dots2 = dotsOf(image, 'test-seed');
 
     expect(dots1.map((d) => d.toString())).toEqual(
       dots2.map((d) => d.toString()),
@@ -29,8 +33,8 @@ describe('chooseDots', () => {
       [1, 1, 1, 1, 1],
     ]);
 
-    const dots1 = chooseDots(image, createRandom('seed-a'));
-    const dots2 = chooseDots(image, createRandom('seed-b'));
+    const dots1 = dotsOf(image, 'seed-a');
+    const dots2 = dotsOf(image, 'seed-b');
 
     expect(dots1.map((d) => d.toString())).not.toEqual(
       dots2.map((d) => d.toString()),
@@ -43,7 +47,7 @@ describe('chooseDots', () => {
       [1, 1, 0, 0],
     ]);
 
-    const dots = chooseDots(image, createRandom('seed'));
+    const dots = dotsOf(image, 'seed');
     const blackAreas = new AreaStore(image)
       .all()
       .filter((a) => a.color === 'black');
@@ -57,7 +61,7 @@ describe('chooseDots', () => {
       [1, 0, 1, 0],
     ]);
 
-    const dots = chooseDots(image, createRandom('seed'));
+    const dots = dotsOf(image, 'seed');
     const blackAreas = new AreaStore(image)
       .all()
       .filter((a) => a.color === 'black');
@@ -76,7 +80,7 @@ describe('chooseDots', () => {
       [1, 0, 1, 0],
     ]);
 
-    const dots = chooseDots(image, createRandom('seed'));
+    const dots = dotsOf(image, 'seed');
     const blackAreas = new AreaStore(image)
       .all()
       .filter((a) => a.color === 'black');
@@ -95,7 +99,7 @@ describe('chooseDots', () => {
       [0, 0],
     ]);
 
-    const dots = chooseDots(image, createRandom('seed'));
+    const dots = dotsOf(image, 'seed');
 
     expect(dots).toEqual([]);
   });
