@@ -33,6 +33,17 @@ export class Coord {
     return this[direction]();
   }
 
+  x2(): Coord[] {
+    const top = this.row * 2;
+    const left = this.col * 2;
+    return [
+      new Coord(top, left),
+      new Coord(top, left + 1),
+      new Coord(top + 1, left),
+      new Coord(top + 1, left + 1),
+    ];
+  }
+
   distance(other: Coord): number {
     return Math.abs(this.row - other.row) + Math.abs(this.col - other.col);
   }

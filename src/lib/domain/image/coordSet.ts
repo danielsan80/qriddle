@@ -24,4 +24,14 @@ export class CoordSet {
   has(coord: Coord): boolean {
     return this.coords.has(coord.toString());
   }
+
+  isSupersetOf(other: CoordSet): boolean {
+    return [...other.coords.keys()].every((key) => this.coords.has(key));
+  }
+
+  x2(): CoordSet {
+    return CoordSet.create(
+      [...this.coords.values()].flatMap((coord) => coord.x2()),
+    );
+  }
 }

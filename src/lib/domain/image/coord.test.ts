@@ -21,4 +21,13 @@ describe('Coord', () => {
       expect(coord.west()).toEqual(new Coord(5, 2));
     });
   });
+
+  it('x2 gives the four cells it becomes in the doubled image', () => {
+    expect(coord.x2()).toEqual([
+      new Coord(10, 6),
+      new Coord(10, 7),
+      new Coord(11, 6),
+      new Coord(11, 7),
+    ]);
+  });
 });
