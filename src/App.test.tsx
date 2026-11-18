@@ -10,7 +10,10 @@ import { hasFinePointer } from './lib/browser/device';
 import type { Face, FacedTextBox } from './lib/domain/card';
 
 vi.mock('./lib/render', () => ({
-  renderImage: vi.fn(),
+  CanvasPainter: class {
+    paint() {}
+  },
+  qrDrawer: { draw: vi.fn() },
   renderInnerPdfPreview: vi.fn().mockResolvedValue(undefined),
   renderOuterPdfPreview: vi.fn(),
   downloadPuzzlePdf: vi.fn(),

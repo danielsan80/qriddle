@@ -1,7 +1,8 @@
 import { jsPDF } from 'jspdf';
 import { config } from '../config';
 import { Puzzle } from '../domain/puzzle';
-import { renderPuzzle } from './renderPuzzle';
+import { CanvasPainter } from './canvasPainter';
+import { puzzleDrawer } from './drawers';
 import { cardFontFamily, getQRDataUrl } from '../util';
 import type { FacedTextBox } from '../domain/card';
 import innerSvgUrl from '../../assets/inner/inner.svg?url';
@@ -41,7 +42,7 @@ async function composeInnerPdf(
   ctx.drawImage(bg, 0, 0, widthPx, heightPx);
 
   const puzzleCanvas = document.createElement('canvas');
-  renderPuzzle(puzzleCanvas, puzzle);
+  new CanvasPainter(puzzleCanvas).paint(puzzleDrawer.draw(puzzle));
 
   const puzzleW = widthPx * (PUZZLE_WIDTH_MM / A4_WIDTH_MM);
   const puzzleH = puzzleW * (puzzleCanvas.height / puzzleCanvas.width);

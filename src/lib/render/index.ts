@@ -1,5 +1,5 @@
-export { renderPuzzle, type PuzzleRenderOptions } from './renderPuzzle';
-export { renderImage, type ImageRenderOptions } from './renderImage';
+export { CanvasPainter } from './canvasPainter';
+export { qrDrawer, puzzleDrawer } from './drawers';
 export {
   downloadPuzzlePdf,
   renderInnerPdfPreview,

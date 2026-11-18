@@ -18,7 +18,8 @@ export const config = {
   puzzle: {
     cellSize: 12,
     backgroundColor: '#f8f5ed',
-    borderColor: '#666666',
+    wallColor: '#666666',
+    wallWidth: 2,
     dotColor: '#000000',
     dotRadius: 0.15,
   },

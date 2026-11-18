@@ -7,7 +7,10 @@ import { readState } from '../../lib/browser/urlState';
 import { WizardProvider } from '../../context/WizardContext';
 
 vi.mock('../../lib/render', () => ({
-  renderImage: vi.fn(),
+  CanvasPainter: class {
+    paint() {}
+  },
+  qrDrawer: { draw: vi.fn() },
   renderInnerPdfPreview: vi.fn().mockResolvedValue(undefined),
   downloadPuzzlePdf: vi.fn(),
 }));

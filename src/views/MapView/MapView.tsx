@@ -4,7 +4,11 @@ import { CanvasStage } from '../../components/stages/CanvasStage';
 import { QrcodeCanvas } from '../../components/canvas/QrcodeCanvas';
 import { PreviewCanvas } from '../../components/canvas/PreviewCanvas';
 import { useWizard } from '../../context/useWizard';
-import { renderInnerPdfPreview, renderImage } from '../../lib/render';
+import {
+  CanvasPainter,
+  qrDrawer,
+  renderInnerPdfPreview,
+} from '../../lib/render';
 import { generateSeed, getQRMatrix } from '../../lib/util';
 import { Image } from '../../lib/domain/image';
 import { ExampleLink } from './ExampleLink';
@@ -28,7 +32,9 @@ export function MapView() {
 
   useEffect(() => {
     if (!qrText || !qrCanvasRef.current) return;
-    renderImage(qrCanvasRef.current, new Image(getQRMatrix(qrText).matrix));
+    new CanvasPainter(qrCanvasRef.current).paint(
+      qrDrawer.draw(new Image(getQRMatrix(qrText).matrix)),
+    );
   }, [qrText]);
 
   useEffect(() => {
