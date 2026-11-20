@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { config } from '../../lib/config';
 import styles from './PrefillSlider.module.css';
 
@@ -15,6 +15,7 @@ export function PrefillSlider({ value, onRelease }: PrefillSliderProps) {
     setDraft(value);
   }
 
+  const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const onReleaseRef = useRef(onRelease);
 
@@ -32,11 +33,14 @@ export function PrefillSlider({ value, onRelease }: PrefillSliderProps) {
   }, []);
 
   return (
-    <label className={styles.prefill}>
+    <div className={styles.prefill}>
+      <label htmlFor={inputId} className={styles.label}>
+        Hints
+      </label>
       <input
+        id={inputId}
         ref={inputRef}
         type="range"
-        aria-label="Prefilled modules"
         min={0}
         max={config.maxPrefillPercentage}
         step={1}
@@ -46,6 +50,6 @@ export function PrefillSlider({ value, onRelease }: PrefillSliderProps) {
       <span data-testid="prefill-value" className={styles.value}>
         {draft}%
       </span>
-    </label>
+    </div>
   );
 }

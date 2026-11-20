@@ -2,7 +2,7 @@ import { fireEvent, screen } from '@testing-library/react';
 
 export class MapViewPage {
   get prefillSlider(): HTMLInputElement {
-    return screen.getByRole('slider', { name: 'Prefilled modules' });
+    return screen.getByRole('slider', { name: 'Hints' });
   }
 
   get prefillValue(): HTMLElement {
