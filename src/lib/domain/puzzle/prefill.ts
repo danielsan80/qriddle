@@ -9,8 +9,8 @@ export function choosePrefilledModules(
 ): CoordSet {
   const validPercentage = requireValidPercentage(percentage);
   const blackModules: Coord[] = [];
-  qr.forEach((pixel) => {
-    if (pixel.color === 'black') blackModules.push(pixel.coord);
+  qr.forEach((module) => {
+    if (module.color === 'black') blackModules.push(module.coord);
   });
 
   const count = Math.round((blackModules.length * validPercentage) / 100);
