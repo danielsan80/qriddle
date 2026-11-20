@@ -22,6 +22,18 @@ describe('Coord', () => {
     });
   });
 
+  it('equals a coord with the same row and col', () => {
+    expect(new Coord(5, 3).equals(new Coord(5, 3))).toBe(true);
+  });
+
+  it('differs from a coord in another row', () => {
+    expect(new Coord(5, 3).equals(new Coord(4, 3))).toBe(false);
+  });
+
+  it('differs from a coord in another col', () => {
+    expect(new Coord(5, 3).equals(new Coord(5, 4))).toBe(false);
+  });
+
   it('x2 gives the four cells it becomes in the doubled image', () => {
     expect(coord.x2()).toEqual([
       new Coord(10, 6),

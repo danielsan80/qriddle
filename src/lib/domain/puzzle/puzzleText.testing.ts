@@ -43,7 +43,7 @@ export class PuzzleText {
   }
 
   private symbolOf(coord: Coord): string {
-    if (this.puzzle.dots.some((dot) => dot.toString() === coord.toString())) {
+    if (this.puzzle.dots.some((dot) => dot.equals(coord))) {
       return '◉';
     }
     if (this.puzzle.prefilledCells.has(coord)) return '■';

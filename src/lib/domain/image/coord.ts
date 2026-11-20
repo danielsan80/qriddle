@@ -9,6 +9,10 @@ export class Coord {
     this.col = col;
   }
 
+  equals(other: Coord): boolean {
+    return this.row === other.row && this.col === other.col;
+  }
+
   toString(): string {
     return `${this.row},${this.col}`;
   }
