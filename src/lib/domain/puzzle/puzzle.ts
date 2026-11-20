@@ -7,6 +7,7 @@ import { choosePrefilledModules } from './prefill';
 import { type RandomFn } from './random';
 
 export class Puzzle {
+  readonly qr: Image;
   readonly image: Image;
   readonly areas: AreaStore;
   readonly dots: Coord[];
@@ -15,6 +16,7 @@ export class Puzzle {
   private readonly edges: EdgeStore;
 
   private constructor(
+    qr: Image,
     image: Image,
     areas: AreaStore,
     edges: EdgeStore,
@@ -22,6 +24,7 @@ export class Puzzle {
     prefilledModules: CoordSet,
     prefilledCells: CoordSet,
   ) {
+    this.qr = qr;
     this.image = image;
     this.areas = areas;
     this.edges = edges;
@@ -48,6 +51,7 @@ export class Puzzle {
     digPaths(areas.toSolve(), edges, random);
     const dots = chooseDots(areas.toSolve(), random);
     return new Puzzle(
+      qr,
       image,
       areas,
       edges,

@@ -15,6 +15,15 @@ describe('Puzzle', () => {
     expect(Puzzle.create(qr, createRandom('seed'), 0).image).toEqual(qr.x2());
   });
 
+  it('keeps the QR it comes from', () => {
+    const qr = new Image([
+      [1, 0],
+      [1, 1],
+    ]);
+
+    expect(Puzzle.create(qr, createRandom('seed'), 0).qr).toBe(qr);
+  });
+
   it('draws the walls and the dots from the random', () => {
     const qr = new Image([
       [1, 1, 1],
