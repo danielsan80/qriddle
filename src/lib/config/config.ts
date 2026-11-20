@@ -22,6 +22,7 @@ export const config = {
     wallWidth: 2,
     dotColor: '#000000',
     dotRadius: 0.15,
+    prefilledColor: '#000000',
   },
 
   // QR image render
@@ -29,6 +30,7 @@ export const config = {
     cellSize: 12,
     blackColor: '#1a1a1a',
     whiteColor: '#ffffff',
+    prefilledColor: '#b00000',
   },
 
   // Ko-fi support link

@@ -9,8 +9,7 @@ import {
   qrDrawer,
   renderInnerPdfPreview,
 } from '../../lib/render';
-import { generateSeed, getQRMatrix } from '../../lib/util';
-import { Image } from '../../lib/domain/image';
+import { generateSeed } from '../../lib/util';
 import { ExampleLink } from './ExampleLink';
 import { config } from '../../lib/config';
 import styles from './MapView.module.css';
@@ -31,14 +30,12 @@ export function MapView() {
   const puzzleCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    if (!qrText || !qrCanvasRef.current) return;
+    if (!puzzle || !qrCanvasRef.current || !puzzleCanvasRef.current) {
+      return;
+    }
     new CanvasPainter(qrCanvasRef.current).paint(
-      qrDrawer.draw(new Image(getQRMatrix(qrText).matrix)),
+      qrDrawer.draw(puzzle.qr, puzzle.prefilledModules),
     );
-  }, [qrText]);
-
-  useEffect(() => {
-    if (!puzzle || !puzzleCanvasRef.current) return;
     void renderInnerPdfPreview(puzzleCanvasRef.current, puzzle);
   }, [puzzle]);
 

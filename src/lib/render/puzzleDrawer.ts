@@ -15,6 +15,7 @@ export interface PuzzleDrawOptions {
   wallWidth: number;
   dotColor: string;
   dotRadius: number;
+  prefilledColor: string;
 }
 
 export class PuzzleDrawer {
@@ -33,6 +34,7 @@ export class PuzzleDrawer {
       height,
       shapes: [
         background(width, height, this.options),
+        ...prefilledCells(puzzle, this.options),
         ...walls(puzzle, this.options),
         ...dots(puzzle, this.options),
       ],
@@ -54,6 +56,32 @@ function background(
   };
 }
 
+function prefilledCells(puzzle: Puzzle, options: PuzzleDrawOptions): Rect[] {
+  const { cellSize } = options;
+  const rects: Rect[] = [];
+  puzzle.image.forEach((pixel) => {
+    if (!puzzle.isPrefilledCell(pixel.coord)) return;
+    rects.push({
+      kind: 'rect',
+      color: options.prefilledColor,
+      topLeft: { x: pixel.coord.col * cellSize, y: pixel.coord.row * cellSize },
+      width: cellSize,
+      height: cellSize,
+    });
+  });
+  return rects;
+}
+
+function isWallShown(puzzle: Puzzle, coord: Coord, side: Direction): boolean {
+  if (!puzzle.hasWall(coord, side)) return false;
+  const neighbor = coord.goTo(side);
+  if (!puzzle.image.has(neighbor)) return true;
+  if (puzzle.isPrefilledCell(coord) || puzzle.isPrefilledCell(neighbor)) {
+    return false;
+  }
+  return true;
+}
+
 function walls(puzzle: Puzzle, options: PuzzleDrawOptions): Line[] {
   const { rows, cols } = puzzle.image.size;
   const lines: Line[] = [];
@@ -66,7 +94,7 @@ function walls(puzzle: Puzzle, options: PuzzleDrawOptions): Line[] {
       if (col === cols - 1) sides.push('east');
 
       for (const side of sides) {
-        if (puzzle.hasWall(coord, side)) {
+        if (isWallShown(puzzle, coord, side)) {
           lines.push(wall(coord, side, options));
         }
       }

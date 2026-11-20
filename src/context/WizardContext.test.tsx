@@ -5,6 +5,8 @@ import { STEPS } from './steps';
 import { encode, readState } from '../lib/browser/urlState';
 import { config } from '../lib/config';
 import { Puzzle } from '../lib/domain/puzzle';
+import { Image } from '../lib/domain/image';
+import { getQRMatrix } from '../lib/util';
 import { analytics } from '../lib/browser/analytics';
 import { WizardDriver } from './WizardContext.driver';
 
@@ -132,6 +134,12 @@ describe('WizardContext puzzle', () => {
   afterEach(() => {
     vi.useRealTimers();
     window.location.hash = '';
+  });
+
+  it('gives the puzzle of the QR of the text', () => {
+    expect(WizardDriver.render().puzzle?.qr).toEqual(
+      new Image(getQRMatrix(cardSpec.qrText).matrix),
+    );
   });
 
   it('gives the same puzzle to the same card spec', () => {
