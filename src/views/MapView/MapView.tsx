@@ -11,12 +11,13 @@ import {
 } from '../../lib/render';
 import { generateSeed } from '../../lib/util';
 import { ExampleLink } from './ExampleLink';
+import { PrefillSlider } from './PrefillSlider';
 import { config } from '../../lib/config';
 import styles from './MapView.module.css';
 
 export function MapView() {
   const { puzzle, cardSpec, updateCardSpec } = useWizard();
-  const { qrText } = cardSpec;
+  const { qrText, prefillPercentage } = cardSpec;
 
   function setQrText(newQrText: string) {
     updateCardSpec((current) => ({ ...current, qrText: newQrText }));
@@ -24,6 +25,13 @@ export function MapView() {
 
   function setSeed(newSeed: string) {
     updateCardSpec((current) => ({ ...current, seed: newSeed }));
+  }
+
+  function setPrefillPercentage(newPrefillPercentage: number): void {
+    updateCardSpec((current) => ({
+      ...current,
+      prefillPercentage: newPrefillPercentage,
+    }));
   }
 
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -100,6 +108,10 @@ export function MapView() {
       <Panel>
         <Panel.Title>Preview</Panel.Title>
         <Panel.Actions>
+          <PrefillSlider
+            value={prefillPercentage}
+            onRelease={setPrefillPercentage}
+          />
           <Panel.ActionButton
             label="Another puzzle"
             onClick={() => setSeed(generateSeed())}

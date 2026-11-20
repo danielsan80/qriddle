@@ -44,13 +44,17 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     config.puzzleGenerationDelayMs,
   );
   const seed = useDebouncedValue(cardSpec.seed, config.puzzleGenerationDelayMs);
+  const prefillPercentage = useDebouncedValue(
+    cardSpec.prefillPercentage,
+    config.puzzleGenerationDelayMs,
+  );
   const qr = useMemo(
     () => (qrText ? new Image(getQRMatrix(qrText).matrix) : null),
     [qrText],
   );
   const puzzle = useMemo(
-    () => (qr ? puzzleFactory.create(qr, seed, 0) : null),
-    [qr, seed],
+    () => (qr ? puzzleFactory.create(qr, seed, prefillPercentage) : null),
+    [qr, seed, prefillPercentage],
   );
 
   const touched = useRef(hasState());

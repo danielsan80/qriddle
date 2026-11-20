@@ -77,6 +77,7 @@ describe('App', () => {
     const cardSpec = {
       qrText: 'treasure',
       seed: 'abcdefghij',
+      prefillPercentage: 0,
       textBoxes: [box('A', 'front'), box('B', 'center'), box('C', 'back')],
     };
     window.location.hash = '#' + encode({ step: 'outer.back', ...cardSpec });

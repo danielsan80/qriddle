@@ -21,6 +21,7 @@ function box(text: string, face: FacedTextBox['face']): FacedTextBox {
 const cardSpec: CardSpec = {
   qrText: 'treasure',
   seed: 'abcdefghij',
+  prefillPercentage: 30,
   textBoxes: [box('A', 'front')],
 };
 
@@ -43,6 +44,7 @@ describe('WizardContext', () => {
     expect(WizardDriver.render().cardSpec).toEqual({
       qrText: config.defaultQrText,
       seed: expect.any(String),
+      prefillPercentage: 0,
       textBoxes: [],
     });
   });
@@ -95,6 +97,7 @@ describe('WizardContext', () => {
         step: 'outer.back',
         qrText: config.defaultQrText,
         seed: expect.any(String),
+        prefillPercentage: 0,
         textBoxes: [],
       },
     });
@@ -140,6 +143,23 @@ describe('WizardContext puzzle', () => {
     expect(WizardDriver.render().puzzle?.qr).toEqual(
       new Image(getQRMatrix(cardSpec.qrText).matrix),
     );
+  });
+
+  it('prefills the puzzle with the prefill of the card spec', () => {
+    expect(WizardDriver.render().puzzle?.prefilledModules.size).toBeGreaterThan(
+      0,
+    );
+  });
+
+  it('opens an old link, saved before the prefill, with no prefill', () => {
+    const oldCardSpec = {
+      qrText: cardSpec.qrText,
+      seed: cardSpec.seed,
+      textBoxes: cardSpec.textBoxes,
+    };
+    window.location.hash = '#' + encode(oldCardSpec);
+
+    expect(WizardDriver.render().puzzle?.prefilledModules.size).toBe(0);
   });
 
   it('gives the same puzzle to the same card spec', () => {
