@@ -3,8 +3,29 @@ import { Coord, CoordSet, Image } from '../image';
 import { Area, AreaStore } from './area';
 
 describe('Area', () => {
+  const image = new Image([[1, 1, 0]]);
+  const black = image.get(new Coord(0, 0));
+  const otherBlack = image.get(new Coord(0, 1));
+  const white = image.get(new Coord(0, 2));
+
+  it('takes the color of its pixels', () => {
+    expect(new Area([black, otherBlack], 'toSolve').color).toBe('black');
+  });
+
+  it('rejects an area without pixels', () => {
+    expect(() => new Area([], 'toSolve')).toThrow(
+      'An area has at least one pixel',
+    );
+  });
+
+  it('rejects pixels of different colors', () => {
+    expect(() => new Area([black, white], 'toSolve')).toThrow(
+      'The pixels of an area have the same color',
+    );
+  });
+
   it('rejects a white prefilled area', () => {
-    expect(() => new Area([], 'white', 'prefilled')).toThrow(
+    expect(() => new Area([white], 'prefilled')).toThrow(
       'A prefilled area is black',
     );
   });
