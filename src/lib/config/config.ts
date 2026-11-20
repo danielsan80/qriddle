@@ -11,8 +11,9 @@ export const config = {
   // Default QR text (easter egg)
   defaultQrText: 'My precioussss!!!',
 
-  // Maze generation
-  biasStraight: 0.7,
+  // Puzzle generation: saved links rebuild the puzzle from its seed,
+  // so changing these values changes their puzzles
+  puzzleGeneration: { biasStraight: 0.7 },
 
   // Highest percentage of black modules the user can prefill
   maxPrefillPercentage: 80,

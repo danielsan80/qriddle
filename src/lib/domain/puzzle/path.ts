@@ -1,8 +1,8 @@
-import { config } from '../../config';
 import { Coord, directions, type Direction, Visited } from '../image';
 import { type RandomFn } from './random';
 import { type Area } from './area';
 import { EdgeStore } from './edge';
+import { type PuzzleConfig } from './puzzleConfig';
 
 export function openAreas(areas: Area[], edges: EdgeStore): void {
   for (const area of areas) {
@@ -21,16 +21,22 @@ export function digPaths(
   areas: Area[],
   edges: EdgeStore,
   random: RandomFn,
+  puzzleConfig: PuzzleConfig,
 ): void {
   for (const area of areas) {
     if (area.pixels.length <= 1) continue;
-    digAreaPaths(area, edges, random);
+    digAreaPaths(area, edges, random, puzzleConfig);
   }
 }
 
 type StackItem = { coord: Coord; lastDir: Direction | null };
 
-function digAreaPaths(area: Area, edges: EdgeStore, random: RandomFn): void {
+function digAreaPaths(
+  area: Area,
+  edges: EdgeStore,
+  random: RandomFn,
+  puzzleConfig: PuzzleConfig,
+): void {
   const cells = area.cells();
   const visited = Visited.create(edges.imageSize);
 
@@ -53,7 +59,12 @@ function digAreaPaths(area: Area, edges: EdgeStore, random: RandomFn): void {
       continue;
     }
 
-    const dir = chooseDirection(unvisitedDirs, lastDir, random);
+    const dir = chooseDirection(
+      unvisitedDirs,
+      lastDir,
+      random,
+      puzzleConfig.biasStraight,
+    );
     const next = coord.goTo(dir);
 
     edges.removeWall(coord, dir);
@@ -66,10 +77,9 @@ function chooseDirection(
   candidates: Direction[],
   lastDir: Direction | null,
   random: RandomFn,
+  biasStraight: number,
 ): Direction {
   if (candidates.length === 1) return candidates[0];
-
-  const { biasStraight } = config;
 
   const weights: number[] = candidates.map((dir) => {
     if (dir === lastDir) return biasStraight;

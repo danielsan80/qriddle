@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { Image } from '../image';
 import { createRandom } from '../../util';
+import { config } from '../../config';
 import { Puzzle } from './puzzle';
 import { PuzzleFactory } from './puzzleFactory';
 
@@ -9,11 +10,14 @@ describe('PuzzleFactory', () => {
     [1, 0],
     [1, 1],
   ]);
-  const puzzleFactory = new PuzzleFactory(createRandom);
+  const puzzleFactory = new PuzzleFactory(
+    createRandom,
+    config.puzzleGeneration,
+  );
 
   it('creates the puzzle with the random of the seed', () => {
     expect(puzzleFactory.create(qr, 'seed', 50)).toEqual(
-      Puzzle.create(qr, createRandom('seed'), 50),
+      Puzzle.create(qr, createRandom('seed'), 50, config.puzzleGeneration),
     );
   });
 });

@@ -4,6 +4,7 @@ import { chooseDots } from './dot';
 import { EdgeStore } from './edge';
 import { digPaths, openAreas } from './path';
 import { choosePrefilledModules } from './prefill';
+import { type PuzzleConfig } from './puzzleConfig';
 import { type RandomFn } from './random';
 
 export class Puzzle {
@@ -37,6 +38,7 @@ export class Puzzle {
     qr: Image,
     random: RandomFn,
     prefillPercentage: number,
+    puzzleConfig: PuzzleConfig,
   ): Puzzle {
     const prefilledModules = choosePrefilledModules(
       qr,
@@ -48,7 +50,7 @@ export class Puzzle {
     const areas = new AreaStore(image, prefilledCells);
     const edges = EdgeStore.walled(image);
     openAreas(areas.prefilled(), edges);
-    digPaths(areas.toSolve(), edges, random);
+    digPaths(areas.toSolve(), edges, random, puzzleConfig);
     const dots = chooseDots(areas.toSolve(), random);
     return new Puzzle(
       qr,

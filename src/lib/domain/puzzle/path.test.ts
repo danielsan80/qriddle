@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { Coord, CoordSet, directions, Image, Visited } from '../image';
 import { createRandom } from '../../util';
+import { config } from '../../config';
 import { AreaStore } from './area';
 import { EdgeStore } from './edge';
 import { digPaths, openAreas } from './path';
@@ -9,7 +10,7 @@ function dig(image: Image, seed: string, prefilledCells: CoordSet): EdgeStore {
   const areas = new AreaStore(image, prefilledCells);
   const edges = EdgeStore.walled(image);
   openAreas(areas.prefilled(), edges);
-  digPaths(areas.toSolve(), edges, createRandom(seed));
+  digPaths(areas.toSolve(), edges, createRandom(seed), config.puzzleGeneration);
   return edges;
 }
 
