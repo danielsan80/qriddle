@@ -35,7 +35,7 @@ export class PuzzleDriver {
       for (let col = 0; col < cols - 1; col++) {
         const topLeft = new Coord(row, col);
         const bottomRight = new Coord(row + 1, col + 1);
-        if (this.puzzle.prefilledCells.has(topLeft)) continue;
+        if (this.puzzle.isPrefilledCell(topLeft)) continue;
         const open =
           !this.puzzle.hasWall(topLeft, 'east') &&
           !this.puzzle.hasWall(topLeft, 'south') &&

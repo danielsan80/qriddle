@@ -160,10 +160,10 @@ describe('Puzzle', () => {
       [0, 1, 1, 1, 1, 1, 0, 1],
     ]);
 
-    it('prefills no cell at 0%', () => {
-      expect(Puzzle.create(qr, createRandom('seed'), 0).prefilledCells).toEqual(
-        CoordSet.empty(),
-      );
+    it('prefills no module at 0%', () => {
+      expect(
+        Puzzle.create(qr, createRandom('seed'), 0).prefilledModules,
+      ).toEqual(CoordSet.empty());
     });
 
     it('draws a prefilled module full, walled from the areas to solve', () => {
@@ -189,6 +189,28 @@ describe('Puzzle', () => {
         '║◉ ◾│◻ ◻│◾│◉║',
         '╚═══╧═══╧═╧═╝',
       ].join('\n'));
+    });
+
+    it('tells whether a cell is prefilled', () => {
+      const qr = new Image([
+        [1, 1, 1],
+        [1, 0, 1],
+      ]);
+      const puzzle = Puzzle.create(qr, createRandom('seed'), 20);
+
+      const prefilled: Coord[] = [];
+      puzzle.image.forEach((pixel) => {
+        if (puzzle.isPrefilledCell(pixel.coord)) prefilled.push(pixel.coord);
+      });
+
+      expect(CoordSet.create(prefilled)).toEqual(
+        CoordSet.create([
+          new Coord(0, 2),
+          new Coord(0, 3),
+          new Coord(1, 2),
+          new Coord(1, 3),
+        ]),
+      );
     });
 
     for (const percentage of [20, 50, 80]) {

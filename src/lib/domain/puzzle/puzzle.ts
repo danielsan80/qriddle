@@ -12,7 +12,7 @@ export class Puzzle {
   readonly areas: AreaStore;
   readonly dots: Coord[];
   readonly prefilledModules: CoordSet;
-  readonly prefilledCells: CoordSet;
+  private readonly prefilledCells: CoordSet;
   private readonly edges: EdgeStore;
 
   private constructor(
@@ -63,5 +63,9 @@ export class Puzzle {
 
   hasWall(coord: Coord, direction: Direction): boolean {
     return this.edges.get(coord, direction).hasWall;
+  }
+
+  isPrefilledCell(coord: Coord): boolean {
+    return this.prefilledCells.has(coord);
   }
 }
