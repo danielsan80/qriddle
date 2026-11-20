@@ -1,5 +1,5 @@
 export { Area, AreaStore } from './area';
-export { Edge, EdgeStore, EdgeMap, edgeKey, type Edges } from './edge';
+export { Edge, EdgeStore, EdgeMap, edgeKey } from './edge';
 export { Puzzle } from './puzzle';
 export { type PuzzleConfig } from './puzzleConfig';
 export { PuzzleFactory } from './puzzleFactory';

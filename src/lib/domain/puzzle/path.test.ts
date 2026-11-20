@@ -4,6 +4,7 @@ import { createRandom } from '../../util';
 import { config } from '../../config';
 import { AreaStore } from './area';
 import { EdgeStore } from './edge';
+import { EdgeStoreDriver } from './edge.driver';
 import { digPaths, openAreas } from './path';
 
 function dig(image: Image, seed: string, prefilledCells: CoordSet): EdgeStore {
@@ -25,7 +26,9 @@ describe('digPaths', () => {
     const edges1 = dig(image, 'test-seed', CoordSet.empty());
     const edges2 = dig(image, 'test-seed', CoordSet.empty());
 
-    expect(edges1.wallMap()).toEqual(edges2.wallMap());
+    expect(new EdgeStoreDriver(edges1).wallMap()).toEqual(
+      new EdgeStoreDriver(edges2).wallMap(),
+    );
   });
 
   it('produces different results with different seeds', () => {
@@ -39,7 +42,9 @@ describe('digPaths', () => {
     const edges1 = dig(image, 'seed-a', CoordSet.empty());
     const edges2 = dig(image, 'seed-b', CoordSet.empty());
 
-    expect(edges1.wallMap()).not.toEqual(edges2.wallMap());
+    expect(new EdgeStoreDriver(edges1).wallMap()).not.toEqual(
+      new EdgeStoreDriver(edges2).wallMap(),
+    );
   });
 
   it('preserves external walls', () => {

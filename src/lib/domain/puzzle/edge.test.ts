@@ -1,33 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { Coord, directions, Image, type Direction } from '../image';
-import { edgeKey, EdgeMap, EdgeStore, type Edges } from './edge';
-
-const boxChars: Record<string, string> = {
-  '': '·',
-  'N': '╵',
-  'E': '╶',
-  'S': '╷',
-  'W': '╴',
-  'NE': '└',
-  'NS': '│',
-  'NW': '┘',
-  'ES': '┌',
-  'EW': '─',
-  'SW': '┐',
-  'NES': '├',
-  'NEW': '┴',
-  'NSW': '┤',
-  'ESW': '┬',
-  'NESW': '┼',
-};
-
-function toBoxChar(edges: Edges): string {
-  const key = directions
-    .filter((dir: Direction): boolean => edges[dir].hasWall)
-    .map((dir: Direction): string => dir[0].toUpperCase())
-    .join('');
-  return boxChars[key] ?? '?';
-}
+import { Coord, Image } from '../image';
+import { EdgeStoreDriver } from './edge.driver';
+import { edgeKey, EdgeMap, EdgeStore } from './edge';
 
 describe('edgeKey', () => {
   it('returns same key regardless of coord order', () => {
@@ -84,116 +58,85 @@ describe('EdgeMap', () => {
 });
 
 describe('EdgeStore', () => {
-  it('externalMap returns external edges', () => {
+  it('has the external edges on the margin of the image', () => {
     const image = new Image([
       [0, 0, 0],
       [0, 1, 0],
       [0, 0, 0],
     ]);
-    const store = EdgeStore.create(image);
+    const edgeStoreDriver = new EdgeStoreDriver(EdgeStore.walled(image));
 
-    expect(store.externalMap()).toEqual([
+    expect(edgeStoreDriver.externalMap()).toEqual([
       ['NW', 'N', 'NE'],
       ['W', '-', 'E'],
       ['SW', 'S', 'ES'],
     ]);
   });
 
-  it('wallMap shows walls between different colors and on external edges', () => {
+  it('starts with a wall on every edge', () => {
+    const image = new Image([
+      [1, 1, 1],
+      [1, 1, 1],
+      [1, 1, 1],
+    ]);
+    const edgeStoreDriver = new EdgeStoreDriver(EdgeStore.walled(image));
+
+    expect(edgeStoreDriver.wallMap()).toEqual([
+      ['NESW', 'NESW', 'NESW'],
+      ['NESW', 'NESW', 'NESW'],
+      ['NESW', 'NESW', 'NESW'],
+    ]);
+  });
+
+  it('removes a wall', () => {
+    const edgeStore = EdgeStore.walled(new Image([[1, 1]]));
+
+    edgeStore.removeWall(new Coord(0, 0), 'east');
+
+    expect(new EdgeStoreDriver(edgeStore).wallMap()).toEqual([['NSW', 'NES']]);
+  });
+
+  it('has walls between different colors and on the margin', () => {
     const image = new Image([
       [0, 1],
       [0, 1],
     ]);
-    const store = EdgeStore.create(image);
+    const edgeStoreDriver = new EdgeStoreDriver(EdgeStore.create(image));
 
-    expect(store.wallMap()).toEqual([
+    expect(edgeStoreDriver.wallMap()).toEqual([
       ['NEW', 'NEW'],
       ['ESW', 'ESW'],
     ]);
   });
 
-  it('wallMap shows no internal walls between same colors', () => {
+  it('has no walls between same colors', () => {
     const image = new Image([
       [1, 1],
       [1, 1],
     ]);
-    const store = EdgeStore.create(image);
+    const edgeStoreDriver = new EdgeStoreDriver(EdgeStore.create(image));
 
-    expect(store.wallMap()).toEqual([
+    expect(edgeStoreDriver.wallMap()).toEqual([
       ['NW', 'NE'],
       ['SW', 'ES'],
     ]);
   });
 
-  it('addWall adds a wall', () => {
-    const image = new Image([[1, 1]]);
-    const store = EdgeStore.create(image);
+  it('adds a wall', () => {
+    const edgeStore = EdgeStore.create(new Image([[1, 1]]));
 
-    store.addWall(new Coord(0, 0), 'east');
+    edgeStore.addWall(new Coord(0, 0), 'east');
 
-    expect(store.get(new Coord(0, 0), 'east').hasWall).toBe(true);
+    expect(new EdgeStoreDriver(edgeStore).wallMap()).toEqual([
+      ['NESW', 'NESW'],
+    ]);
   });
 
-  it('removeWall removes a wall', () => {
-    const image = new Image([[1, 1]]);
-    const store = EdgeStore.create(image);
-    store.addWall(new Coord(0, 0), 'east');
+  it('refuses to remove a wall between different colors', () => {
+    const edgeStore = EdgeStore.walled(new Image([[0, 1]]));
 
-    store.removeWall(new Coord(0, 0), 'east');
-
-    expect(store.get(new Coord(0, 0), 'east').hasWall).toBe(false);
-  });
-
-  it('removeWall throws an error when removing wall between different colors', () => {
-    const image = new Image([[0, 1]]);
-    const store = EdgeStore.create(image);
-
-    expect(() => store.removeWall(new Coord(0, 0), 'east')).toThrow(
+    expect(() => edgeStore.removeWall(new Coord(0, 0), 'east')).toThrow(
       'Cannot remove wall between different colors',
     );
-  });
-
-  it('addAllWalls adds walls between all same-color cells', () => {
-    const image = new Image([
-      [1, 1, 1],
-      [1, 1, 1],
-      [1, 1, 1],
-    ]);
-    const store = EdgeStore.create(image);
-
-    store.addAllWalls();
-
-    expect(store.wallMap()).toEqual([
-      ['NESW', 'NESW', 'NESW'],
-      ['NESW', 'NESW', 'NESW'],
-      ['NESW', 'NESW', 'NESW'],
-    ]);
-  });
-
-  it('map allows custom wall rendering with box-drawing characters', () => {
-    const image = new Image([
-      [1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1, 1],
-      [1, 1, 0, 0, 1, 1],
-      [1, 1, 0, 0, 1, 1],
-      [1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1, 1],
-    ]);
-    const store = EdgeStore.create(image);
-
-    // prettier-ignore
-    expect(
-      store
-        .map(toBoxChar)
-        .map((row) => row.join(''))
-        .join('\n'),
-    ).toBe([
-      '┘╵╵╵╵└',
-      '╴·╷╷·╶',
-      '╴╶┘└╴╶',
-      '╴╶┐┌╴╶',
-      '╴·╵╵·╶',
-      '┐╷╷╷╷┌',
-    ].join('\n'));
   });
 });

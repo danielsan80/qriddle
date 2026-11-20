@@ -1,11 +1,4 @@
-import { Coord, directions, Image, type Direction, type Size } from '../image';
-
-export type Edges = {
-  north: Edge;
-  east: Edge;
-  south: Edge;
-  west: Edge;
-};
+import { Coord, Image, type Direction, type Size } from '../image';
 
 export class Edge {
   readonly isExternal: boolean;
@@ -119,7 +112,7 @@ export class EdgeStore {
     }
   }
 
-  addAllWalls(): void {
+  private addAllWalls(): void {
     this.image.forEach((pixel) => {
       if (this.image.has(pixel.coord.east())) {
         this.addWall(pixel.coord, 'east');
@@ -128,37 +121,5 @@ export class EdgeStore {
         this.addWall(pixel.coord, 'south');
       }
     });
-  }
-
-  map<T>(fn: (edges: Edges) => T): T[][] {
-    return this.image.map((pixel) => {
-      const edges: Edges = {
-        north: this.get(pixel.coord, 'north'),
-        east: this.get(pixel.coord, 'east'),
-        south: this.get(pixel.coord, 'south'),
-        west: this.get(pixel.coord, 'west'),
-      };
-      return fn(edges);
-    });
-  }
-
-  wallMap(): string[][] {
-    return this.map<string>(
-      (edges: Edges): string =>
-        directions
-          .filter((dir) => edges[dir].hasWall)
-          .map((dir) => dir[0].toUpperCase())
-          .join('') || '-',
-    );
-  }
-
-  externalMap(): string[][] {
-    return this.map<string>(
-      (edges: Edges): string =>
-        directions
-          .filter((dir) => edges[dir].isExternal)
-          .map((dir) => dir[0].toUpperCase())
-          .join('') || '-',
-    );
   }
 }
